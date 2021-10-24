@@ -28,6 +28,9 @@ public class MaxAngularVeloTuner extends LinearOpMode {
 
     private ElapsedTime timer;
     private double maxAngVelocity = 0.0;
+    private double avgAngVelocity = 0.0;   // aml added this
+    private int avgCount = 0;              // aml added this
+    private double curVel = 0.0;           // aml added this
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,13 +59,18 @@ public class MaxAngularVeloTuner extends LinearOpMode {
 
             Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
 
-            maxAngVelocity = Math.max(poseVelo.getHeading(), maxAngVelocity);
+            curVel = poseVelo.getHeading();
+            maxAngVelocity = Math.max(curVel, maxAngVelocity);
+            //maxAngVelocity = Math.max(poseVelo.getHeading(), maxAngVelocity);
+            avgAngVelocity += curVel;
+            avgCount++;
         }
 
         drive.setDrivePower(new Pose2d());
 
         telemetry.addData("Max Angular Velocity (rad)", maxAngVelocity);
         telemetry.addData("Max Angular Velocity (deg)", Math.toDegrees(maxAngVelocity));
+        telemetry.addData("Average Velocity", avgAngVelocity / avgCount);
         telemetry.update();
 
         while (!isStopRequested()) idle();
