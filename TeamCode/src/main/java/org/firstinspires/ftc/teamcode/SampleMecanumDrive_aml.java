@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
-
-import androidx.annotation.NonNull;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -24,11 +22,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-import com.sun.tools.javac.tree.DCTree;
 
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -37,6 +34,8 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -54,9 +53,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7.5, 0, 0); // set to default 8 from 0 on quickstart quide
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7.5, 0, 0);  // set to default 8 from 0 on quickstart quide
+public class SampleMecanumDrive_aml extends MecanumDrive {
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0); // set to default 8 from 0 on quickstart quide
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);  // set to default 8 from 0 on quickstart quide
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -72,13 +71,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private Servo CarsouselServo;
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
+    public SampleMecanumDrive_aml(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -102,12 +100,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         // upward (normal to the floor) using a command like the following:
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "LeftFront");  // Port 0
-        leftRear = hardwareMap.get(DcMotorEx.class, "LeftBack");  // port 1
-        rightRear = hardwareMap.get(DcMotorEx.class, "RightBack");  // port 2
-        rightFront = hardwareMap.get(DcMotorEx.class, "RightFront");  // port 3
-
-        CarsouselServo = hardwareMap.get(Servo.class, "carousel");
+        leftFront = hardwareMap.get(DcMotorEx.class, "TopLeftMotor");  // Port 3
+        leftRear = hardwareMap.get(DcMotorEx.class, "BottomLeftMotor");  // port 1
+        rightRear = hardwareMap.get(DcMotorEx.class, "BottomRightMotor");  // port 0
+        rightFront = hardwareMap.get(DcMotorEx.class, "TopRightMotor");  // port 2
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -129,14 +125,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: reverse any motors using DcMotor.setDirection()
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection((DcMotorSimple.Direction.FORWARD));
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setDirection((DcMotorSimple.Direction.REVERSE));
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
