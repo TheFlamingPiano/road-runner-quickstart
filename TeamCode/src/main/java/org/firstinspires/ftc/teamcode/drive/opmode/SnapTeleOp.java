@@ -19,16 +19,37 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @TeleOp(group = "drive")
 public class SnapTeleOp extends LinearOpMode {
+
+    double targetHeight = 0.0;
+
     @Override
     public void runOpMode() throws InterruptedException {
         CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
         CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap);
         CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
 
+
+
+//INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
         double ClosePosition = 0.3;
         double IntakePosition = 0.45;
         double DumpPosition = 0.55;
+
+        //PIVOT FOR INTAKE THAT JOOEY MADE
+        double PivotPosition = 0.5;
+        double PivotStepSize = 0.01;
+
+        //THAT ONE THING THAT SPINS THE DUCK
         double CarouselPosition = 0.5;
+
+        //POWER VALUES FOR ROTATION ARM
+        double RotationPower = 0.10;
+        double RotationStop = 0.0;
+
+        //BASE ARM VALUES
+        double ShoulderPower = 0.5;
+        double ElbowPower = 0.5;
+        double StopPower = 0.0;
 
 
         arm.setEncoders();  //set encoders
@@ -41,7 +62,7 @@ public class SnapTeleOp extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
-            drive.setWeightedDrivePower(
+            drive.setWeightedDrivePower(    //SOME WEIRDO WHO DRIVES THE DRIVE BASE USES THIS
                     new Pose2d(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
@@ -49,10 +70,10 @@ public class SnapTeleOp extends LinearOpMode {
                     )
             );
 
-            //write here me
-            double OuttakePower = -gamepad1.left_trigger;
-            double IntakePower = gamepad1.right_trigger;
-            Boolean DumpDoorPower = gamepad1.right_bumper;
+            //KABLAM! HERE SETTING STUFF UP WITH CONTROLLER, THIS STUFF IS GOING ONTO THE SECOND CONTROLER, ALSO KNOWN AS THE OPERATOR CONTROLLER
+            double OuttakePower = -gamepad2.left_trigger;
+            double IntakePower = gamepad2.right_trigger;
+            boolean DumpDoorPower = gamepad2.right_bumper;
 
 
 
@@ -83,20 +104,102 @@ public class SnapTeleOp extends LinearOpMode {
             }
 
 
-            double ClockwiseCarouselPower = gamepad2.right_trigger;
-            double CounterClockwisePower = -gamepad2.left_trigger;
+            boolean ClockwiseCarouselPower = gamepad1.right_bumper;
+            boolean CounterClockwisePower = gamepad1.left_bumper;
 
 
-            if (ClockwiseCarouselPower > 0.1) {
+            if (ClockwiseCarouselPower == true) {
 
                 duck.BlueSpin();
 
             }
-            if (CounterClockwisePower < 0.1 && ClockwiseCarouselPower < 0.1 ) {
+            else {
+                if (CounterClockwisePower == true) {
 
-                duck.RedSpin();
+                    duck.RedSpin();
+
+                } else {
+                    duck.Stop();
+                }
+            }
+
+
+
+            //SETTING STUFF ON THE CONTROLLER ALLL THIS IS ON THE OPERATOR CONTROLLER, TRUST, DRIVER DOES NOT WANNA DO THIS
+            boolean RotationPowerRight = gamepad2.circle;
+            boolean RotationPowerLeft = gamepad2.square;
+            double Shoulder = gamepad2.left_stick_y;
+            double Elbow = gamepad2.right_stick_y;
+            boolean PivotTiltUp = gamepad2.triangle;
+            boolean PivotTiltDown = gamepad2.x;
+
+
+
+
+//GETTING KATELYN'S ARM THING TO ROTATE
+
+
+if (RotationPowerRight == true) {
+
+    arm.RotationMotor.setPower(-RotationPower);
+            }
+else {
+    if (RotationPowerLeft == true) {
+
+        arm.RotationMotor.setPower(RotationPower);
+                }
+    else {
+        arm.RotationMotor.setPower(RotationStop);
+                }
+            }
+
+
+//SO THIS IS WHERE KATELYNS ARM THINGY GOES WHOOOOOSH!!! IT MOVES IT UP AND DOWN (THE BASE OF THE ARM)
+
+            if (Shoulder > 0.1) {
+
+                arm.BaseArm.setPower(-ShoulderPower);
 
             }
+            else {
+                if (Shoulder < -0.1) {
+                    arm.BaseArm.setPower(ShoulderPower);
+                }
+                else {
+                    arm.BaseArm.setPower(StopPower);
+                }
+            }
+
+            //THIS IS THE PART THAT MOVES THE INTAKE ARM (THE ONE THE INTAKE ATTACHES TOO, WHICH BY THE WAY HAVE I TOLD YOU IS A WONDERFUL SYSTEM)
+
+            if (Elbow > 0.1) {
+
+                arm.IntakeArm.setPower(ElbowPower);
+
+            }
+            else {
+                if (Elbow < -0.1) {
+                    arm.IntakeArm.setPower(-ElbowPower);
+                }
+                else {
+                    arm.IntakeArm.setPower(StopPower);
+                }
+            }
+
+            //PIVOT WHOSH THING
+
+            if (PivotTiltUp == true && PivotPosition <= 1.0) {
+                PivotPosition = PivotPosition + PivotStepSize;
+                arm.Pivot.setPosition(PivotPosition);
+            }
+            if (PivotTiltDown == true && PivotPosition >= -1.0) {
+                PivotPosition = PivotPosition - PivotStepSize;
+                arm.Pivot.setPosition(PivotPosition);
+            }
+
+         //   double ChangeHeight = -gamepad2.left_stick_y;
+
+
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();

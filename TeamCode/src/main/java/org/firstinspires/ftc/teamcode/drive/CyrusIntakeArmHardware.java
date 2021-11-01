@@ -10,6 +10,7 @@ public class CyrusIntakeArmHardware {
 
     public DcMotor IntakeMotor;
     public Servo DumpDoor;
+    public Servo Pivot;
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
@@ -18,6 +19,7 @@ public class CyrusIntakeArmHardware {
 
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");  //Control Hub 2, Port 3
         DumpDoor = hardwareMap.get(Servo.class, "DumpDoor"); //port 1
+        Pivot = hardwareMap.get(Servo.class, "Pivot");//port 2 pivot ADD THIS TO CONFIG OR ELSE EVEYTHING WILL EXPLODE!!!!
 
         RotationMotor = hardwareMap.get(DcMotorEx.class, "RotationMotor"); //Hub 2, Port 0
         BaseArm = hardwareMap.get(DcMotorEx.class, "BaseArm");    //Hub 2, Port 1
