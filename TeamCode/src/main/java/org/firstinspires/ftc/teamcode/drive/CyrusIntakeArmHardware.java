@@ -14,6 +14,16 @@ public class CyrusIntakeArmHardware {
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
+    public final double MINIMUM_ROTATION_ANGLE = -135; //degrees
+    public final double MAXIMUM_ROTATION_ANGLE = 135; //degrees
+    public final double INITIAL_ROTATION_ANGLE = -135; //degrees
+
+
+    public final double MINIMUM_HEIGHT = -12*25.4; //millimeters
+    public final double MAXIMUM_HEIGHT = 21*25.4; //millimeters
+    public final double ARM1 = 18*25.4;   //millimeters
+    public final double ARM2 = 16*25.4; //millimeters
+
 
     public CyrusIntakeArmHardware(HardwareMap hardwareMap){
 
