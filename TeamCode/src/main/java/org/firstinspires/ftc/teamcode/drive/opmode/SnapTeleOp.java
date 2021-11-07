@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.InverseKinematics;
 import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
  * teleop routine and make sure the robot's estimated pose matches the robot's actual pose (slight
@@ -29,8 +29,9 @@ public class SnapTeleOp extends LinearOpMode {
 
     double ARM_HEIGHT_VELOCITY = 100; //mm/s
     double ARM_DISTANCE_VELOCITY = 100; //mm/s
-    double ARM_ROTATION_VELOCITY = 180; //Degrees
+    double ARM_ROTATION_VELOCITY = 90; //Degrees
 
+ InverseKinematics ik;
 
 
     @Override
@@ -54,7 +55,7 @@ public class SnapTeleOp extends LinearOpMode {
         double CarouselPosition = 0.5;
 
         //POWER VALUES FOR ROTATION ARM
-        double RotationPower = 0.10;
+        double RotationPower = 0.30;
         double RotationStop = 0.0;
 
         //BASE ARM VALUES
@@ -66,7 +67,7 @@ public class SnapTeleOp extends LinearOpMode {
         distance = 0.0;
         rotation = arm.INITIAL_ROTATION_ANGLE;
 
-        arm.setEncoders();  //set encoders
+       // arm.setEncoders();  //set encoders
         arm.StopArmMovement();
 
         duck.Stop();
@@ -232,7 +233,7 @@ public class SnapTeleOp extends LinearOpMode {
             double lastDistance = distance;
             distance = distance + ARM_DISTANCE_VELOCITY * deltaTime/1000 * (-gamepad2.right_stick_y);
 
-            if (height > arm.MAXIMUM_HEIGHT || height < arm.MINIMUM_HEIGHT || Math.hypot(height, distance) > arm.ARM1 + arm.ARM2 ) {
+            if (height > arm.MAXIMUM_HEIGHT || height < arm.MINIMUM_HEIGHT || Math.hypot(height, distance) > arm.ARM1_LENGTH + arm.ARM2_LENGTH ) {
                 height = lastHeight;
                 distance = lastDistance;
             }
@@ -257,10 +258,22 @@ public class SnapTeleOp extends LinearOpMode {
 
 
 
+           // arm.RotationMotor.setTargetPosition((400));
+           // arm.RotationMotor.setPower(.5);
+            arm.RotationMotor.setTargetPosition((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION));
+            arm.RotationMotor.setPower(RotationPower);
+
+            double angles[] = ik.getAngles(distance, height);
+            double point[] = ik.getPoint(angles[0], angles[1]);  // should be the same as (extension, height) if everything is working correctly
+
+            arm.BaseArm.setTargetPosition((int) ((angles[0] - INITIAL_PIVOT1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
+
+
             telemetry.addData("Height = ",height);
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", rotation);
-
+            telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
+            telemetry.addData("ENCODER_COUNT_ROTO", arm.ENCODER_TICKS_PER_DEGREE_ROTATION);
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();

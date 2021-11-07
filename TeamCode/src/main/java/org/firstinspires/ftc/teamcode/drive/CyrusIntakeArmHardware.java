@@ -14,15 +14,47 @@ public class CyrusIntakeArmHardware {
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
-    public final double MINIMUM_ROTATION_ANGLE = -135; //degrees
-    public final double MAXIMUM_ROTATION_ANGLE = 135; //degrees
-    public final double INITIAL_ROTATION_ANGLE = -135; //degrees
+    public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
+    public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
+    public final double INITIAL_ROTATION_ANGLE = 0.0; //degrees
+    public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
+    public double GEARBOX_RATIO_ROTATION_MOTOR = 46.0 / 17.0 + 1;
+    public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
+    public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
+    public double GEAR_RATIO_ROTATION_STAGE = (180.0 / 18.0);
+    public double GEAR_RATIO_ARM1_STAGE = 20;
+    public double GEAR_RATIO_ARM2_STAGE = 32;
+
+    //ETPD CALCULATIONS
+    public final double ENCODER_TICKS_PER_DEGREE_ROTATION = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ROTATION_MOTOR * GEAR_RATIO_ROTATION_STAGE;
+    public final double ENCODER_TICKS_PER_DEGREE_ARM1 = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ARM1_MOTOR *GEAR_RATIO_ARM1_STAGE;
+    public final double ENCODER_TICKS_PER_DEGREE_ARM2 = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ARM2_MOTOR * GEAR_RATIO_ARM2_STAGE;
+
+    //ARM LENGTH
+    public final double ARM1_LENGTH = 460.0; //millimeters
+    public final double ARM2_LENGTH = 405.0; //millimeters
+
+    //VELOCITIES
+    //public final double ROTATION_VELOCITY = 50; //degrees per second
+//    public final double HEIGHT_VELOCITY = 100; //millimeters per second
+ //   public final double DISTANCE_VELOCITY = 100; //millimeters per second
+
+
+    double length1;
+    double length2;
+
+    double [] retval2;
+    double [] retval3;
+    double [] testPoint;
+
+
 
 
     public final double MINIMUM_HEIGHT = -12*25.4; //millimeters
     public final double MAXIMUM_HEIGHT = 21*25.4; //millimeters
-    public final double ARM1 = 18*25.4;   //millimeters
-    public final double ARM2 = 16*25.4; //millimeters
+    //THESE TWO ARE DIFFERENT, REFER TO ARM1_LENGTH AND ARM2_LENGTH
+    //public final double ARM1 = 18*25.4;   //millimeters
+   // public final double ARM2 = 16*25.4; //millimeters
 
 
     public CyrusIntakeArmHardware(HardwareMap hardwareMap){
@@ -43,6 +75,15 @@ public class CyrusIntakeArmHardware {
        IntakeArm.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
+
+       RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+       BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+       IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
         public void StopArmMovement () {
@@ -62,4 +103,38 @@ public class CyrusIntakeArmHardware {
             IntakeArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+    public CyrusIntakeArmHardware(double arm1_length, double arm2_length) {
+        length1 = arm1_length;
+        length2 = arm2_length;
+
+        retval2 = new double[2];
+        retval3 = new double[3];
+        testPoint = new double[2];
+    }
+    public double[] getAngles(double x, double y) {
+        double tmp = (x*x + y*y - length1 * length1 - length2 * length2) / (2 * length1 * length2);
+        double theta2 = Math.atan2(-Math.sqrt(1 - tmp * tmp), tmp);
+        double k1 = length1 + length2 * Math.cos(theta2);
+        double k2 = length2 * Math.sin(theta2);
+        double theta1 = Math.atan2(y, x) - Math.atan2(k2, k1);
+        retval2[0] = Math.toDegrees(theta1);
+        retval2[1] = Math.toDegrees(theta2);
+
+        return retval2;
+    }
+
+    public double[] getPoint(double angle1, double angle2) {
+        testPoint[0] = length1 * Math.cos(Math.toRadians(angle1)) + length2 * Math.cos(Math.toRadians(angle1 + angle2));
+        testPoint[1] = length1 * Math.sin(Math.toRadians(angle1)) + length2 * Math.sin(Math.toRadians(angle1 + angle2));
+        return testPoint;
+    }
+
+    public double[] getAngles(double x, double y, double z) {
+        double [] angles = getAngles(Math.hypot(x, y), z);
+        retval3[0] = Math.toDegrees(Math.atan2(y, x));
+        retval3[1] = angles[0];
+        retval3[2] = angles[1];
+
+        return retval3;
+    }
 }
