@@ -17,10 +17,13 @@ public class CyrusIntakeArmHardware {
     public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
     public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
     public final double INITIAL_ROTATION_ANGLE = 0.0; //degrees
+    public final double INITIAL_ARM1_ANGLE = 180;//216;//degree
+    public final double INITIAL_ARM2_ANGLE = -180;//degree
+
     public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
     public double GEARBOX_RATIO_ROTATION_MOTOR = 46.0 / 17.0 + 1;
     public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
-    public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
+    public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 17.0 + 1);
     public double GEAR_RATIO_ROTATION_STAGE = (180.0 / 18.0);
     public double GEAR_RATIO_ARM1_STAGE = 20;
     public double GEAR_RATIO_ARM2_STAGE = 32;
@@ -42,6 +45,9 @@ public class CyrusIntakeArmHardware {
 
     double length1;
     double length2;
+
+
+
 
     double [] retval2;
     double [] retval3;
@@ -72,16 +78,21 @@ public class CyrusIntakeArmHardware {
 
        RotationMotor.setDirection(DcMotorSimple.Direction.FORWARD);
        BaseArm.setDirection(DcMotorSimple.Direction.FORWARD);
-       IntakeArm.setDirection(DcMotorSimple.Direction.FORWARD);
+       IntakeArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
 
+       RotationMotor.setTargetPosition(0);
        RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+       //RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+       BaseArm.setTargetPosition(0);
        BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
        BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+       IntakeArm.setTargetPosition(0);
        IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
        IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }

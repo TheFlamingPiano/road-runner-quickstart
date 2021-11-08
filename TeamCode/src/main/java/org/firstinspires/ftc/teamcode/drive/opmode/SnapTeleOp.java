@@ -27,11 +27,11 @@ public class SnapTeleOp extends LinearOpMode {
     double distance;
     double rotation;
 
-    double ARM_HEIGHT_VELOCITY = 100; //mm/s
-    double ARM_DISTANCE_VELOCITY = 100; //mm/s
-    double ARM_ROTATION_VELOCITY = 90; //Degrees
+    double ARM_HEIGHT_VELOCITY = 450; //mm/s
+    double ARM_DISTANCE_VELOCITY = 450; //mm/s
+    double ARM_ROTATION_VELOCITY = 20; //Degrees
 
- InverseKinematics ik;
+ CyrusIntakeArmHardware ik;
 
 
     @Override
@@ -48,23 +48,23 @@ public class SnapTeleOp extends LinearOpMode {
         double DumpPosition = 0.55;
 
         //PIVOT FOR INTAKE THAT JOOEY MADE
-        double PivotPosition = 0.5;
+        double PivotPosition = 1;
         double PivotStepSize = 0.01;
 
         //THAT ONE THING THAT SPINS THE DUCK
         double CarouselPosition = 0.5;
 
         //POWER VALUES FOR ROTATION ARM
-        double RotationPower = 0.30;
+        double RotationPower = 1;
         double RotationStop = 0.0;
 
         //BASE ARM VALUES
-        double ShoulderPower = 0.5;
-        double ElbowPower = 0.5;
+        double ARM1_POWER = 1;
+        double ARM2_POWER = 1;
         double StopPower = 0.0;
 
-        height = 0.0;
-        distance = 0.0;
+        height = 0.0; //millmeters
+        distance = -55;//millimeters
         rotation = arm.INITIAL_ROTATION_ANGLE;
 
        // arm.setEncoders();  //set encoders
@@ -74,7 +74,11 @@ public class SnapTeleOp extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        arm.Pivot.setPosition(PivotPosition);
+
         waitForStart();
+
+        ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
 
 //TIMES FOR ARM CONTROL *PROBS IMPORTANT*
 
@@ -92,6 +96,8 @@ public class SnapTeleOp extends LinearOpMode {
             );
 
             //KABLAM! HERE SETTING STUFF UP WITH CONTROLLER, THIS STUFF IS GOING ONTO THE SECOND CONTROLER, ALSO KNOWN AS THE OPERATOR CONTROLLER
+
+
             double OuttakePower = -gamepad2.left_trigger;
             double IntakePower = gamepad2.right_trigger;
             boolean DumpDoorPower = gamepad2.right_bumper;
@@ -151,10 +157,20 @@ public class SnapTeleOp extends LinearOpMode {
            // boolean RotationPowerLeft = gamepad2.square;
            // double Shoulder = gamepad2.left_stick_y;
             //double Elbow = gamepad2.right_stick_y;
-            //boolean PivotTiltUp = gamepad2.triangle;
-           // boolean PivotTiltDown = gamepad2.x;
+            boolean PivotTiltUp = gamepad2.y;
+            boolean PivotTiltDown = gamepad2.a;
 
-
+//            if (gamepad2.y) {
+//                arm.Pivot.setPosition(1);
+//            }
+//            else{
+//                if (gamepad2.b) {
+//                    arm.Pivot.setPosition(0);
+//                }
+//                else {
+//                    arm.Pivot.setPosition(.5);
+//                }
+//            }
 
 
 //GETTING KATELYN'S ARM THING TO ROTATE
@@ -209,14 +225,14 @@ public class SnapTeleOp extends LinearOpMode {
 
             //PIVOT WHOSH THING
 
-//            if (PivotTiltUp == true && PivotPosition <= 1.0) {
-//                PivotPosition = PivotPosition + PivotStepSize;
-//                arm.Pivot.setPosition(PivotPosition);
-//            }
-//            if (PivotTiltDown == true && PivotPosition >= -1.0) {
-//                PivotPosition = PivotPosition - PivotStepSize;
-//                arm.Pivot.setPosition(PivotPosition);
-//            }
+            if (PivotTiltUp == true && PivotPosition <= 1.0) {
+                PivotPosition = PivotPosition + PivotStepSize;
+                arm.Pivot.setPosition(PivotPosition);
+            }
+            if (PivotTiltDown == true && PivotPosition >= 0) {
+                PivotPosition = PivotPosition - PivotStepSize;
+                arm.Pivot.setPosition(PivotPosition);
+            }
 
          //   double ChangeHeight = -gamepad2.left_stick_y;
 
@@ -233,22 +249,26 @@ public class SnapTeleOp extends LinearOpMode {
             double lastDistance = distance;
             distance = distance + ARM_DISTANCE_VELOCITY * deltaTime/1000 * (-gamepad2.right_stick_y);
 
-            if (height > arm.MAXIMUM_HEIGHT || height < arm.MINIMUM_HEIGHT || Math.hypot(height, distance) > arm.ARM1_LENGTH + arm.ARM2_LENGTH ) {
-                height = lastHeight;
-                distance = lastDistance;
-            }
+
+
+
+
 
 
           //  rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * (gamepad2.right_stick_x);
 
-            if (gamepad2.circle) {
-                rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * -1;
+            if (gamepad2.x) {
+               // rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * -1;
+                arm.RotationMotor.setPower(.25);
             }
-
-            if (gamepad2.square) {
-                rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * 1;
+            else {
+                if (gamepad2.b) {
+                    //rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * 1;
+                    arm.RotationMotor.setPower(-0.25);
+                } else {
+                    arm.RotationMotor.setPower(0);
+                }
             }
-
             if (rotation < arm.MINIMUM_ROTATION_ANGLE) {
                 rotation = arm.MINIMUM_ROTATION_ANGLE;
             }
@@ -257,23 +277,48 @@ public class SnapTeleOp extends LinearOpMode {
             }
 
 
+            //if (gamepad2.right_bumper && gamepad2.left_bumper && gamepad2.right_trigger > .01 && gamepad2.left_trigger > .01){
+//                height = 2;
+            //    distance = 2;
+//                arm.BaseArm.setTargetPosition();
+//                arm.IntakeArm.setTargetPosition(0);
+           // }
+
+
 
            // arm.RotationMotor.setTargetPosition((400));
            // arm.RotationMotor.setPower(.5);
-            arm.RotationMotor.setTargetPosition((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION));
-            arm.RotationMotor.setPower(RotationPower);
+           // arm.RotationMotor.setTargetPosition((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION));
+            //arm.RotationMotor.setPower(RotationPower);
 
             double angles[] = ik.getAngles(distance, height);
-            double point[] = ik.getPoint(angles[0], angles[1]);  // should be the same as (extension, height) if everything is working correctly
+            double point[] = ik.getPoint(angles[0], angles[1]);  // should be the same as (distance, height) if everything is working correctly
 
-            arm.BaseArm.setTargetPosition((int) ((angles[0] - INITIAL_PIVOT1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
+            if (height > arm.MAXIMUM_HEIGHT || height < arm.MINIMUM_HEIGHT || Math.hypot(height, distance) > arm.ARM1_LENGTH + arm.ARM2_LENGTH ||
+                    (Double.isNaN(angles[0]) || (Double.isNaN(angles[1])))) {
+                height = lastHeight;
+                distance = lastDistance;
+            }
 
+            arm.BaseArm.setTargetPosition((int) ((angles[0] - arm.INITIAL_ARM1_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM1));
+            //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
+            arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
+
+            arm.BaseArm.setPower(ARM1_POWER);
+            arm.IntakeArm.setPower(ARM2_POWER);
 
             telemetry.addData("Height = ",height);
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", rotation);
-            telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
+            telemetry.addData("PivotPosition",PivotPosition);
+            //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
             telemetry.addData("ENCODER_COUNT_ROTO", arm.ENCODER_TICKS_PER_DEGREE_ROTATION);
+            telemetry.addData("ARM1_ANGLE",angles[0]);
+            telemetry.addData("ARM2_ANGLE",angles[1]);
+            //telemetry.addData("POINT",point[0]);
+            //telemetry.addData("POINT2",point[1]);
+            //telemetry.addData("ARM2_INITIAL",((int) (angles[1] - arm.INITIAL_ARM2_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
+           // telemetry.addData("ENCODER_TICS_ARM2",arm.ENCODER_TICKS_PER_DEGREE_ARM2);
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();

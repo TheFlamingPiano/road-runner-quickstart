@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
             TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(startPos)
                     .back(4)
                     .turn(Math.toRadians(90))
-                    .strafeRight(5)
+                    .strafeRight(10)
                     .back(30)
                     .build();
 

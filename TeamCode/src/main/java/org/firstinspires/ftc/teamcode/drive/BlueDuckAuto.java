@@ -29,9 +29,9 @@ public class BlueDuckAuto extends LinearOpMode {
         if (isStopRequested()) return;
 
         TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(startPos)
-                .back(8)
+                .back(4)
                 .strafeLeft(33)
-                .forward(4)
+                .forward(8)
                 .build();
 
         TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
