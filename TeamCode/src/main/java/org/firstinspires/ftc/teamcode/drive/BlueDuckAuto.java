@@ -17,7 +17,7 @@ public class BlueDuckAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
-        CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap);
+        CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
         CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
 
         Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));

@@ -37,7 +37,7 @@ public class SnapTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
-        CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap);
+        CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, false);
         CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
 
 
@@ -63,8 +63,18 @@ public class SnapTeleOp extends LinearOpMode {
         double ARM2_POWER = 1;
         double StopPower = 0.0;
 
-        height = 0.0; //millmeters
-        distance = -55;//millimeters
+        // moved before the initialization of height and distance to back calculate the initial position
+        ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
+//        height = 0.0; //millmeters
+//        distance = -55;//millimeters
+        // Calculate the current height and distance based on the current angles of the arms
+        // These should be moved to the hardware class
+        double currentBaseArmAngle = arm.BaseArm.getCurrentPosition() * 1.0 / arm.ENCODER_TICKS_PER_DEGREE_ARM1 + arm.INITIAL_ARM1_ANGLE;
+        double currentIntakeArmAndle = arm.IntakeArm.getCurrentPosition() * 1.0 / arm.ENCODER_TICKS_PER_DEGREE_ARM2 + arm.INITIAL_ARM2_ANGLE;
+        double coordinates[] = ik.getPoint(currentBaseArmAngle, currentIntakeArmAndle);
+        distance = coordinates[0];
+        height = coordinates[1];
+
         rotation = arm.INITIAL_ROTATION_ANGLE;
 
        // arm.setEncoders();  //set encoders
@@ -74,11 +84,16 @@ public class SnapTeleOp extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        arm.Pivot.setPosition(PivotPosition);
+        // This needs to be after wait for start
+        // The robot cannot move between init and play
+//        arm.Pivot.setPosition(PivotPosition);
 
         waitForStart();
+        arm.Pivot.setPosition(PivotPosition);
 
-        ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
+        // move above wait for start
+        // This instance of CyrusIntakeArmHardware is redundant - merge with arm?
+//        ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
 
 //TIMES FOR ARM CONTROL *PROBS IMPORTANT*
 
@@ -293,6 +308,18 @@ public class SnapTeleOp extends LinearOpMode {
 
             double angles[] = ik.getAngles(distance, height);
             double point[] = ik.getPoint(angles[0], angles[1]);  // should be the same as (distance, height) if everything is working correctly
+
+            if (gamepad2.left_bumper) { // set safe driving position for the arm
+                angles = ik.getAngles(arm.SAFE_POSITION_DISTANCE, arm.SAFE_POSITION_HEIGHT);
+                // set distance and height to the current position so if the bumpers are released, the arm stops
+                // this should be a method in the hardware class
+                currentBaseArmAngle = arm.BaseArm.getCurrentPosition() * 1.0 / arm.ENCODER_TICKS_PER_DEGREE_ARM1 + arm.INITIAL_ARM1_ANGLE;
+                currentIntakeArmAndle = arm.IntakeArm.getCurrentPosition() * 1.0 / arm.ENCODER_TICKS_PER_DEGREE_ARM2 + arm.INITIAL_ARM2_ANGLE;
+                coordinates = ik.getPoint(currentBaseArmAngle, currentIntakeArmAndle);
+                distance = coordinates[0];
+                height = coordinates[1];
+
+            }
 
             if (height > arm.MAXIMUM_HEIGHT || height < arm.MINIMUM_HEIGHT || Math.hypot(height, distance) > arm.ARM1_LENGTH + arm.ARM2_LENGTH ||
                     (Double.isNaN(angles[0]) || (Double.isNaN(angles[1])))) {

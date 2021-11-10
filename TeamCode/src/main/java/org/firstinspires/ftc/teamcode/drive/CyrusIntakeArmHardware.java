@@ -17,7 +17,7 @@ public class CyrusIntakeArmHardware {
     public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
     public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
     public final double INITIAL_ROTATION_ANGLE = 0.0; //degrees
-    public final double INITIAL_ARM1_ANGLE = 180;//216;//degree
+    public final double INITIAL_ARM1_ANGLE = 216;//degree
     public final double INITIAL_ARM2_ANGLE = -180;//degree
 
     public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
@@ -36,6 +36,9 @@ public class CyrusIntakeArmHardware {
     //ARM LENGTH
     public final double ARM1_LENGTH = 460.0; //millimeters
     public final double ARM2_LENGTH = 405.0; //millimeters
+
+    public final double SAFE_POSITION_DISTANCE = -70;
+    public final double SAFE_POSITION_HEIGHT = 20;
 
     //VELOCITIES
     //public final double ROTATION_VELOCITY = 50; //degrees per second
@@ -63,7 +66,13 @@ public class CyrusIntakeArmHardware {
    // public final double ARM2 = 16*25.4; //millimeters
 
 
-    public CyrusIntakeArmHardware(HardwareMap hardwareMap){
+    /*
+     * resetEncoders - flag indicating whether the encoders for the BaseArm and Intake arm should be reset
+     * Autonomous will likely want to reset the encoders to 0 and then set the starting angle for both.
+     * Teleop should not reset the encoders and instead calculate the current angle, height, and distance
+     * using the current encoder values.
+     */
+    public CyrusIntakeArmHardware(HardwareMap hardwareMap, boolean resetEncocders){
 
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");  //Control Hub 2, Port 3
         DumpDoor = hardwareMap.get(Servo.class, "DumpDoor"); //port 1
@@ -88,12 +97,16 @@ public class CyrusIntakeArmHardware {
        RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
        //RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-       BaseArm.setTargetPosition(0);
-       BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (resetEncocders) {
+            BaseArm.setTargetPosition(0);
+            BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
        BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-       IntakeArm.setTargetPosition(0);
-       IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (resetEncocders) {
+            IntakeArm.setTargetPosition(0);
+            IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
        IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 

@@ -9,8 +9,8 @@ public class TestInverseKinematics extends OpMode {
     final double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360;
     final double GEARBOX_RATIO_ROTATION_MOTOR = 46.0 / 17 + 1;
     final double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17 + 1) * (46.0 / 17 + 1);
-    final double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11 + 1);
-    final double GEAR_RATIO_ROTATION_STAGE = 180.0 / 14;
+    final double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 17 + 1);
+    final double GEAR_RATIO_ROTATION_STAGE = 180.0 / 18;
     final double GEAR_RATIO_ARM1_PIVOT = 20.0;
     final double GEAR_RATIO_ARM2_PIVOT = 32.0;
     final double ENCODER_TICKS_PER_DEGREE_ROTATION = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ROTATION_MOTOR * GEAR_RATIO_ROTATION_STAGE;
