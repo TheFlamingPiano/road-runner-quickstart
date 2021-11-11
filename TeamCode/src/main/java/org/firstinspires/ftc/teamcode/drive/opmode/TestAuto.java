@@ -2,7 +2,9 @@
     package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
@@ -13,21 +15,37 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
     /*
      * This is an example of a more complex path to really test the tuning.
      */
+
+
     @Autonomous(group = "drive",name="Test Auto")
     public class TestAuto extends LinearOpMode {
         final double EXTENSION_READY_DISTANCE = 0.0;
         final double EXTENSION_READY_HEIGHT = 55.0;
 
+
         CyrusIntakeArmHardware ik;
 
         @Override
         public void runOpMode() throws InterruptedException {
+          DcMotorEx  leftFront  = hardwareMap.get(DcMotorEx.class, "LeftFront");  // Hub 1, Port 0
+            DcMotorEx leftRear = hardwareMap.get(DcMotorEx.class, "LeftBack");  // Hub 1, port 1
+            DcMotorEx rightRear = hardwareMap.get(DcMotorEx.class, "RightBack");  // Hub 1, port 2
+            DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "RightFront");  // Hub 1, port 3
+
             CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
             CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
             CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
             ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
-
             waitForStart();
+while (!isStopRequested())  {
+    telemetry.addData("LeftFront", leftFront.getCurrentPosition());
+                telemetry.addData("LeftBack", leftRear.getCurrentPosition());
+                telemetry.addData("RightBack", rightRear.getCurrentPosition());
+                telemetry.addData("RightFront", rightFront.getCurrentPosition());
+telemetry.update();
+
+leftFront.setPower(.5);
+            }
 
             if (isStopRequested()) return;
 

@@ -74,7 +74,9 @@ public class SnapTeleOp extends LinearOpMode {
         double coordinates[] = ik.getPoint(currentBaseArmAngle, currentIntakeArmAndle);
         distance = coordinates[0];
         height = coordinates[1];
-
+telemetry.addData("Distance", distance);
+telemetry.addData("Height", height);
+telemetry.update();
         rotation = arm.INITIAL_ROTATION_ANGLE;
 
        // arm.setEncoders();  //set encoders
@@ -292,12 +294,10 @@ public class SnapTeleOp extends LinearOpMode {
             }
 
 
-            //if (gamepad2.right_bumper && gamepad2.left_bumper && gamepad2.right_trigger > .01 && gamepad2.left_trigger > .01){
-//                height = 2;
-            //    distance = 2;
-//                arm.BaseArm.setTargetPosition();
-//                arm.IntakeArm.setTargetPosition(0);
-           // }
+//            if (gamepad2.dpad_down && gamepad2.dpad_up ){
+//                height = 51.976;
+//                distance = 18.006;
+//            }
 
 
 
