@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
             arm.BaseArm.setTargetPosition((int) ((angles[0] - arm.INITIAL_ARM1_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
-
+arm.DumpDoor.setPosition(0.3);
             waitForStart();
             arm.BaseArm.setPower(0.5);
             arm.IntakeArm.setPower(0.5);
@@ -46,7 +46,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
             TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(startPos)
                     .back(4)
                     .turn(Math.toRadians(90))
-                    .strafeLeft(10)
+                    .strafeRight(10)
                     .back(30)
                     .build();
 

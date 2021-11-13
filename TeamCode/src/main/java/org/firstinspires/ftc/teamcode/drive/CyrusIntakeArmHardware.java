@@ -101,11 +101,17 @@ public class CyrusIntakeArmHardware {
             BaseArm.setTargetPosition(0);
             BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
+        else {
+            BaseArm.setTargetPosition(BaseArm.getCurrentPosition());
+        }
        BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (resetEncocders) {
             IntakeArm.setTargetPosition(0);
             IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        else {
+            IntakeArm.setTargetPosition(IntakeArm.getCurrentPosition());
         }
        IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }

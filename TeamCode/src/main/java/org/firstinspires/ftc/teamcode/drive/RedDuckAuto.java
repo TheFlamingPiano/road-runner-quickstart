@@ -49,14 +49,16 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
             if (isStopRequested()) return;
 
             TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(startPos)
-                    .back(8)
-                    .strafeRight(33)
-                    .forward(4)
+                    .back(4)
+                    .strafeRight(28)
+                    .turn(Math.toRadians(-30))
+                    .forward(8)
                     .build();
 
             TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
                     .waitSeconds(4)
-                    .back(25)
+                    .turn(Math.toRadians(30))
+                    .back(28)
                     .build();
 
             drive.followTrajectorySequence(trajectory1);

@@ -49,7 +49,7 @@ public class BlueDuckAuto extends LinearOpMode {
                 .build();
 
         TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
-                .forward(8)
+                .forward(5)
                 .build();
         TrajectorySequence trajectory3 = drive.trajectorySequenceBuilder(trajectory2.end())
                 .waitSeconds(4)
@@ -65,6 +65,7 @@ public class BlueDuckAuto extends LinearOpMode {
         duck.BlueSpin();
         drive.followTrajectorySequence(trajectory3);
         duck.Stop();
+        arm.DumpDoor.setPosition(.5);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))
