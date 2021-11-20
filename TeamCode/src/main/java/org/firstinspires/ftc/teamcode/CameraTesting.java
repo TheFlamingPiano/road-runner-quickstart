@@ -99,7 +99,7 @@ public class CameraTesting extends LinearOpMode
                  * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
                  * away from the user.
                  */
-                webcam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640, 360, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -211,105 +211,105 @@ public class CameraTesting extends LinearOpMode
              * of this particular frame for later use, you will need to either clone it or copy
              * it to another Mat.
              */
-int boxWidth = 250;
-int boxHeight = 500;
-    int leftpointstartx = 160;
-            int leftpointstarty = 110;
-            int middlepointstartx = 470;
-            int middlepointstarty = 110;
-            int rightpointstartx = 780;
-            int rightpointstarty = 110;
-
-
-            /*
-             * Draw a simple box around the middle 1/2 of the entire frame
-             */
-            Rect rectleft = new Rect(leftpointstartx,leftpointstarty,boxWidth,boxHeight);
-
-            Rect rectmiddle = new Rect(middlepointstartx,middlepointstarty,boxWidth,boxHeight);
-
-            Rect rectright = new Rect(rightpointstartx,rightpointstarty,boxWidth,boxHeight);
-
-            Mat frameleft = new Mat(input,rectleft);
-            Scalar meanleft = Core.mean(frameleft);
-            double greenleft = meanleft.val[1];
-            double redleft = meanleft.val[0];
-            double blueleft = meanleft.val[2];
-//            telemetry.addData("redL", redleft);
-//            telemetry.addData("greenL", greenleft);
-//            telemetry.addData("blueL", blueleft);
-
-            Mat framemiddle = new Mat(input,rectmiddle);
-            Scalar meanmiddle = Core.mean(framemiddle);
-            double greenmiddle = meanmiddle.val[1];
-            double redmiddle = meanmiddle.val[0];
-            double bluemiddle = meanmiddle.val[2];
-//            telemetry.addData("redM", redmiddle);
-//            telemetry.addData("greenM", greenmiddle);
-//            telemetry.addData("blueM", bluemiddle);
-
-            Mat frameright = new Mat(input,rectright);
-            Scalar meanright = Core.mean(frameright);
-            double greenright = meanright.val[1];
-            double redright = meanright.val[0];
-            double blueright = meanright.val[2];
-//            telemetry.addData("redR", redright);
-//            telemetry.addData("greenR", greenright);
-//            telemetry.addData("blueR", blueright);
+//int boxWidth = 250;
+//int boxHeight = 500;
+//    int leftpointstartx = 160;
+//            int leftpointstarty = 110;
+//            int middlepointstartx = 470;
+//            int middlepointstarty = 110;
+//            int rightpointstartx = 780;
+//            int rightpointstarty = 110;
+//
+//
+//            /*
+//             * Draw a simple box around the middle 1/2 of the entire frame
+//             */
+//            Rect rectleft = new Rect(leftpointstartx,leftpointstarty,boxWidth,boxHeight);
+//
+//            Rect rectmiddle = new Rect(middlepointstartx,middlepointstarty,boxWidth,boxHeight);
+//
+//            Rect rectright = new Rect(rightpointstartx,rightpointstarty,boxWidth,boxHeight);
+//
+//            Mat frameleft = new Mat(input,rectleft);
+//            Scalar meanleft = Core.mean(frameleft);
+//            double greenleft = meanleft.val[1];
+//            double redleft = meanleft.val[0];
+//            double blueleft = meanleft.val[2];
+////            telemetry.addData("redL", redleft);
+////            telemetry.addData("greenL", greenleft);
+////            telemetry.addData("blueL", blueleft);
+//
+//            Mat framemiddle = new Mat(input,rectmiddle);
+//            Scalar meanmiddle = Core.mean(framemiddle);
+//            double greenmiddle = meanmiddle.val[1];
+//            double redmiddle = meanmiddle.val[0];
+//            double bluemiddle = meanmiddle.val[2];
+////            telemetry.addData("redM", redmiddle);
+////            telemetry.addData("greenM", greenmiddle);
+////            telemetry.addData("blueM", bluemiddle);
+//
+//            Mat frameright = new Mat(input,rectright);
+//            Scalar meanright = Core.mean(frameright);
+//            double greenright = meanright.val[1];
+//            double redright = meanright.val[0];
+//            double blueright = meanright.val[2];
+////            telemetry.addData("redR", redright);
+////            telemetry.addData("greenR", greenright);
+////            telemetry.addData("blueR", blueright);
+////            telemetry.update();
+//
+//            double redgreen_deltaL = redleft-greenleft;
+//            double redgreen_deltaM = redmiddle-greenleft;
+//            double redgreen_deltaR = redright-greenright;
+//
+//            String location = "NotFound";
+//            if (redgreen_deltaL > redgreen_deltaM && redgreen_deltaL > redgreen_deltaR) {
+//                location = "Found Left!";
+//            }
+//            if (redgreen_deltaM > redgreen_deltaL && redgreen_deltaM > redgreen_deltaR) {
+//                location = "Found Middle";
+//            }
+//            if (redgreen_deltaR > redgreen_deltaL && redgreen_deltaR > redgreen_deltaM) {
+//                location = "Found Right!";
+//            }
+//            telemetry.addData("Location",location);
 //            telemetry.update();
-
-            double redgreen_deltaL = redleft-greenleft;
-            double redgreen_deltaM = redmiddle-greenleft;
-            double redgreen_deltaR = redright-greenright;
-
-            String location = "NotFound";
-            if (redgreen_deltaL > redgreen_deltaM && redgreen_deltaL > redgreen_deltaR) {
-                location = "Found Left!";
-            }
-            if (redgreen_deltaM > redgreen_deltaL && redgreen_deltaM > redgreen_deltaR) {
-                location = "Found Middle";
-            }
-            if (redgreen_deltaR > redgreen_deltaL && redgreen_deltaR > redgreen_deltaM) {
-                location = "Found Right!";
-            }
-            telemetry.addData("Location",location);
-            telemetry.update();
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-//                            input.cols()/4,
-//                            input.rows()/4),
-                    leftpointstartx,leftpointstarty),
-                    new Point(
-//                            input.cols()*(3f/4f),
-//                            input.rows()*(3f/4f)),
-                            leftpointstartx+boxWidth,leftpointstarty+boxHeight),
-                    new Scalar(0, 255, 0), 4);
-
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-//                            input.cols()/4,
-//                            input.rows()/4),
-                            middlepointstartx,middlepointstarty),
-                    new Point(
-//                            input.cols()*(3f/4f),
-//                            input.rows()*(3f/4f)),
-                            middlepointstartx+boxWidth,middlepointstarty+boxHeight),
-                    new Scalar(0, 255, 0), 4);
-
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-//                            input.cols()/4,
-//                            input.rows()/4),
-                            rightpointstartx,rightpointstarty),
-                    new Point(
-//                            input.cols()*(3f/4f),
-//                            input.rows()*(3f/4f)),
-                            rightpointstartx+boxWidth,rightpointstarty+boxHeight),
-                    new Scalar(0, 255, 0), 4);
-
+//            Imgproc.rectangle(
+//                    input,
+//                    new Point(
+////                            input.cols()/4,
+////                            input.rows()/4),
+//                    leftpointstartx,leftpointstarty),
+//                    new Point(
+////                            input.cols()*(3f/4f),
+////                            input.rows()*(3f/4f)),
+//                            leftpointstartx+boxWidth,leftpointstarty+boxHeight),
+//                    new Scalar(0, 255, 0), 4);
+//
+//            Imgproc.rectangle(
+//                    input,
+//                    new Point(
+////                            input.cols()/4,
+////                            input.rows()/4),
+//                            middlepointstartx,middlepointstarty),
+//                    new Point(
+////                            input.cols()*(3f/4f),
+////                            input.rows()*(3f/4f)),
+//                            middlepointstartx+boxWidth,middlepointstarty+boxHeight),
+//                    new Scalar(0, 255, 0), 4);
+//
+//            Imgproc.rectangle(
+//                    input,
+//                    new Point(
+////                            input.cols()/4,
+////                            input.rows()/4),
+//                            rightpointstartx,rightpointstarty),
+//                    new Point(
+////                            input.cols()*(3f/4f),
+////                            input.rows()*(3f/4f)),
+//                            rightpointstartx+boxWidth,rightpointstarty+boxHeight),
+//                    new Scalar(0, 255, 0), 4);
+//
 
             /**
              * NOTE: to see how to get data from your pipeline to your OpMode as well as how

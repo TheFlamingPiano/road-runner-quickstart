@@ -275,13 +275,13 @@ telemetry.update();
           //  rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * (gamepad2.right_stick_x);
 
             if (gamepad2.x) {
-               // rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * -1;
-                arm.RotationMotor.setPower(.25);
+                rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * -1;
+                //arm.RotationMotor.setPower(.25);
             }
             else {
                 if (gamepad2.b) {
-                    //rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * 1;
-                    arm.RotationMotor.setPower(-0.25);
+                    rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime/1000 * 1;
+                    //arm.RotationMotor.setPower(-0.25);
                 } else {
                     arm.RotationMotor.setPower(0);
                 }
@@ -292,7 +292,13 @@ telemetry.update();
             if (rotation > arm.MAXIMUM_ROTATION_ANGLE) {
                 rotation = arm.MAXIMUM_ROTATION_ANGLE;
             }
-
+            //THIS IS FOR THE AUTOMATIC ARM SWINGING FROM DEPOT TO SHARED HUB
+            if (gamepad2.dpad_left) {
+                rotation = 0;
+            }
+            if (gamepad2.dpad_right) {
+                rotation = 130;
+            }
 
 //            if (gamepad2.dpad_down && gamepad2.dpad_up ){
 //                height = 51.976;
@@ -303,8 +309,8 @@ telemetry.update();
 
            // arm.RotationMotor.setTargetPosition((400));
            // arm.RotationMotor.setPower(.5);
-           // arm.RotationMotor.setTargetPosition((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION));
-            //arm.RotationMotor.setPower(RotationPower);
+            arm.RotationMotor.setTargetPosition((int)((rotation - arm.INITIAL_ROTATION_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ROTATION));
+            arm.RotationMotor.setPower(RotationPower);
 
             double angles[] = ik.getAngles(distance, height);
             double point[] = ik.getPoint(angles[0], angles[1]);  // should be the same as (distance, height) if everything is working correctly

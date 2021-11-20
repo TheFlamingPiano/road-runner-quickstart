@@ -16,7 +16,7 @@ public class CyrusIntakeArmHardware {
     public DcMotorEx IntakeArm;
     public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
     public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
-    public final double INITIAL_ROTATION_ANGLE = 0.0; //degrees
+    public final double INITIAL_ROTATION_ANGLE = -45.0; //degrees
     public final double INITIAL_ARM1_ANGLE = 216;//degree
     public final double INITIAL_ARM2_ANGLE = -180;//degree
 
@@ -93,9 +93,9 @@ public class CyrusIntakeArmHardware {
 
        RotationMotor.setTargetPosition(0);
        RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
        RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       //RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (resetEncocders) {
             BaseArm.setTargetPosition(0);
