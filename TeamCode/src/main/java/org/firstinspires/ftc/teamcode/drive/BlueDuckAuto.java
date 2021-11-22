@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.snappy.SnappyHardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -25,6 +26,7 @@ public class BlueDuckAuto extends LinearOpMode {
         CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
         CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
 
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true);
         ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
 
         Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));
@@ -56,6 +58,7 @@ public class BlueDuckAuto extends LinearOpMode {
                 .turn(Math.toRadians(-45))
                 .back(25)
                 .build();
+
 
 
 

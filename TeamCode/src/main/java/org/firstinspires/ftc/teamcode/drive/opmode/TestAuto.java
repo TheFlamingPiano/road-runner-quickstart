@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
      * This is an example of a more complex path to really test the tuning.
      */
 
-
+@Disabled
     @Autonomous(group = "drive",name="Test Auto")
     public class TestAuto extends LinearOpMode {
         final double EXTENSION_READY_DISTANCE = 0.0;
