@@ -70,7 +70,7 @@ public class ASnappyDelivery extends LinearOpMode {
         snappy.moveArmToPosition(23.77, 400, 370, 0.8);
         snappy.moveArmToPosition(23.77, 683.91, 370, 0.8);
         snappy.DumpDoor.setPosition(snappy.DumpPosition);
-        snappy.IntakeMotor.setPower(-0.20);
+        snappy.IntakeMotor.setPower(-0.25);
         snappy.followTrajectorySequence(trajectory2);
         snappy.IntakeMotor.setPower(0);
         snappy.DumpDoor.setPosition(snappy.ClosePosition);
