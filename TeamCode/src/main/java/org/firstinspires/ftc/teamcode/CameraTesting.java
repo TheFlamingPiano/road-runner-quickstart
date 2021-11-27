@@ -211,12 +211,12 @@ public class CameraTesting extends LinearOpMode
              * of this particular frame for later use, you will need to either clone it or copy
              * it to another Mat.
              */
-//int boxWidth = 250;
-//int boxHeight = 500;
+int boxWidth = 400;
+int boxHeight = 300;
 //    int leftpointstartx = 160;
 //            int leftpointstarty = 110;
-//            int middlepointstartx = 470;
-//            int middlepointstarty = 110;
+            int middlepointstartx = 120;
+            int middlepointstarty = 40;
 //            int rightpointstartx = 780;
 //            int rightpointstarty = 110;
 //
@@ -226,7 +226,7 @@ public class CameraTesting extends LinearOpMode
 //             */
 //            Rect rectleft = new Rect(leftpointstartx,leftpointstarty,boxWidth,boxHeight);
 //
-//            Rect rectmiddle = new Rect(middlepointstartx,middlepointstarty,boxWidth,boxHeight);
+            Rect rectmiddle = new Rect(middlepointstartx,middlepointstarty,boxWidth,boxHeight);
 //
 //            Rect rectright = new Rect(rightpointstartx,rightpointstarty,boxWidth,boxHeight);
 //
@@ -239,14 +239,14 @@ public class CameraTesting extends LinearOpMode
 ////            telemetry.addData("greenL", greenleft);
 ////            telemetry.addData("blueL", blueleft);
 //
-//            Mat framemiddle = new Mat(input,rectmiddle);
-//            Scalar meanmiddle = Core.mean(framemiddle);
-//            double greenmiddle = meanmiddle.val[1];
-//            double redmiddle = meanmiddle.val[0];
-//            double bluemiddle = meanmiddle.val[2];
-////            telemetry.addData("redM", redmiddle);
-////            telemetry.addData("greenM", greenmiddle);
-////            telemetry.addData("blueM", bluemiddle);
+            Mat framemiddle = new Mat(input,rectmiddle);
+            Scalar meanmiddle = Core.mean(framemiddle);
+            double greenmiddle = meanmiddle.val[1];
+            double redmiddle = meanmiddle.val[0];
+            double bluemiddle = meanmiddle.val[2];
+            telemetry.addData("redM", redmiddle);
+            telemetry.addData("greenM", greenmiddle);
+            telemetry.addData("blueM", bluemiddle);
 //
 //            Mat frameright = new Mat(input,rectright);
 //            Scalar meanright = Core.mean(frameright);
@@ -256,7 +256,7 @@ public class CameraTesting extends LinearOpMode
 ////            telemetry.addData("redR", redright);
 ////            telemetry.addData("greenR", greenright);
 ////            telemetry.addData("blueR", blueright);
-////            telemetry.update();
+            //telemetry.update();
 //
 //            double redgreen_deltaL = redleft-greenleft;
 //            double redgreen_deltaM = redmiddle-greenleft;
@@ -273,7 +273,7 @@ public class CameraTesting extends LinearOpMode
 //                location = "Found Right!";
 //            }
 //            telemetry.addData("Location",location);
-//            telemetry.update();
+            telemetry.update();
 //            Imgproc.rectangle(
 //                    input,
 //                    new Point(
@@ -286,17 +286,17 @@ public class CameraTesting extends LinearOpMode
 //                            leftpointstartx+boxWidth,leftpointstarty+boxHeight),
 //                    new Scalar(0, 255, 0), 4);
 //
-//            Imgproc.rectangle(
-//                    input,
-//                    new Point(
-////                            input.cols()/4,
-////                            input.rows()/4),
-//                            middlepointstartx,middlepointstarty),
-//                    new Point(
-////                            input.cols()*(3f/4f),
-////                            input.rows()*(3f/4f)),
-//                            middlepointstartx+boxWidth,middlepointstarty+boxHeight),
-//                    new Scalar(0, 255, 0), 4);
+            Imgproc.rectangle(
+                    input,
+                    new Point(
+//                            input.cols()/4,
+//                            input.rows()/4),
+                            middlepointstartx,middlepointstarty),
+                    new Point(
+//                            input.cols()*(3f/4f),
+//                            input.rows()*(3f/4f)),
+                            middlepointstartx+boxWidth,middlepointstarty+boxHeight),
+                    new Scalar(0, 255, 0), 4);
 //
 //            Imgproc.rectangle(
 //                    input,

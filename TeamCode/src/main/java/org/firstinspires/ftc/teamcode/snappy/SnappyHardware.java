@@ -73,10 +73,10 @@ public class SnappyHardware extends MecanumDrive {
     public final double INITIAL_ARM2_ANGLE = -180;//degree
 
     public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
-    public double GEARBOX_RATIO_ROTATION_MOTOR = 46.0 / 17.0 + 1;
-    public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
-    public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 17.0 + 1);
-    public double GEAR_RATIO_ROTATION_STAGE = (180.0 / 18.0);
+    public double GEARBOX_RATIO_ROTATION_MOTOR = 1.0;
+    public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 11.0 + 1) * (46.0 / 11.0 + 1);
+    public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
+    public double GEAR_RATIO_ROTATION_STAGE = (140.0 / 16.0)*(80.0/12);
     public double GEAR_RATIO_ARM1_STAGE = 20;
     public double GEAR_RATIO_ARM2_STAGE = 32;
 
