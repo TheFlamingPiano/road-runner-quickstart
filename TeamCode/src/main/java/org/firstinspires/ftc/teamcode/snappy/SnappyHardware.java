@@ -69,17 +69,17 @@ public class SnappyHardware extends MecanumDrive {
     public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
     public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
     public final double INITIAL_ROTATION_ANGLE = -45.0; //degrees
-    public final double INITIAL_ARM1_ANGLE = 216;//degree
+    public final double INITIAL_ARM1_ANGLE = 180;//216;//degree
     public final double INITIAL_ARM2_ANGLE = -180;//degree
 
     public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
     public double GEARBOX_RATIO_ROTATION_MOTOR = 1.0;
-    public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 11.0 + 1) * (46.0 / 11.0 + 1);
+    public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
     public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
     public double GEAR_RATIO_ROTATION_STAGE = (140.0 / 16.0)*(80.0/12);
     public double GEAR_RATIO_ARM1_STAGE = 20;
     public double GEAR_RATIO_ARM2_STAGE = 32;
-
+//ang1+ang2secondbar + 90
     //ETPD CALCULATIONS
     public final double ENCODER_TICKS_PER_DEGREE_ROTATION = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ROTATION_MOTOR * GEAR_RATIO_ROTATION_STAGE;
     public final double ENCODER_TICKS_PER_DEGREE_ARM1 = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ARM1_MOTOR * GEAR_RATIO_ARM1_STAGE;
@@ -87,7 +87,7 @@ public class SnappyHardware extends MecanumDrive {
 
     //ARM LENGTH
     public final double ARM1_LENGTH = 460.0; //millimeters
-    public final double ARM2_LENGTH = 405.0; //millimeters
+    public final double ARM2_LENGTH = 476.00;//405.0; //millimeters
 
     public final double SAFE_POSITION_DISTANCE = -70;
     public final double SAFE_POSITION_HEIGHT = 20;
@@ -214,8 +214,8 @@ public class SnappyHardware extends MecanumDrive {
         IntakeMotor.setDirection(DcMotor.Direction.REVERSE);
         DumpDoor.setDirection(Servo.Direction.FORWARD);
 
-        RotationMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        BaseArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        RotationMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        BaseArm.setDirection(DcMotorSimple.Direction.REVERSE);
         IntakeArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         RotationMotor.setTargetPosition(0);
