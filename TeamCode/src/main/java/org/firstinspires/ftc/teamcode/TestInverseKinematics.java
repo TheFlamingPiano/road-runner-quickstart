@@ -64,7 +64,7 @@ public class TestInverseKinematics extends OpMode {
 
         // use forward kinematics to set initial height and extension
         rotationAngle = INITIAL_ROTATION_ANGLE;
-        double point[] = ik.getPoint(INITIAL_PIVOT1_ANGLE, INITIAL_PIVOT2_ANGLE);
+        double[] point = ik.getPoint(INITIAL_PIVOT1_ANGLE, INITIAL_PIVOT2_ANGLE);
         extension = point[0];
         height = point[1];
     }
@@ -89,8 +89,8 @@ public class TestInverseKinematics extends OpMode {
         extension += -gamepad1.left_stick_y * EXTENSION_VELOCITY * deltaTime;
         height += -gamepad1.right_stick_y * HEIGHT_VELOCITY * deltaTime;
 
-        double angles[] = ik.getAngles(extension, height);
-        double point[] = ik.getPoint(angles[0], angles[1]);  // shuold be the same as (extension, height) if everything is working correctly
+        double[] angles = ik.getAngles(extension, height);
+        //double[] point = ik.getPoint(angles[0], angles[1]);  // should be the same as (extension, height) if everything is working correctly
 
         rotationMotor.setTargetPosition((int)((rotationAngle - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
         pivot1Motor.setTargetPosition((int) ((angles[0] - INITIAL_PIVOT1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));

@@ -30,7 +30,7 @@ public class ASnappyDelivery extends LinearOpMode {
         snappy.setPoseEstimate(startPos);
         telemetry.update();
 
-        double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
+        double[] angles = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
 
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
@@ -67,15 +67,15 @@ public class ASnappyDelivery extends LinearOpMode {
 
 
         snappy.followTrajectorySequence(trajectory1);
-        snappy.moveArmToPosition(23.77, 400, 370, 0.8);
-        snappy.moveArmToPosition(23.77, 683.91, 370, 0.8);
+        snappy.moveArmToPosition(this, 23.77, 400, 370, 0.8);
+        snappy.moveArmToPosition(this, 23.77, 683.91, 370, 0.8);
         snappy.DumpDoor.setPosition(snappy.DumpPosition);
         snappy.IntakeMotor.setPower(-0.25);
         snappy.followTrajectorySequence(trajectory2);
         snappy.IntakeMotor.setPower(0);
         snappy.DumpDoor.setPosition(snappy.ClosePosition);
-        snappy.moveArmToPosition(23.77, 400, 370, 0.8);
-        snappy.moveArmToPosition(0, EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT, 0.8);
+        snappy.moveArmToPosition(this,23.77, 400, 370, 0.8);
+        snappy.moveArmToPosition(this,0, EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT, 0.8);
 
 //        drive.followTrajectorySequence(trajectory2);
 //        duck.BlueSpin();

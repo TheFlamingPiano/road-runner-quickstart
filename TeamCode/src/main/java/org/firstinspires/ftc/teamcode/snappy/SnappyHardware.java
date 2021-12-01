@@ -31,6 +31,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -69,16 +71,16 @@ public class SnappyHardware extends MecanumDrive {
     public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
     public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
     public final double INITIAL_ROTATION_ANGLE = -45.0; //degrees
-    public final double INITIAL_ARM1_ANGLE = 180;//216;//degree
-    public final double INITIAL_ARM2_ANGLE = -180;//degree
+    public final double INITIAL_ARM1_ANGLE = 177.18; //180;//216;//degree
+    public final double INITIAL_ARM2_ANGLE = -176.2; //-180;//degree
 
     public double ENCODER_TICKS_PER_DEGREE_MOTOR = 28.0 / 360.0;
     public double GEARBOX_RATIO_ROTATION_MOTOR = 1.0;
     public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
     public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
     public double GEAR_RATIO_ROTATION_STAGE = (140.0 / 16.0)*(80.0/12);
-    public double GEAR_RATIO_ARM1_STAGE = 20;
-    public double GEAR_RATIO_ARM2_STAGE = 32;
+    public double GEAR_RATIO_ARM1_STAGE = 19;
+    public double GEAR_RATIO_ARM2_STAGE = 31;
 //ang1+ang2secondbar + 90
     //ETPD CALCULATIONS
     public final double ENCODER_TICKS_PER_DEGREE_ROTATION = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ROTATION_MOTOR * GEAR_RATIO_ROTATION_STAGE;
@@ -86,11 +88,15 @@ public class SnappyHardware extends MecanumDrive {
     public final double ENCODER_TICKS_PER_DEGREE_ARM2 = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ARM2_MOTOR * GEAR_RATIO_ARM2_STAGE;
 
     //ARM LENGTH
-    public final double ARM1_LENGTH = 460.0; //millimeters
-    public final double ARM2_LENGTH = 476.00;//405.0; //millimeters
+    public final double ARM1_LENGTH = 447.5; //460.0; //millimeters
+    public final double ARM2_LENGTH = 469;//476.00;//405.0; //millimeters
 
-    public final double SAFE_POSITION_DISTANCE = -70;
-    public final double SAFE_POSITION_HEIGHT = 20;
+    public final double INITIAL_HEIGHT = ARM1_LENGTH * Math.sin(Math.toRadians(INITIAL_ARM1_ANGLE)) + ARM2_LENGTH * Math.sin(Math.toRadians(INITIAL_ARM1_ANGLE + INITIAL_ARM2_ANGLE));
+    public final double INITIAL_DISTANCE = ARM1_LENGTH * Math.cos(Math.toRadians(INITIAL_ARM1_ANGLE)) + ARM2_LENGTH * Math.cos(Math.toRadians(INITIAL_ARM1_ANGLE + INITIAL_ARM2_ANGLE));
+
+    public final double SAFE_POSITION_DISTANCE = INITIAL_DISTANCE; //-70;
+    public final double SAFE_POSITION_HEIGHT = INITIAL_HEIGHT; //20;
+    public final double SAFE_ROTATION_ANGLE = -35; // need to test
 
     //THIS IS CODE FOR ARM THAT WAS ORIGINALLY IN TELE OP (HEIGHT, DISTANCE, ROTATION STUFF)
     double height;
@@ -105,8 +111,6 @@ public class SnappyHardware extends MecanumDrive {
     double ARM_ROTATION_VELOCITY = 20; //Degrees
 
     InverseKinematicsSnap ik;
-
-    double coordinates[];
 
     double RotationPower = 1;
 
@@ -132,8 +136,8 @@ public class SnappyHardware extends MecanumDrive {
     double[] retval3;
     double[] testPoint;
 
-    public final double MINIMUM_HEIGHT = -12 * 25.4; //millimeters
-    public final double MAXIMUM_HEIGHT = 21 * 25.4; //millimeters
+    public final double MINIMUM_HEIGHT = -4*25.4;//-12 * 25.4; //millimeters
+    public final double MAXIMUM_HEIGHT = 22* 25.4; //21 * 25.4; //millimeters
     //THESE TWO ARE DIFFERENT, REFER TO ARM1_LENGTH AND ARM2_LENGTH
     //public final double ARM1 = 18*25.4;   //millimeters
     // public final double ARM2 = 16*25.4; //millimeters
@@ -227,16 +231,16 @@ public class SnappyHardware extends MecanumDrive {
 
 
         if (resetEncocders) {
-            BaseArm.setTargetPosition(0);
             BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BaseArm.setTargetPosition(0);
         } else {
             BaseArm.setTargetPosition(BaseArm.getCurrentPosition());
         }
         BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (resetEncocders) {
-            IntakeArm.setTargetPosition(0);
             IntakeArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            IntakeArm.setTargetPosition(0);
         } else {
             IntakeArm.setTargetPosition(IntakeArm.getCurrentPosition());
         }
@@ -245,8 +249,8 @@ public class SnappyHardware extends MecanumDrive {
         ik = new InverseKinematicsSnap(ARM1_LENGTH, ARM2_LENGTH);
 
         double currentBaseArmAngle = BaseArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
-        double currentIntakeArmAndle = IntakeArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
-        double coordinates[] = ik.getPoint(currentBaseArmAngle, currentIntakeArmAndle);
+        double currentIntakeArmAngle = IntakeArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+        double[] coordinates = ik.getPoint(currentBaseArmAngle, currentIntakeArmAngle);
         distance = coordinates[0];
         height = coordinates[1];
         rotation = INITIAL_ROTATION_ANGLE;
@@ -497,33 +501,30 @@ public class SnappyHardware extends MecanumDrive {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
- public void moveArmToPosition (double rotation, double distance, double height, double wrist){
+
+    public void moveArmToPosition(LinearOpMode opmode, double rotation, double distance, double height, double wrist) {
 
         Pivot.setPosition(wrist);
-     double angles[] = ik.getAngles(distance, height);
-     RotationMotor.setTargetPosition((int)((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
-     RotationMotor.setPower(RotationPower);
+        double[] angles = ik.getAngles(distance, height);
+        RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+        RotationMotor.setPower(RotationPower);
 //     BaseArm.setTargetPosition((int) ((angles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
 //     IntakeArm.setTargetPosition((int) ((angles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
 
-     BaseArm.setTargetPosition((int) ((angles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
-     //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
-     IntakeArm.setTargetPosition((int) ((angles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+        BaseArm.setTargetPosition((int) ((angles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
+        //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
+        IntakeArm.setTargetPosition((int) ((angles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+        BaseArm.setPower(0.75);
+        IntakeArm.setPower(0.75);
 
-     while (RotationMotor.isBusy()){
+        while (opmode.opModeIsActive() &&
+                (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
 
-         //RotationMotor.setPower(RotationPower);
-         RotationMotor.setPower(1);
-
-     }
-     while (BaseArm.isBusy() || IntakeArm.isBusy()){
-
-//         BaseArm.setPower(ARM1_POWER);
-//         IntakeArm.setPower(ARM2_POWER);
-         BaseArm.setPower(0.5);
-         IntakeArm.setPower(0.5);
-
-     }
+            //RotationMotor.setPower(RotationPower);
+            RotationMotor.setPower(1.0);
+            BaseArm.setPower(0.6);
+            IntakeArm.setPower(0.6);
+        }
 
     }
 }
