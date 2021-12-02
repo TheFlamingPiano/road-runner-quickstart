@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.snappy;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@Disabled
 @TeleOp
     public class TempRotationEncoderCount extends LinearOpMode {
 
@@ -21,6 +23,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
             waitForStart();
 while (opModeIsActive()){
     telemetry.addData("Rotation", snappy.RotationMotor.getCurrentPosition());
+    telemetry.addData("LeftEncoder", snappy.rightFront.getCurrentPosition());
+    telemetry.addData("RightEncoder", snappy.leftFront.getCurrentPosition());
     telemetry.update();
             }
 

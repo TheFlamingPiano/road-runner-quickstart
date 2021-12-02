@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
+
+
     //13.7
     //everytime the motor spins 137 the wheel spins 9
 
@@ -57,9 +59,9 @@ public class DriveConstants {
      * empirically tuned.
      */
     //So we take suggestins from a watery tart carrying around a sword
-    public static double kV =  0.013;  // 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.0023;
-    public static double kStatic = 0.015;
+    public static double kV =  0.015;  // 1.0 / rpmToVelocity(MAX_RPM); //14 on 1st tournament
+    public static double kA = 0.0024;
+    public static double kStatic = 0.01;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -70,7 +72,7 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 30;  // 45;  // default is 30 max rpm divide by 60 times gear ratio times wheel rdius time 2pi
     public static double MAX_ACCEL = 30;   // 45; //defualt was 30
-    public static double MAX_ANG_VEL = 8.077;//4.75;    //  Math.toRadians(60); //SOMEtHING IS WRONG HERE - modified opmode for Average instead of Max value
+    public static double MAX_ANG_VEL = 5.66;//8.077;//4.75;    //  Math.toRadians(60); //SOMEtHING IS WRONG HERE - modified opmode for Average instead of Max value
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
 

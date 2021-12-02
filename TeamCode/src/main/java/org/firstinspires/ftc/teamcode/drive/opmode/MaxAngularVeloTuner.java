@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.snappy.SnappyHardware;
 
 import java.util.Objects;
 
@@ -36,6 +37,9 @@ public class MaxAngularVeloTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        SnappyHardware snappy = new SnappyHardware(hardwareMap, true);
+
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -67,6 +71,8 @@ public class MaxAngularVeloTuner extends LinearOpMode {
             avgCount++;
         }
 
+        snappy.RotationMotor.setTargetPosition(0);
+        snappy.RotationMotor.setPower(1);
         drive.setDrivePower(new Pose2d());
 
         telemetry.addData("Max Angular Velocity (rad)", maxAngVelocity);

@@ -1,79 +1,69 @@
-package org.firstinspires.ftc.teamcode.drive;
 
+    package org.firstinspires.ftc.teamcode.snappy;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.snappy.SnappyHardware;
+import org.checkerframework.checker.units.qual.C;
+import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
+import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
+import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
 
     /*
      * This is an example of a more complex path to really test the tuning.
      */
-
-    @Disabled
     @Autonomous(group = "drive")
-    public class RedDuckAuto extends LinearOpMode {
+    public class BlueParkSnap extends LinearOpMode {
+
         final double EXTENSION_READY_DISTANCE = 0.0;
         final double EXTENSION_READY_HEIGHT = 55.0;
-
         CyrusIntakeArmHardware ik;
+
         @Override
         public void runOpMode() throws InterruptedException {
-            CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
-            CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
-            CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
-            SnappyHardware robot = new SnappyHardware(hardwareMap, true);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap,true);
+            CameraSnap cam = new CameraSnap();
 
-            ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
+            ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
-            Pose2d startPos = new Pose2d(-35, -60, Math.toRadians(270));
-            drive.setPoseEstimate(startPos);
+
+            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
+            snappy.setPoseEstimate(startPos);
             telemetry.update();
-
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
 
-            arm.BaseArm.setTargetPosition((int) ((angles[0] - arm.INITIAL_ARM1_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM1));
+            snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
-            arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
-            arm.DumpDoor.setPosition(0.3);
+            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
+snappy.DumpDoor.setPosition(0.3);
+cam.runOpMode(this);
+int position = 0;
+//while (position != 4) {
+//     position = cam.getPosition();
+//    telemetry.addData("position", position);
+//    telemetry.addData("LeftGreen",cam.greenleft);
+//    telemetry.addData("MiddleGreen",cam.greenmiddle);
+//    telemetry.addData("RightGreen",cam.greenright);
+//
+//    telemetry.update();
+//}
             waitForStart();
-
-            robot.leftFront.setPower(1);
-
-            arm.BaseArm.setPower(0.5);
-            arm.IntakeArm.setPower(0.5);
+            snappy.BaseArm.setPower(0.5);
+            snappy.IntakeArm.setPower(0.5);
             if (isStopRequested()) return;
 
-            TrajectorySequence trajectory1 = drive.trajectorySequenceBuilder(startPos)
+            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
                     .back(4)
-                    .strafeRight(28)
-                    .turn(Math.toRadians(-30))
-                    .forward(8)
+                    .turn(Math.toRadians(90))
+                    .strafeRight(5)
+                    .back(35)
                     .build();
 
-            TrajectorySequence trajectory2 = drive.trajectorySequenceBuilder(trajectory1.end())
-                    .waitSeconds(4)
-                    .turn(Math.toRadians(30))
-                    .back(28)
-                    .build();
 
-            drive.followTrajectorySequence(trajectory1);
-            duck.RedSpin();
-            drive.followTrajectorySequence(trajectory2);
-            duck.Stop();
+            snappy.deliverXblocks(this,-23,3);
+            snappy.followTrajectorySequence(trajectory1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))
@@ -124,6 +114,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 //build()
     //     );
     //   }
+
 
 
 

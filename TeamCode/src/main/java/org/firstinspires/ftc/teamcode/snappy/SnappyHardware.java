@@ -68,8 +68,8 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
-    public final double MINIMUM_ROTATION_ANGLE = -135.0; //degrees
-    public final double MAXIMUM_ROTATION_ANGLE = 135.0; //degrees
+    public final double MINIMUM_ROTATION_ANGLE = -180.0; //degrees //-135
+    public final double MAXIMUM_ROTATION_ANGLE = 180.0; //degrees
     public final double INITIAL_ROTATION_ANGLE = -45.0; //degrees
     public final double INITIAL_ARM1_ANGLE = 177.18; //180;//216;//degree
     public final double INITIAL_ARM2_ANGLE = -176.2; //-180;//degree
@@ -165,7 +165,7 @@ public class SnappyHardware extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
@@ -502,6 +502,11 @@ public class SnappyHardware extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
+    public void wait(LinearOpMode opmode, double time) {
+        long startTime = System.nanoTime();
+        while ((opmode.opModeIsActive()) && startTime + time * 1e9 > System.nanoTime());
+    }
+
     public void moveArmToPosition(LinearOpMode opmode, double rotation, double distance, double height, double wrist) {
 
         Pivot.setPosition(wrist);
@@ -527,4 +532,21 @@ public class SnappyHardware extends MecanumDrive {
         }
 
     }
+
+    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
+
+       moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
+        this.wait(opMode, 1.0);
+        moveArmToPosition(opMode, rot, 200, 370, 0.4);
+        this.wait(opMode, 1.0);
+        moveArmToPosition(opMode, rot, 670, 390, 0.4);
+        DumpDoor.setPosition(DumpPosition);
+        IntakeMotor.setPower(-0.25);
+        // snappy.followTrajectorySequence(trajectory2);
+        this.wait(opMode, 2);
+        IntakeMotor.setPower(0);
+        DumpDoor.setPosition(ClosePosition);
+        moveArmToPosition(opMode, -35, INITIAL_DISTANCE, INITIAL_HEIGHT, 0.8);
+    }
+
 }

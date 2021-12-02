@@ -38,7 +38,7 @@ public class SnappyTeleOp extends LinearOpMode {
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
-        double ClosePosition = 0.3;
+        double ClosePosition = 0.15;
         double IntakePosition = 0.45;
         double DumpPosition = 0.55;
 
@@ -265,12 +265,12 @@ public class SnappyTeleOp extends LinearOpMode {
 
             double velocityScaling = (gamepad2.dpad_down? 0.25:1.0);
 
-            if (gamepad2.x) {
+            if (gamepad2.b) {
                 rotation = rotation + ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * -1;
                 //arm.RotationMotor.setPower(.25);
             }
             else {
-                if (gamepad2.b) {
+                if (gamepad2.x) {
                     rotation = rotation + ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * 1;
                     //arm.RotationMotor.setPower(-0.25);
                 } else {

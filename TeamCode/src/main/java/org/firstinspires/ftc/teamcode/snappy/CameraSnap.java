@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.snappy;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,14 +37,30 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-
-@TeleOp
-public class CameraTesting extends LinearOpMode
+public class CameraSnap
 {
     OpenCvWebcam webcam;
+    double greenleft ;
+    double redleft ;
+    double blueleft ;
+    double greenmiddle ;
+    double redmiddle;
+    double bluemiddle ;
+    double greenright;
+    double redright;
+    double blueright;
+    public int getPosition() {
+        double leftCost = greenleft-redleft-blueleft;
+        double middleCost = greenmiddle-redmiddle-bluemiddle;
+        double rightCost = greenright-redright-blueright;
 
-    @Override
-    public void runOpMode()
+        if (leftCost > middleCost && leftCost > rightCost) return 1;
+            else if (middleCost > rightCost) return 2;
+            else return 3;
+
+    }
+
+    public void runOpMode(LinearOpMode opmode)
     {
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
@@ -56,8 +72,8 @@ public class CameraTesting extends LinearOpMode
          * the RC phone). If no camera monitor is desired, use the alternate
          * single-parameter constructor instead (commented out below)
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        int cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
         //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -112,64 +128,62 @@ public class CameraTesting extends LinearOpMode
             }
         });
 
-        telemetry.addLine("Waiting for start");
-        telemetry.update();
 
         /*
          * Wait for the user to press start on the Driver Station
          */
-        waitForStart();
 
-        while (opModeIsActive())
-        {
-            /*
-             * Send some stats to the telemetry
-             */
-            telemetry.addData("Frame Count", webcam.getFrameCount());
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
-            telemetry.update();
-
-            /*
-             * NOTE: stopping the stream from the camera early (before the end of the OpMode
-             * when it will be automatically stopped for you) *IS* supported. The "if" statement
-             * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
-             */
-            if(gamepad1.a)
-            {
-                /*
-                 * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
-                 * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
-                 * if the reason you wish to stop the stream early is to switch use of the camera
-                 * over to, say, Vuforia or TFOD, you will also need to call closeCameraDevice()
-                 * (commented out below), because according to the Android Camera API documentation:
-                 *         "Your application should only have one Camera object active at a time for
-                 *          a particular hardware camera."
-                 *
-                 * NB: calling closeCameraDevice() will internally call stopStreaming() if applicable,
-                 * but it doesn't hurt to call it anyway, if for no other reason than clarity.
-                 *
-                 * NB2: if you are stopping the camera stream to simply save some processing power
-                 * (or battery power) for a short while when you do not need your vision pipeline,
-                 * it is recommended to NOT call closeCameraDevice() as you will then need to re-open
-                 * it the next time you wish to activate your vision pipeline, which can take a bit of
-                 * time. Of course, this comment is irrelevant in light of the use case described in
-                 * the above "important note".
-                 */
-                webcam.stopStreaming();
-                //webcam.closeCameraDevice();
-            }
+//
+//        while (opModeIsActive())
+//        {
+//            /*
+//             * Send some stats to the telemetry
+//             */
+//            telemetry.addData("Frame Count", webcam.getFrameCount());
+//            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+//            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+//            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+//            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+//            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+//            telemetry.update();
+//
+//            /*
+//             * NOTE: stopping the stream from the camera early (before the end of the OpMode
+//             * when it will be automatically stopped for you) *IS* supported. The "if" statement
+//             * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
+//             */
+//            if(gamepad1.a)
+//            {
+//                /*
+//                 * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
+//                 * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
+//                 * if the reason you wish to stop the stream early is to switch use of the camera
+//                 * over to, say, Vuforia or TFOD, you will also need to call closeCameraDevice()
+//                 * (commented out below), because according to the Android Camera API documentation:
+//                 *         "Your application should only have one Camera object active at a time for
+//                 *          a particular hardware camera."
+//                 *
+//                 * NB: calling closeCameraDevice() will internally call stopStreaming() if applicable,
+//                 * but it doesn't hurt to call it anyway, if for no other reason than clarity.
+//                 *
+//                 * NB2: if you are stopping the camera stream to simply save some processing power
+//                 * (or battery power) for a short while when you do not need your vision pipeline,
+//                 * it is recommended to NOT call closeCameraDevice() as you will then need to re-open
+//                 * it the next time you wish to activate your vision pipeline, which can take a bit of
+//                 * time. Of course, this comment is irrelevant in light of the use case described in
+//                 * the above "important note".
+//                 */
+//                webcam.stopStreaming();
+//                //webcam.closeCameraDevice();
+//            }
 
             /*
              * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning
              * excess CPU cycles for no reason. (By default, telemetry is only sent to the DS at 4Hz
              * anyway). Of course in a real OpMode you will likely not want to do this.
              */
-            sleep(100);
-        }
+//            sleep(100);
+//        }
     }
 
     /*
@@ -214,11 +228,11 @@ public class CameraTesting extends LinearOpMode
              */
 int boxWidth = 50;
 int boxHeight = 50;
-            int leftpointstartx = 20;
+            int leftpointstartx = 140;
             int leftpointstarty = 100;
-            int middlepointstartx = 120;
+            int middlepointstartx = 295;
             int middlepointstarty = 100;
-            int rightpointstartx = 240;
+            int rightpointstartx = 450;
             int rightpointstarty = 100;
 //
 //
@@ -233,31 +247,41 @@ int boxHeight = 50;
 
             Mat frameleft = new Mat(input,rectleft);
             Scalar meanleft = Core.mean(frameleft);
-            double greenleft = meanleft.val[1];
-            double redleft = meanleft.val[0];
-            double blueleft = meanleft.val[2];
-            telemetry.addData("redL", redleft);
-            telemetry.addData("greenL", greenleft);
-            telemetry.addData("blueL", blueleft);
+
+//            telemetry.addData("redL", redleft);
+//            telemetry.addData("greenL", greenleft);
+//            telemetry.addData("blueL", blueleft);
 //
             Mat framemiddle = new Mat(input,rectmiddle);
             Scalar meanmiddle = Core.mean(framemiddle);
-            double greenmiddle = meanmiddle.val[1];
-            double redmiddle = meanmiddle.val[0];
-            double bluemiddle = meanmiddle.val[2];
-            telemetry.addData("redM", redmiddle);
-            telemetry.addData("greenM", greenmiddle);
-            telemetry.addData("blueM", bluemiddle);
+
+//            telemetry.addData("redM", redmiddle);
+//            telemetry.addData("greenM", greenmiddle);
+//            telemetry.addData("blueM", bluemiddle);
 //
             Mat frameright = new Mat(input,rectright);
             Scalar meanright = Core.mean(frameright);
-            double greenright = meanright.val[1];
-            double redright = meanright.val[0];
-            double blueright = meanright.val[2];
+
 //            telemetry.addData("redR", redright);
 //            telemetry.addData("greenR", greenright);
 //            telemetry.addData("blueR", blueright);
-            telemetry.update();
+           // telemetry.update();
+
+             greenleft = meanleft.val[1];
+             redleft = meanleft.val[0];
+             blueleft = meanleft.val[2];
+
+//
+
+             greenmiddle = meanmiddle.val[1];
+             redmiddle = meanmiddle.val[0];
+             bluemiddle = meanmiddle.val[2];
+
+//
+
+             greenright = meanright.val[1];
+             redright = meanright.val[0];
+             blueright = meanright.val[2];
 
 //            double redgreen_deltaL = redleft-greenleft;
 //            double redgreen_deltaM = redmiddle-greenleft;
@@ -278,8 +302,8 @@ int boxHeight = 50;
             if (redgreen_deltaR > redgreen_deltaL && redgreen_deltaR > redgreen_deltaM) {
                 location = "Found Right!";
             }
-            telemetry.addData("Location",location);
-            telemetry.update();
+//            telemetry.addData("Location",location);
+//            telemetry.update();
             Imgproc.rectangle(
                     input,
                     new Point(
@@ -351,6 +375,6 @@ int boxHeight = 50;
             {
                 webcam.resumeViewport();
             }
-        }
+       }
     }
 }
