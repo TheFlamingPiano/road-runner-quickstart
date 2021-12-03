@@ -21,6 +21,8 @@ public class RedDuckSnappy extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         SnappyHardware snappy = new SnappyHardware(hardwareMap,true);
+        CameraSnap cam = new CameraSnap();
+
 
         ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
@@ -34,7 +36,15 @@ public class RedDuckSnappy extends LinearOpMode {
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.DumpDoor.setPosition(0.3);
+        cam.runOpMode(this,true);
+        int position = 3;
         waitForStart();
+        position = cam.getPosition();
+        telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
+        telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
+        telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
+        telemetry.addData("Position", position);
+        telemetry.update();
         snappy.BaseArm.setPower(0.5);
         snappy.IntakeArm.setPower(0.5);
         if (isStopRequested()) return;
@@ -58,7 +68,9 @@ public class RedDuckSnappy extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,-23,3);
+        snappy.deliverXblocks(this,-23,position);
+        snappy.moveArmToPosition(this , -35, snappy.INITIAL_DISTANCE, snappy.INITIAL_HEIGHT, .8);
+
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.RedSpin();

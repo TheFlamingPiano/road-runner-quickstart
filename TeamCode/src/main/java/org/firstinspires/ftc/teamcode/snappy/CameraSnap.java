@@ -49,6 +49,7 @@ public class CameraSnap
     double greenright;
     double redright;
     double blueright;
+    boolean boxSet;
     public int getPosition() {
         double leftCost = greenleft-redleft-blueleft;
         double middleCost = greenmiddle-redmiddle-bluemiddle;
@@ -60,8 +61,9 @@ public class CameraSnap
 
     }
 
-    public void runOpMode(LinearOpMode opmode)
+    public void runOpMode(LinearOpMode opmode, boolean boxSet)
     {
+        this.boxSet =boxSet;
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
          * In this sample, we're using a webcam. Note that you will need to
@@ -226,14 +228,32 @@ public class CameraSnap
              * of this particular frame for later use, you will need to either clone it or copy
              * it to another Mat.
              */
-int boxWidth = 50;
-int boxHeight = 50;
-            int leftpointstartx = 140;
-            int leftpointstarty = 100;
-            int middlepointstartx = 295;
-            int middlepointstarty = 100;
-            int rightpointstartx = 450;
-            int rightpointstarty = 100;
+            int boxWidth = 80;
+            int boxHeight = 100;
+            int leftpointstartx;
+            int leftpointstarty;
+            int middlepointstartx;
+            int middlepointstarty;
+            int rightpointstartx;
+            int rightpointstarty;
+
+
+if (boxSet) {
+     leftpointstartx = 19;
+     leftpointstarty = 100;
+     middlepointstartx = 249;
+     middlepointstarty = 100;
+     rightpointstartx = 529;
+     rightpointstarty = 100;
+}
+else {
+    leftpointstartx = 0;
+    leftpointstarty = 100;
+    middlepointstartx = 289;
+    middlepointstarty = 100;
+    rightpointstartx = 559;
+    rightpointstarty = 100;
+}
 //
 //
 //            /*

@@ -38,18 +38,26 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 snappy.DumpDoor.setPosition(0.3);
-cam.runOpMode(this);
-int position = 0;
+cam.runOpMode(this,true);
+int position = 3;
 //while (position != 4) {
 //     position = cam.getPosition();
 //    telemetry.addData("position", position);
-//    telemetry.addData("LeftGreen",cam.greenleft);
-//    telemetry.addData("MiddleGreen",cam.greenmiddle);
-//    telemetry.addData("RightGreen",cam.greenright);
-//
+//    telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
+//    telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
+//    telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
+////
 //    telemetry.update();
 //}
+
+
             waitForStart();
+            position = cam.getPosition();
+            telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
+            telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
+            telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
+            telemetry.addData("Position", position);
+            telemetry.update();
             snappy.BaseArm.setPower(0.5);
             snappy.IntakeArm.setPower(0.5);
             if (isStopRequested()) return;
@@ -62,7 +70,7 @@ int position = 0;
                     .build();
 
 
-            snappy.deliverXblocks(this,-23,3);
+            snappy.deliverXblocks(this,-23,position);
             snappy.followTrajectorySequence(trajectory1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())

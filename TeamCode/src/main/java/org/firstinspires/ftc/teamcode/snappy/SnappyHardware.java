@@ -535,18 +535,50 @@ public class SnappyHardware extends MecanumDrive {
 
     public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
 
-       moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
-        this.wait(opMode, 1.0);
-        moveArmToPosition(opMode, rot, 200, 370, 0.4);
-        this.wait(opMode, 1.0);
-        moveArmToPosition(opMode, rot, 670, 390, 0.4);
-        DumpDoor.setPosition(DumpPosition);
-        IntakeMotor.setPower(-0.25);
-        // snappy.followTrajectorySequence(trajectory2);
-        this.wait(opMode, 2);
-        IntakeMotor.setPower(0);
-        DumpDoor.setPosition(ClosePosition);
-        moveArmToPosition(opMode, -35, INITIAL_DISTANCE, INITIAL_HEIGHT, 0.8);
+
+        if (position == 1) {
+            moveArmToPosition(opMode, -23.77, 200, 370, 1);
+            this.wait(opMode, 0.5);
+            moveArmToPosition(opMode, rot, 530, 80, 1);
+            this.wait(opMode, 1.0);
+            moveArmToPosition(opMode, rot, 530, 80, 1);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
+        }
+        else if (position == 2) {
+            moveArmToPosition(opMode, -23.77, 200, 370, .8);
+            this.wait(opMode, 0.5);
+            moveArmToPosition(opMode, rot, 200, 220, 0.9);
+            this.wait(opMode, 1.0);
+            moveArmToPosition(opMode, rot, 578, 210, 0.9);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, .8);
+        }
+        else {
+            moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
+            this.wait(opMode, 0.5);
+            moveArmToPosition(opMode, rot, 200, 370, 0.4);
+            this.wait(opMode, 1.0);
+            moveArmToPosition(opMode, rot, 670, 390, 0.4);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 0.8);
+        }
+
     }
 
 }
