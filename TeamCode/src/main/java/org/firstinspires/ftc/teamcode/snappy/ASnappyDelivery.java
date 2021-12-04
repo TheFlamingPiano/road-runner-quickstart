@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.snappy;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.InverseKinematics;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
+@Disabled
 @Autonomous(group = "drive")
 public class ASnappyDelivery extends LinearOpMode {
     final double EXTENSION_READY_DISTANCE = 0.0;

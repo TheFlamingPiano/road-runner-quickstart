@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Disabled
 @TeleOp(name = "IntakeTest", group = "Tests")
 //@Autonomous(name = "opmode name", group = "your group")
   // remove this line so opmode shows up in list

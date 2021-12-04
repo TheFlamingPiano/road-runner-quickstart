@@ -522,8 +522,11 @@ public class SnappyHardware extends MecanumDrive {
         BaseArm.setPower(0.75);
         IntakeArm.setPower(0.75);
 
-        while (opmode.opModeIsActive() &&
+        long currentTime = System.nanoTime();
+
+        while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
                 (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
+
 
             //RotationMotor.setPower(RotationPower);
             RotationMotor.setPower(1.0);
@@ -562,7 +565,7 @@ public class SnappyHardware extends MecanumDrive {
             this.wait(opMode, 2);
             IntakeMotor.setPower(0);
             DumpDoor.setPosition(ClosePosition);
-            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, .8);
+            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
         }
         else {
             moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
@@ -576,7 +579,7 @@ public class SnappyHardware extends MecanumDrive {
             this.wait(opMode, 2);
             IntakeMotor.setPower(0);
             DumpDoor.setPosition(ClosePosition);
-            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 0.8);
+            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
         }
 
     }

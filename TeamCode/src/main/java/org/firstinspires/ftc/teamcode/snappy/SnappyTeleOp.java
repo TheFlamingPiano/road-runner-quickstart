@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.snappy;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.InverseKinematics;
 import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
+import org.firstinspires.ftc.teamcode.drive.opmode.SnapTeleOp;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -17,6 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
  * exercise is to ascertain whether the localizer has been configured properly (note: the pure
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
+@Disabled
 @TeleOp(group = "drive")
 public class SnappyTeleOp extends LinearOpMode {
 
@@ -31,6 +34,13 @@ public class SnappyTeleOp extends LinearOpMode {
 
     InverseKinematicsSnap ik;
 
+boolean isRED;
+
+    public SnappyTeleOp (boolean isRED){
+
+        this.isRED = isRED;
+
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -287,11 +297,12 @@ public class SnappyTeleOp extends LinearOpMode {
             }
             //THIS IS FOR THE AUTOMATIC ARM SWINGING FROM DEPOT TO SHARED HUB
             if (gamepad2.dpad_left) {
-                rotation = 10;
+                if (isRED) rotation = -30;
+                else rotation = 10;
             }
             if (gamepad2.dpad_right) {
-                rotation = 120;
-            }
+                if (isRED) rotation = -120;
+                else rotation = 120;            }
 
             // arm.RotationMotor.setTargetPosition((400));
             // arm.RotationMotor.setPower(.5);
