@@ -536,52 +536,166 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
-    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
+//    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
+//
+//
+//        if (position == 1) {
+//            moveArmToPosition(opMode, -23.77, 200, 370, 1);
+//            this.wait(opMode, 0.5);
+//            moveArmToPosition(opMode, rot, 530, 80, 1);
+//            this.wait(opMode, 1.0);
+//            moveArmToPosition(opMode, rot, 530, 80, 1);
+//            DumpDoor.setPosition(DumpPosition);
+//            IntakeMotor.setPower(-0.25);
+//            // snappy.followTrajectorySequence(trajectory2);
+//            this.wait(opMode, 2);
+//            IntakeMotor.setPower(0);
+//            DumpDoor.setPosition(ClosePosition);
+//            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
+//        }
+//        else if (position == 2) {
+//            moveArmToPosition(opMode, -23.77, 200, 370, .8);
+//            this.wait(opMode, 0.5);
+//            moveArmToPosition(opMode, rot, 200, 220, 0.9);
+//            this.wait(opMode, 1.0);
+//            moveArmToPosition(opMode, rot, 578, 210, 0.9);
+//            DumpDoor.setPosition(DumpPosition);
+//            IntakeMotor.setPower(-0.25);
+//            // snappy.followTrajectorySequence(trajectory2);
+//            this.wait(opMode, 2);
+//            IntakeMotor.setPower(0);
+//            DumpDoor.setPosition(ClosePosition);
+//            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
+//        }
+//        else {
+//            moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
+//            this.wait(opMode, 0.5);
+//            moveArmToPosition(opMode, rot, 200, 370, 0.4);
+//            this.wait(opMode, 1.0);
+//            moveArmToPosition(opMode, rot, 670, 390, 0.4);
+//            DumpDoor.setPosition(DumpPosition);
+//            IntakeMotor.setPower(-0.25);
+//            // snappy.followTrajectorySequence(trajectory2);
+//            this.wait(opMode, 2);
+//            IntakeMotor.setPower(0);
+//            DumpDoor.setPosition(ClosePosition);
+//            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
+//        }
+//
+//    }
+
+    public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
+
+        long currentTime = System.nanoTime();
+        long startTime = currentTime;
+//        int baseArmSteps[] = new int[targetTime];
+//        int intakeArmSteps[] = new int[targetTime];
 
 
-        if (position == 1) {
-            moveArmToPosition(opMode, -23.77, 200, 370, 1);
-            this.wait(opMode, 0.5);
-            moveArmToPosition(opMode, rot, 530, 80, 1);
-            this.wait(opMode, 1.0);
-            moveArmToPosition(opMode, rot, 530, 80, 1);
-            DumpDoor.setPosition(DumpPosition);
-            IntakeMotor.setPower(-0.25);
-            // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 2);
-            IntakeMotor.setPower(0);
-            DumpDoor.setPosition(ClosePosition);
-            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
-        }
-        else if (position == 2) {
-            moveArmToPosition(opMode, -23.77, 200, 370, .8);
-            this.wait(opMode, 0.5);
-            moveArmToPosition(opMode, rot, 200, 220, 0.9);
-            this.wait(opMode, 1.0);
-            moveArmToPosition(opMode, rot, 578, 210, 0.9);
-            DumpDoor.setPosition(DumpPosition);
-            IntakeMotor.setPower(-0.25);
-            // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 2);
-            IntakeMotor.setPower(0);
-            DumpDoor.setPosition(ClosePosition);
-            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
-        }
-        else {
-            moveArmToPosition(opMode, -23.77, 200, 370, 0.4);
-            this.wait(opMode, 0.5);
-            moveArmToPosition(opMode, rot, 200, 370, 0.4);
-            this.wait(opMode, 1.0);
-            moveArmToPosition(opMode, rot, 670, 390, 0.4);
-            DumpDoor.setPosition(DumpPosition);
-            IntakeMotor.setPower(-0.25);
-            // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 2);
-            IntakeMotor.setPower(0);
-            DumpDoor.setPosition(ClosePosition);
-            moveArmToPosition(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1);
+        Pivot.setPosition(wrist);
+        double[] angles = ik.getAngles(distance, height);
+        RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+        RotationMotor.setPower(RotationPower);
+
+        int BaseArmCurrent = BaseArm.getCurrentPosition();
+       int IntakeArmCurrent = IntakeArm.getCurrentPosition();
+
+        double currentBaseArmAngle = BaseArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
+        double currentIntakeArmAngle = IntakeArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+
+
+        int BaseArmNew;
+       int IntakeArmNew;
+
+        double[] baseArmStart = ik.getPoint(currentBaseArmAngle,currentIntakeArmAngle);
+
+
+//       int DeltaBaseArm = (int) ((BaseArmNew-BaseArmCurrent)/steps);
+//       int DeltaIntakeArm = (int) ((IntakeArmNew-IntakeArmCurrent)/steps);
+
+        BaseArm.setPower(0.75);
+        IntakeArm.setPower(0.75);
+
+        while (currentTime < targetTime + startTime && opmode.opModeIsActive())  {
+
+         currentTime = System.nanoTime();
+
+         double elapsedTime = (currentTime-startTime);
+         //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
+
+         double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
+         double newDistance = baseArmStart[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
+
+
+            double[] newAngles = ik.getAngles(newDistance, newHeight);
+             BaseArmNew = (int) ((newAngles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+             IntakeArmNew = ((int) ((newAngles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+
+             IntakeArm.setTargetPosition(IntakeArmNew);
+            BaseArm.setTargetPosition(BaseArmNew);
+
+
+            //while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
+              //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
+
+
+            //RotationMotor.setPower(RotationPower);
+            RotationMotor.setPower(1.0);
+            BaseArm.setPower(0.6);
+            IntakeArm.setPower(0.6);
         }
 
     }
+
+    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
+
+        long numberOfSeconds = 1*1000000000;
+
+        if (position == 1) {
+            StepBreakMovement(opMode, -23.77, 200, 370, 1, numberOfSeconds);
+            this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
+            this.wait(opMode, 1.0);
+            StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+        }
+        else if (position == 2) {
+            StepBreakMovement(opMode, -23.77, 200, 370, .8, numberOfSeconds);
+            this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 200, 220, 0.9, numberOfSeconds);
+            this.wait(opMode, 1.0);
+            StepBreakMovement(opMode, rot, 578, 210, 0.9, numberOfSeconds);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+        }
+        else {
+            StepBreakMovement(opMode, -23.77, 200, 370, 0.4, numberOfSeconds);
+            this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 200, 370, 0.4, numberOfSeconds);
+            this.wait(opMode, 1.0);
+            StepBreakMovement(opMode, rot, 670, 390, 0.4, numberOfSeconds);
+            DumpDoor.setPosition(DumpPosition);
+            IntakeMotor.setPower(-0.25);
+            // snappy.followTrajectorySequence(trajectory2);
+            this.wait(opMode, 2);
+            IntakeMotor.setPower(0);
+            DumpDoor.setPosition(ClosePosition);
+            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+        }
+
+    }
+
+
 
 }
