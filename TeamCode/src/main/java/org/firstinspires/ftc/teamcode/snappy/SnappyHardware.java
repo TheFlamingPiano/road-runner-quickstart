@@ -70,7 +70,7 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotorEx IntakeArm;
     public final double MINIMUM_ROTATION_ANGLE = -180.0; //degrees //-135
     public final double MAXIMUM_ROTATION_ANGLE = 180.0; //degrees
-    public final double INITIAL_ROTATION_ANGLE = -45.0; //degrees
+    public double INITIAL_ROTATION_ANGLE = -45.0; //degrees
     public final double INITIAL_ARM1_ANGLE = 177.18; //180;//216;//degree
     public final double INITIAL_ARM2_ANGLE = -176.2; //-180;//degree
 
@@ -588,26 +588,29 @@ public class SnappyHardware extends MecanumDrive {
 
         long currentTime = System.nanoTime();
         long startTime = currentTime;
-//        int baseArmSteps[] = new int[targetTime];
-//        int intakeArmSteps[] = new int[targetTime];
 
+        targetTime = (long) (targetTime * 1e9);
 
         Pivot.setPosition(wrist);
         double[] angles = ik.getAngles(distance, height);
-        RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
-        RotationMotor.setPower(RotationPower);
+        //RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+        //RotationMotor.setPower(RotationPower);
 
         int BaseArmCurrent = BaseArm.getCurrentPosition();
-       int IntakeArmCurrent = IntakeArm.getCurrentPosition();
+        int IntakeArmCurrent = IntakeArm.getCurrentPosition();
+        int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
 
         double currentBaseArmAngle = BaseArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
         double currentIntakeArmAngle = IntakeArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
-
+        double currentRotationAngle = RotationArmCurrent/ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
         int BaseArmNew;
-       int IntakeArmNew;
+        int IntakeArmNew;
+        int RotationArmNew;
+
 
         double[] baseArmStart = ik.getPoint(currentBaseArmAngle,currentIntakeArmAngle);
+
 
 
 //       int DeltaBaseArm = (int) ((BaseArmNew-BaseArmCurrent)/steps);
@@ -615,7 +618,7 @@ public class SnappyHardware extends MecanumDrive {
 
         BaseArm.setPower(0.75);
         IntakeArm.setPower(0.75);
-
+        RotationMotor.setPower(1);
         while (currentTime < targetTime + startTime && opmode.opModeIsActive())  {
 
          currentTime = System.nanoTime();
@@ -625,13 +628,22 @@ public class SnappyHardware extends MecanumDrive {
 
          double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
          double newDistance = baseArmStart[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
+         double newRotation = currentRotationAngle + (elapsedTime/targetTime)*(rotation - currentRotationAngle);
 
+
+         //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
 
             double[] newAngles = ik.getAngles(newDistance, newHeight);
              BaseArmNew = (int) ((newAngles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
              IntakeArmNew = ((int) ((newAngles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
 
-             IntakeArm.setTargetPosition(IntakeArmNew);
+             RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+
+
+
+             RotationMotor.setTargetPosition(RotationArmNew);
+            IntakeArm.setTargetPosition(IntakeArmNew);
             BaseArm.setTargetPosition(BaseArmNew);
 
 
@@ -649,14 +661,15 @@ public class SnappyHardware extends MecanumDrive {
 
     public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
 
-        long numberOfSeconds = 1*1000000000;
+        long numberOfSeconds = 2;
 
         if (position == 1) {
-            StepBreakMovement(opMode, -23.77, 200, 370, 1, numberOfSeconds);
-            this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
+            //  this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 200, 370, 1, numberOfSeconds);
+         //   this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
-            this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
+           // this.wait(opMode, 1.0);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
             // snappy.followTrajectorySequence(trajectory2);
@@ -666,10 +679,12 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
         }
         else if (position == 2) {
-            StepBreakMovement(opMode, -23.77, 200, 370, .8, numberOfSeconds);
-            this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
+          //  this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 200, 370, .8, numberOfSeconds);
+          //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 220, 0.9, numberOfSeconds);
-            this.wait(opMode, 1.0);
+          //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 578, 210, 0.9, numberOfSeconds);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
@@ -680,18 +695,19 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
         }
         else {
-            StepBreakMovement(opMode, -23.77, 200, 370, 0.4, numberOfSeconds);
-            this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 200, 370, 0.4, numberOfSeconds);
-            this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 670, 390, 0.4, numberOfSeconds);
+            StepBreakMovement(opMode, -113, 91, -10, 0.4, numberOfSeconds);
+          //  this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 200, 370, 1, numberOfSeconds);
+         //   this.wait(opMode, 0.5);
+          //  this.wait(opMode, 1.0);
+            StepBreakMovement(opMode, rot, 670, 390, .4, numberOfSeconds);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 2);
             IntakeMotor.setPower(0);
             DumpDoor.setPosition(ClosePosition);
-            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+            StepBreakMovement(opMode, -113, 91, -10, 1, numberOfSeconds);
         }
 
     }

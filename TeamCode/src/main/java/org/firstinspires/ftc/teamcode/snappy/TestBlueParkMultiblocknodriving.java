@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
      * This is an example of a more complex path to really test the tuning.
      */
     @Autonomous(group = "drive")
-    public class RedParkSnap extends LinearOpMode {
+    public class TestBlueParkMultiblocknodriving extends LinearOpMode {
 
         final double EXTENSION_READY_DISTANCE = 0.0;
         final double EXTENSION_READY_HEIGHT = 55.0;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             CameraSnap cam = new CameraSnap();
 
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
-
+snappy.INITIAL_ROTATION_ANGLE = -150;
 
             Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
             snappy.setPoseEstimate(startPos);
@@ -35,23 +35,28 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 snappy.DumpDoor.setPosition(0.3);
-cam.runOpMode(this,false);
+cam.runOpMode(this,true);
 int position = 3;
 //while (position != 4) {
 //     position = cam.getPosition();
 //    telemetry.addData("position", position);
-//    telemetry.addData("LeftGreen",cam.greenleft);
-//    telemetry.addData("MiddleGreen",cam.greenmiddle);
-//    telemetry.addData("RightGreen",cam.greenright);
-//
+//    telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
+//    telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
+//    telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
+////
 //    telemetry.update();
 //}
+
+
             waitForStart();
             position = cam.getPosition();
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
             telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
             telemetry.addData("Position", position);
+            telemetry.addData("Height", snappy.height);
+            telemetry.addData("Distance", snappy.distance);
+            telemetry.addData("Rotation", snappy.rotation);
             telemetry.update();
             snappy.BaseArm.setPower(0.5);
             snappy.IntakeArm.setPower(0.5);
@@ -59,14 +64,36 @@ int position = 3;
 
             TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
                     .back(4)
-                    .turn(Math.toRadians(-90))
-                    .strafeLeft(6)
+                    .turn(Math.toRadians(90))
+                    .strafeRight(5)
                     .back(35)
                     .build();
 
 
-            snappy.deliverXblocks(this,-23,position);
-            snappy.followTrajectorySequence(trajectory1);
+            snappy.deliverXblocks(this,-113,position);
+//            telemetry.addData("Height", snappy.height);
+//            telemetry.addData("Distance", snappy.distance);
+//            telemetry.addData("Rotation", snappy.rotation);
+//            telemetry.update();
+            //drive foward
+            snappy.StepBreakMovement(this, 0, 126, -99, 1,(long)2);
+            snappy.IntakeMotor.setPower(.5);
+            snappy.wait(this, 2);
+            snappy.IntakeMotor.setPower(0);
+            snappy.StepBreakMovement(this, 0, 126, -10, 1, (long).5);
+
+//            telemetry.addData("Height", snappy.height);
+//            telemetry.addData("Distance", snappy.distance);
+//            telemetry.addData("Rotation", snappy.rotation);
+//            telemetry.update();
+            //drive back
+            snappy.deliverXblocks(this,-113,position);
+
+//            telemetry.addData("Height", snappy.height);
+//            telemetry.addData("Distance", snappy.distance);
+//            telemetry.addData("Rotation", snappy.rotation);
+//            telemetry.update();
+
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))

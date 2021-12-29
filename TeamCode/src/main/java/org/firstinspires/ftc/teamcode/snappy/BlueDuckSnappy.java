@@ -33,6 +33,7 @@ public class BlueDuckSnappy extends LinearOpMode {
 
         double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
 
+
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
@@ -71,8 +72,7 @@ public class BlueDuckSnappy extends LinearOpMode {
 
 
         snappy.deliverXblocks(this,26,position);
-        snappy.StepBreakMovement(this , -35, snappy.INITIAL_DISTANCE, snappy.INITIAL_HEIGHT, 1, (long)1*1000000000);
-
+        snappy.StepBreakMovement(this , -35, snappy.INITIAL_DISTANCE, snappy.INITIAL_HEIGHT, 1, (long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.BlueSpin();
