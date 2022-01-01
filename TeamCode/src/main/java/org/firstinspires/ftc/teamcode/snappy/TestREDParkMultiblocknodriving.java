@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
      * This is an example of a more complex path to really test the tuning.
      */
     @Autonomous(group = "drive")
-    public class TestBlueParkMultiblocknodriving extends LinearOpMode {
+    public class TestREDParkMultiblocknodriving extends LinearOpMode {
 
         final double EXTENSION_READY_DISTANCE = 0.0;
         final double EXTENSION_READY_HEIGHT = 55.0;
@@ -20,11 +20,12 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
         @Override
         public void runOpMode() throws InterruptedException {
-            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.RED);
             CameraSnap cam = new CameraSnap();
 
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
+snappy.INITIAL_ROTATION_ANGLE = 150;
 
             Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
             snappy.setPoseEstimate(startPos);
@@ -75,7 +76,7 @@ position = 3; //TAKE THIS OUT LATER?!
                     .build();
 
 
-            snappy.deliverXblocks(this,-123,position);
+            snappy.deliverXblocks(this,123,position);
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);
 //            telemetry.addData("Rotation", snappy.rotation);
@@ -88,11 +89,11 @@ position = 3; //TAKE THIS OUT LATER?!
 //            telemetry.addData("Rotation", snappy.rotation);
 //            telemetry.update();
             //drive back
-            snappy.deliverXblocks(this,-123,position);
+            snappy.deliverXblocks(this,123,position);
 
             pickUpBlock(snappy);
 
-            snappy.deliverXblocks(this,-123,position);
+            snappy.deliverXblocks(this,123,position);
 
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);

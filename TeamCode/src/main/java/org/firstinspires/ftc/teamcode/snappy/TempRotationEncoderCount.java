@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
         @Override
         public void runOpMode() throws InterruptedException {
 
-            SnappyHardware snappy = new SnappyHardware(hardwareMap,false);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap,false, SnappyHardware.TeamColor.BLUE);
 
 
 

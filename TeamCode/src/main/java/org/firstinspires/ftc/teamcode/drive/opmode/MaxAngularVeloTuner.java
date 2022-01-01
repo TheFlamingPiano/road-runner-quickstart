@@ -39,7 +39,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap, true);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.BLUE);
 
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

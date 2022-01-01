@@ -35,7 +35,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
             CyrusOfficialHardware drive = new CyrusOfficialHardware(hardwareMap);
             CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
             CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
-            SnappyHardware robot = new SnappyHardware(hardwareMap, true);
+            SnappyHardware robot = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.RED);
 
             ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
 

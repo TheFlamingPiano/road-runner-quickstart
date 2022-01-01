@@ -20,7 +20,7 @@ public class RedDuckSnappy extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.RED);
         CameraSnap cam = new CameraSnap();
 
 
