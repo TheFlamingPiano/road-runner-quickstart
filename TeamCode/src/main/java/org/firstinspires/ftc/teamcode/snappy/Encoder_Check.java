@@ -29,6 +29,9 @@ public class Encoder_Check extends LinearOpMode {
             telemetry.addData("Arm 2 Encoder", snappy.IntakeArm.getCurrentPosition());
             telemetry.addData("Arm 1 Encoder", snappy.BaseArm.getCurrentPosition());
             telemetry.addData("Rotation", snappy.RotationMotor.getCurrentPosition());
+            telemetry.addData("Left Encoder", snappy.leftFront.getCurrentPosition());
+            telemetry.addData("Right Encoder", snappy.rightFront.getCurrentPosition());
+            telemetry.addData("Front Encoder", snappy.rightRear.getCurrentPosition());
             telemetry.update();
         }
 

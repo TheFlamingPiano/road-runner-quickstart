@@ -36,7 +36,7 @@ snappy.INITIAL_ROTATION_ANGLE = 150;
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 snappy.DumpDoor.setPosition(0.3);
-cam.runOpMode(this,true);
+cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
 int position = 3;
 //while (position != 4) {
 //     position = cam.getPosition();

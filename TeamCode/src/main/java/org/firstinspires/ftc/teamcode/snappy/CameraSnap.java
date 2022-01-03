@@ -61,8 +61,16 @@ public class CameraSnap
 
     }
 
-    public void runOpMode(LinearOpMode opmode, boolean boxSet)
+    public void runOpMode(LinearOpMode opmode, boolean boxSet, SnappyHardware.TeamColor teamcolor)
     {
+        String cameraName;
+        if (teamcolor == SnappyHardware.TeamColor.RED){
+            cameraName = "CameraRed";
+        }
+        else {
+            cameraName = "CameraBlue";
+
+        }
         this.boxSet =boxSet;
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
@@ -75,7 +83,7 @@ public class CameraSnap
          * single-parameter constructor instead (commented out below)
          */
         int cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, cameraName), cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
         //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));

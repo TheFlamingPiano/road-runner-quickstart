@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -79,10 +80,10 @@ public class SnappyHardware extends MecanumDrive {
     public double GEARBOX_RATIO_ROTATION_MOTOR = 1.0;
     public double GEARBOX_RATIO_ARM1_MOTOR = (46.0 / 17.0 + 1) * (46.0 / 17.0 + 1);
     public double GEARBOX_RATIO_ARM2_MOTOR = (46.0 / 11.0 + 1);
-    public double GEAR_RATIO_ROTATION_STAGE = (140.0 / 16.0)*(80.0/12);
+    public double GEAR_RATIO_ROTATION_STAGE = (140.0 / 16.0) * (80.0 / 12);
     public double GEAR_RATIO_ARM1_STAGE = 19;
     public double GEAR_RATIO_ARM2_STAGE = 31;
-//ang1+ang2secondbar + 90
+    //ang1+ang2secondbar + 90
     //ETPD CALCULATIONS
     public final double ENCODER_TICKS_PER_DEGREE_ROTATION = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ROTATION_MOTOR * GEAR_RATIO_ROTATION_STAGE;
     public final double ENCODER_TICKS_PER_DEGREE_ARM1 = ENCODER_TICKS_PER_DEGREE_MOTOR * GEARBOX_RATIO_ARM1_MOTOR * GEAR_RATIO_ARM1_STAGE;
@@ -115,7 +116,7 @@ public class SnappyHardware extends MecanumDrive {
 
     double RotationPower = 1;
 
-    double currentBaseArmAngle;
+    double currentBaseArmAngle; //commented OUt because of line
     double currentIntakeArmAndle;
 
     double ARM1_POWER = 1;
@@ -137,11 +138,15 @@ public class SnappyHardware extends MecanumDrive {
     double[] retval3;
     double[] testPoint;
 
-    public final double MINIMUM_HEIGHT = -4*25.4;//-12 * 25.4; //millimeters
-    public final double MAXIMUM_HEIGHT = 22* 25.4; //21 * 25.4; //millimeters
+    public final double MINIMUM_HEIGHT = -4 * 25.4;//-12 * 25.4; //millimeters
+    public final double MAXIMUM_HEIGHT = 22 * 25.4; //21 * 25.4; //millimeters
     //THESE TWO ARE DIFFERENT, REFER TO ARM1_LENGTH AND ARM2_LENGTH
     //public final double ARM1 = 18*25.4;   //millimeters
     // public final double ARM2 = 16*25.4; //millimeters
+
+    public ArmData ArmMoveData;
+    public boolean ArmMoveIsActive = false;
+
 
     /*
      * resetEncoders - flag indicating whether the encoders for the BaseArm and Intake arm should be reset
@@ -175,10 +180,9 @@ public class SnappyHardware extends MecanumDrive {
     public SnappyHardware(HardwareMap hardwareMap, boolean resetEncocders, TeamColor teamcolor) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        if (teamcolor == TeamColor.RED){
+        if (teamcolor == TeamColor.RED) {
             INITIAL_ROTATION_ANGLE = 150;
-        }
-        else {
+        } else {
             INITIAL_ROTATION_ANGLE = -150;
         }
         //INVERSE KINEMATICS STUFF
@@ -234,7 +238,6 @@ public class SnappyHardware extends MecanumDrive {
 //       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
 
 
         if (resetEncocders) {
@@ -309,21 +312,22 @@ public class SnappyHardware extends MecanumDrive {
         IntakeArm.setPower(0.0);
     }
 
-    public void StopCarousel (){
+    public void StopCarousel() {
 
         CarsouselServo.setPosition(0.5);
     }
 
-    public void BlueSpin () {
+    public void BlueSpin() {
 
         CarsouselServo.setPosition(1.0);
     }
 
-    public void RedSpin () {
+    public void RedSpin() {
 
         CarsouselServo.setPosition(0.0);
 
     }
+
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
@@ -409,7 +413,6 @@ public class SnappyHardware extends MecanumDrive {
             motor.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
-
 
 
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
@@ -511,7 +514,7 @@ public class SnappyHardware extends MecanumDrive {
 
     public void wait(LinearOpMode opmode, double time) {
         long startTime = System.nanoTime();
-        while ((opmode.opModeIsActive()) && startTime + time * 1e9 > System.nanoTime());
+        while ((opmode.opModeIsActive()) && startTime + time * 1e9 > System.nanoTime()) ;
     }
 
     public void moveArmToPosition(LinearOpMode opmode, double rotation, double distance, double height, double wrist) {
@@ -599,9 +602,9 @@ public class SnappyHardware extends MecanumDrive {
         int IntakeArmCurrent = IntakeArm.getCurrentPosition();
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
 
-        double currentBaseArmAngle = BaseArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
-        double currentIntakeArmAngle = IntakeArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
-        double currentRotationAngle = RotationArmCurrent/ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
+        double currentBaseArmAngle = BaseArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
+        double currentIntakeArmAngle = IntakeArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+        double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
         int BaseArmNew;
         int IntakeArmNew;
@@ -611,45 +614,42 @@ public class SnappyHardware extends MecanumDrive {
         //double[] baseArmStart = ik.getPoint(currentBaseArmAngle,currentIntakeArmAngle);
 
 
-
 //       int DeltaBaseArm = (int) ((BaseArmNew-BaseArmCurrent)/steps);
 //       int DeltaIntakeArm = (int) ((IntakeArmNew-IntakeArmCurrent)/steps);
 
         BaseArm.setPower(1);
         IntakeArm.setPower(1);
         RotationMotor.setPower(1);
-        while (currentTime < targetTime + startTime && opmode.opModeIsActive())  {
+        while (currentTime < targetTime + startTime && opmode.opModeIsActive()) {
 
-         currentTime = System.nanoTime();
+            currentTime = System.nanoTime();
 
-         double elapsedTime = (currentTime-startTime);
-         //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
+            double elapsedTime = (currentTime - startTime);
+            //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
 
-         //double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
-         //double newDistance = current[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
-         double newRotation = currentRotationAngle + (elapsedTime/targetTime)*(rotation - currentRotationAngle);
-         double newBaseArmAngle = currentBaseArmAngle + (elapsedTime/targetTime)*(angles[0] - currentBaseArmAngle);
-         double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime/targetTime)*(angles[1] - currentIntakeArmAngle);
+            //double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
+            //double newDistance = current[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
+            double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
+            double newBaseArmAngle = currentBaseArmAngle + (elapsedTime / targetTime) * (angles[0] - currentBaseArmAngle);
+            double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime / targetTime) * (angles[1] - currentIntakeArmAngle);
 
 
             //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
 
-           // double[] newAngles = ik.getAngles(newDistance, newHeight);
-             BaseArmNew = (int) ((newBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
-             IntakeArmNew = ((int) ((newIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+            // double[] newAngles = ik.getAngles(newDistance, newHeight);
+            BaseArmNew = (int) ((newBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+            IntakeArmNew = ((int) ((newIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
 
-             RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
-
-
+            RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
 
 
-             RotationMotor.setTargetPosition(RotationArmNew);
+            RotationMotor.setTargetPosition(RotationArmNew);
             IntakeArm.setTargetPosition(IntakeArmNew);
             BaseArm.setTargetPosition(BaseArmNew);
 
 
             //while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
-              //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
+            //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
 
 
             //RotationMotor.setPower(RotationPower);
@@ -660,7 +660,7 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
-    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
+    public void deliverXblocks(LinearOpMode opMode, double rot, int position) {
 
         long numberOfSeconds = 1;
 
@@ -668,9 +668,9 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 370, 1, numberOfSeconds);
-         //   this.wait(opMode, 0.5);
+            //   this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
-           // this.wait(opMode, 1.0);
+            // this.wait(opMode, 1.0);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
             // snappy.followTrajectorySequence(trajectory2);
@@ -678,14 +678,13 @@ public class SnappyHardware extends MecanumDrive {
             IntakeMotor.setPower(0);
             DumpDoor.setPosition(ClosePosition);
             StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
-        }
-        else if (position == 2) {
+        } else if (position == 2) {
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
-          //  this.wait(opMode, 0.5);
+            //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 370, .8, numberOfSeconds);
-          //  this.wait(opMode, 0.5);
+            //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 220, 0.9, numberOfSeconds);
-          //  this.wait(opMode, 1.0);
+            //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 578, 210, 0.9, numberOfSeconds);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
@@ -694,13 +693,12 @@ public class SnappyHardware extends MecanumDrive {
             IntakeMotor.setPower(0);
             DumpDoor.setPosition(ClosePosition);
             StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
-        }
-        else {
+        } else {
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
-          //  this.wait(opMode, 0.5);
+            //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 350, 370, 1, numberOfSeconds);
-         //   this.wait(opMode, 0.5);
-          //  this.wait(opMode, 1.0);
+            //   this.wait(opMode, 0.5);
+            //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 670, 390, .4, numberOfSeconds);
             DumpDoor.setPosition(DumpPosition);
             IntakeMotor.setPower(-0.25);
@@ -714,95 +712,141 @@ public class SnappyHardware extends MecanumDrive {
     }
 
 
-
-    public void setArmAnglesToHome(LinearOpMode opmode){
+    public void setArmAnglesToHome(LinearOpMode opmode) {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
-        double currentRotationAngle = RotationArmCurrent/ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
+        double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-        StepBreakMovement(opmode, currentRotationAngle,91,-10,1,1);
+        StepBreakMovement(opmode, currentRotationAngle, 91, -10, 1, 1);
     }
 
 
-public void StepBreakMovementX(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
+    public void StepBreakMovementX(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
 
-    long currentTime = System.nanoTime();
-    long startTime = currentTime;
+        long currentTime = System.nanoTime();
+        long startTime = currentTime;
 
-    targetTime = (long) (targetTime * 1e9);
+        targetTime = (long) (targetTime * 1e9);
 
-    Pivot.setPosition(wrist);
-    double[] angles = ik.getAngles(distance, height);
-    //RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
-    //RotationMotor.setPower(RotationPower);
+        Pivot.setPosition(wrist);
+        double[] angles = ik.getAngles(distance, height);
+        //RotationMotor.setTargetPosition((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+        //RotationMotor.setPower(RotationPower);
 
-    int BaseArmCurrent = BaseArm.getCurrentPosition();
-    int IntakeArmCurrent = IntakeArm.getCurrentPosition();
-    int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
+        int BaseArmCurrent = BaseArm.getCurrentPosition();
+        int IntakeArmCurrent = IntakeArm.getCurrentPosition();
+        int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
 
-    double currentBaseArmAngle = BaseArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
-    double currentIntakeArmAngle = IntakeArmCurrent/ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
-    double currentRotationAngle = RotationArmCurrent/ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
+        double currentBaseArmAngle = BaseArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
+        double currentIntakeArmAngle = IntakeArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+        double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-    int BaseArmNew;
-    int IntakeArmNew;
-    int RotationArmNew;
+        int BaseArmNew;
+        int IntakeArmNew;
+        int RotationArmNew;
 
 
-    double[] baseArmStart = ik.getPoint(currentBaseArmAngle,currentIntakeArmAngle);
-
+        double[] baseArmStart = ik.getPoint(currentBaseArmAngle, currentIntakeArmAngle);
 
 
 //       int DeltaBaseArm = (int) ((BaseArmNew-BaseArmCurrent)/steps);
 //       int DeltaIntakeArm = (int) ((IntakeArmNew-IntakeArmCurrent)/steps);
 
-    BaseArm.setPower(0.75);
-    IntakeArm.setPower(0.75);
-    RotationMotor.setPower(1);
-    while (currentTime < targetTime + startTime && opmode.opModeIsActive())  {
+        BaseArm.setPower(0.75);
+        IntakeArm.setPower(0.75);
+        RotationMotor.setPower(1);
+        while (currentTime < targetTime + startTime && opmode.opModeIsActive()) {
 
-        currentTime = System.nanoTime();
+            currentTime = System.nanoTime();
 
-        double elapsedTime = (currentTime-startTime);
-        //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
+            double elapsedTime = (currentTime - startTime);
+            //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
 
-        double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
-        double newDistance = baseArmStart[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
-        double newRotation = currentRotationAngle + (elapsedTime/targetTime)*(rotation - currentRotationAngle);
-
-
-        //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
-
-        double[] newAngles = ik.getAngles(newDistance, newHeight);
-        BaseArmNew = (int) ((newAngles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
-        IntakeArmNew = ((int) ((newAngles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
-
-        RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+            double newHeight = baseArmStart[1] + (elapsedTime / targetTime) * (height - baseArmStart[1]);
+            double newDistance = baseArmStart[0] + (elapsedTime / targetTime) * (distance - baseArmStart[0]);
+            double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
 
 
+            //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
+
+            double[] newAngles = ik.getAngles(newDistance, newHeight);
+            BaseArmNew = (int) ((newAngles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+            IntakeArmNew = ((int) ((newAngles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+
+            RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
 
 
-        RotationMotor.setTargetPosition(RotationArmNew);
-        IntakeArm.setTargetPosition(IntakeArmNew);
-        BaseArm.setTargetPosition(BaseArmNew);
+            RotationMotor.setTargetPosition(RotationArmNew);
+            IntakeArm.setTargetPosition(IntakeArmNew);
+            BaseArm.setTargetPosition(BaseArmNew);
 
 
-        //while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
-        //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
+            //while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
+            //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
 
 
-        //RotationMotor.setPower(RotationPower);
-        RotationMotor.setPower(1.0);
-        BaseArm.setPower(0.6);
-        IntakeArm.setPower(0.6);
+            //RotationMotor.setPower(RotationPower);
+            RotationMotor.setPower(1.0);
+            BaseArm.setPower(0.6);
+            IntakeArm.setPower(0.6);
+        }
+    }
+
+    public void NoneCodeBlockingArmMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
+
+        ArmMoveData = new ArmData();
+
+        ArmMoveData.currentTime = System.nanoTime();
+        ArmMoveData.startTime = ArmMoveData.currentTime;
+
+        ArmMoveData.targetTime = (long) (targetTime * 1e9);
+
+        Pivot.setPosition(wrist);
+        double[] angles = ik.getAngles(distance, height);
+
+        ArmMoveData.BaseArmCurrent = BaseArm.getCurrentPosition();
+        ArmMoveData.IntakeArmCurrent = IntakeArm.getCurrentPosition();
+        ArmMoveData.RotationArmCurrent = RotationMotor.getCurrentPosition(); //rotation
+
+        ArmMoveData.currentBaseArmAngle = ArmMoveData.BaseArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
+        ArmMoveData.currentIntakeArmAngle = ArmMoveData.IntakeArmCurrent / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+        ArmMoveData.currentRotationAngle = ArmMoveData.RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
+
+        BaseArm.setPower(1);
+        IntakeArm.setPower(1);
+        RotationMotor.setPower(1);
+
+    }
+
+    public void UpdateArmMovement() {
+        if (ArmMoveIsActive) {
+            double currentTime = System.nanoTime();
+
+            if (currentTime < ArmMoveData.targetTime + ArmMoveData.startTime && ArmMoveData.opmode.opModeIsActive()) {
+                double elapsedTime = (currentTime - ArmMoveData.startTime);
+                double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
+                double newBaseArmAngle = currentBaseArmAngle + (elapsedTime / targetTime) * (angles[0] - currentBaseArmAngle);
+                double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime / targetTime) * (angles[1] - currentIntakeArmAngle);
+
+                //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
+                BaseArmNew = (int) ((newBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+                IntakeArmNew = ((int) ((newIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+                RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+                RotationMotor.setTargetPosition(RotationArmNew);
+                IntakeArm.setTargetPosition(IntakeArmNew);
+                BaseArm.setTargetPosition(BaseArmNew);
+
+                RotationMotor.setPower(1.0);
+                BaseArm.setPower(1.0);
+                IntakeArm.setPower(1.0);
+            }
+        }
     }
 
 
-
-}
-
-public enum TeamColor {
+    public enum TeamColor {
         RED,
-    BLUE
-}
+        BLUE
+    }
 
 }

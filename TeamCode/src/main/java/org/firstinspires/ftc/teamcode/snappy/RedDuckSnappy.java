@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.snappy;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
+@Disabled
 @Autonomous(group = "drive")
 public class RedDuckSnappy extends LinearOpMode {
     final double EXTENSION_READY_DISTANCE = 0.0;
@@ -36,7 +38,7 @@ public class RedDuckSnappy extends LinearOpMode {
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.DumpDoor.setPosition(0.3);
-        cam.runOpMode(this,true);
+        cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
         int position = 3;
         waitForStart();
         position = cam.getPosition();
