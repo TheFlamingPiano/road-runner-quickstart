@@ -17,7 +17,7 @@ public class Encoder_Check extends LinearOpMode {
     // Main run loop. Begins when Init pressed.
     @Override
     public void runOpMode() throws InterruptedException {
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
 
 
 

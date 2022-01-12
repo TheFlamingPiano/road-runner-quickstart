@@ -25,7 +25,7 @@ public class ASnappyDelivery extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
         ik = new InverseKinematicsSnap(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
         Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));

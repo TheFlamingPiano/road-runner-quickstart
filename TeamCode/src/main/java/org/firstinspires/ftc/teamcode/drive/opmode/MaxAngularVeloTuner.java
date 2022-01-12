@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 
 @Config
-@Disabled
+//@Disabled
 @Autonomous(group = "drive")
 public class MaxAngularVeloTuner extends LinearOpMode {
     public static double RUNTIME = 4.0;
@@ -39,7 +39,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.BLUE);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
 
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

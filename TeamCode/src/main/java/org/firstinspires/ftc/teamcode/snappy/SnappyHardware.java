@@ -67,6 +67,7 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotor IntakeMotor;
     public Servo DumpDoor;
     public Servo Pivot;
+    public Servo FrontEncoderServo;
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
@@ -148,6 +149,10 @@ public class SnappyHardware extends MecanumDrive {
     public boolean ArmMoveIsActive = false;
 
 
+    public final double ENCODER_WHEEL_UP = 0.145;
+    public final double ENCODER_WHEEL_DOWN = .685;
+
+
     /*
      * resetEncoders - flag indicating whether the encoders for the BaseArm and Intake arm should be reset
      * Autonomous will likely want to reset the encoders to 0 and then set the starting angle for both.
@@ -177,7 +182,7 @@ public class SnappyHardware extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public SnappyHardware(HardwareMap hardwareMap, boolean resetEncocders, TeamColor teamcolor) {
+    public SnappyHardware(HardwareMap hardwareMap, boolean resetEncocders, TeamColor teamcolor, EncoderPosition encoderPosition) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         if (teamcolor == TeamColor.RED) {
@@ -185,6 +190,13 @@ public class SnappyHardware extends MecanumDrive {
         } else {
             INITIAL_ROTATION_ANGLE = -150;
         }
+        if (encoderPosition == EncoderPosition.DOWN) {
+            moveEncoderWheelDown();
+        }
+        else {
+            moveEncoderWheelUp();
+        }
+
         //INVERSE KINEMATICS STUFF
         ik = new InverseKinematicsSnap(ARM1_LENGTH, ARM2_LENGTH);
 
@@ -215,14 +227,18 @@ public class SnappyHardware extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "RightFront");  // Hub 1, port 3
 
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");  //Control Hub 2, Port 3
-        DumpDoor = hardwareMap.get(Servo.class, "DumpDoor"); //port 1
-        Pivot = hardwareMap.get(Servo.class, "Pivot");//port 2 pivot ADD THIS TO CONFIG OR ELSE EVEYTHING WILL EXPLODE!!!!
+        DumpDoor = hardwareMap.get(Servo.class, "DumpDoor"); //port 1 control hub
+        Pivot = hardwareMap.get(Servo.class, "Pivot");//port 2 pivot ADD THIS TO CONFIG OR ELSE EVEYTHING WILL EXPLODE!!!! control hub
 
         RotationMotor = hardwareMap.get(DcMotorEx.class, "RotationMotor"); //Hub 2, Port 0
         BaseArm = hardwareMap.get(DcMotorEx.class, "BaseArm");    //Hub 2, Port 1
         IntakeArm = hardwareMap.get(DcMotorEx.class, "IntakeArm");  //Hub 2, Port 2
 
         CarsouselServo = hardwareMap.get(Servo.class, "carousel"); //port 0
+
+        FrontEncoderServo = hardwareMap.get(Servo.class, "FrontEncoderServo"); //port 3 control hub
+
+        FrontEncoderServo.setDirection(Servo.Direction.FORWARD);
 
         CarsouselServo.setDirection(Servo.Direction.FORWARD);
 
@@ -288,8 +304,8 @@ public class SnappyHardware extends MecanumDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection((DcMotorSimple.Direction.FORWARD));
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection((DcMotorSimple.Direction.REVERSE));
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -817,36 +833,46 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
-    public void UpdateArmMovement() {
-        if (ArmMoveIsActive) {
-            double currentTime = System.nanoTime();
-
-            if (currentTime < ArmMoveData.targetTime + ArmMoveData.startTime && ArmMoveData.opmode.opModeIsActive()) {
-                double elapsedTime = (currentTime - ArmMoveData.startTime);
-                double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
-                double newBaseArmAngle = currentBaseArmAngle + (elapsedTime / targetTime) * (angles[0] - currentBaseArmAngle);
-                double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime / targetTime) * (angles[1] - currentIntakeArmAngle);
-
-                //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
-                BaseArmNew = (int) ((newBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
-                IntakeArmNew = ((int) ((newIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
-                RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
-
-                RotationMotor.setTargetPosition(RotationArmNew);
-                IntakeArm.setTargetPosition(IntakeArmNew);
-                BaseArm.setTargetPosition(BaseArmNew);
-
-                RotationMotor.setPower(1.0);
-                BaseArm.setPower(1.0);
-                IntakeArm.setPower(1.0);
-            }
-        }
+//    public void UpdateArmMovement() {
+//        if (ArmMoveIsActive) {
+//            double currentTime = System.nanoTime();
+//
+//            if (currentTime < ArmMoveData.targetTime + ArmMoveData.startTime && ArmMoveData.opmode.opModeIsActive()) {
+//                double elapsedTime = (currentTime - ArmMoveData.startTime);
+//                 double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
+//                double newBaseArmAngle = currentBaseArmAngle + (elapsedTime / targetTime) * (angles[0] - currentBaseArmAngle);
+//                double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime / targetTime) * (angles[1] - currentIntakeArmAngle);
+//
+//                //this will be rotation, rotation angle will be same timeeslaped/target time *(rotation - rotationarmstart)
+//                BaseArmNew = (int) ((newBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+//                IntakeArmNew = ((int) ((newIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+//                RotationArmNew = ((int) ((newRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+//
+//                RotationMotor.setTargetPosition(RotationArmNew);
+//                IntakeArm.setTargetPosition(IntakeArmNew);
+//                BaseArm.setTargetPosition(BaseArmNew);
+//
+//                RotationMotor.setPower(1.0);
+//                BaseArm.setPower(1.0);
+//                IntakeArm.setPower(1.0);
+//            }
+//        }
+//    }
+ public void moveEncoderWheelUp() {
+        FrontEncoderServo.setPosition(ENCODER_WHEEL_UP);
     }
-
+    public void moveEncoderWheelDown() {
+        FrontEncoderServo.setPosition(ENCODER_WHEEL_DOWN);
+    }
 
     public enum TeamColor {
         RED,
         BLUE
+    }
+
+    public enum  EncoderPosition {
+        UP,
+        DOWN
     }
 
 }

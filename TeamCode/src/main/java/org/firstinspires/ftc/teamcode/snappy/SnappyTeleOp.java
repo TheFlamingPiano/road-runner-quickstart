@@ -44,7 +44,7 @@ boolean isRED;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SnappyHardware snappy = new SnappyHardware(hardwareMap, false, SnappyHardware.TeamColor.BLUE);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap, false, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.UP);
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY

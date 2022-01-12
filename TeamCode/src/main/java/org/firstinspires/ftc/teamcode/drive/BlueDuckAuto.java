@@ -28,7 +28,7 @@ public class BlueDuckAuto extends LinearOpMode {
         CyrusIntakeArmHardware arm = new CyrusIntakeArmHardware(hardwareMap, true);
         CyrusCarouselHardware duck = new CyrusCarouselHardware(hardwareMap);
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
         ik = new CyrusIntakeArmHardware(arm.ARM1_LENGTH, arm.ARM2_LENGTH);
 
         Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));
