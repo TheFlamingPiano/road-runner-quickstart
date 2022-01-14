@@ -190,12 +190,6 @@ public class SnappyHardware extends MecanumDrive {
         } else {
             INITIAL_ROTATION_ANGLE = -150;
         }
-        if (encoderPosition == EncoderPosition.DOWN) {
-            moveEncoderWheelDown();
-        }
-        else {
-            moveEncoderWheelUp();
-        }
 
         //INVERSE KINEMATICS STUFF
         ik = new InverseKinematicsSnap(ARM1_LENGTH, ARM2_LENGTH);
@@ -255,7 +249,12 @@ public class SnappyHardware extends MecanumDrive {
         RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
+        if (encoderPosition == EncoderPosition.DOWN) {
+            moveEncoderWheelDown();
+        }
+        else {
+            moveEncoderWheelUp();
+        }
         if (resetEncocders) {
             BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             BaseArm.setTargetPosition(0);
