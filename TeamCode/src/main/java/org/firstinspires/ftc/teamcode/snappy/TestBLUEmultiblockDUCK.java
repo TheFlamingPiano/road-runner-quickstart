@@ -35,7 +35,7 @@ public class TestBLUEmultiblockDUCK extends LinearOpMode {
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-        snappy.DumpDoor.setPosition(0.3);
+        snappy.ClawServo.setPosition(0.3);
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
         int position = 3;
         waitForStart();

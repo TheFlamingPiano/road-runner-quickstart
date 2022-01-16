@@ -15,12 +15,15 @@ public class ArmData {
     public long currentTime = System.nanoTime();
     public long startTime = currentTime;
 
+
     int BaseArmCurrent;
     int IntakeArmCurrent;
     int RotationArmCurrent;//rotation
 
     double currentBaseArmAngle;
+    double TargetBaseArmAngle;
     double currentIntakeArmAngle;
+    double TargetIntakeArmAngle;
     double currentRotationAngle;
 
     int BaseArmNew;

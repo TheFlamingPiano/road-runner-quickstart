@@ -35,7 +35,7 @@ snappy.INITIAL_ROTATION_ANGLE = 150;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.DumpDoor.setPosition(0.3);
+snappy.ClawServo.setPosition(0.3);
 cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
 int position = 3;
 //while (position != 4) {
@@ -119,9 +119,9 @@ position = 3; //TAKE THIS OUT LATER?!
         private void pickUpBlock(SnappyHardware snappy) {
             snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
             snappy.StepBreakMovement(this, 0, 126, -75, .4,(long)1);
-            snappy.IntakeMotor.setPower(.5);
+            snappy.IntakeServo.setPosition(1);
             snappy.wait(this, 1);
-            snappy.IntakeMotor.setPower(0);
+            snappy.IntakeServo.setPosition(0.5);
             snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
             snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE,91,-10,1,1);
         }

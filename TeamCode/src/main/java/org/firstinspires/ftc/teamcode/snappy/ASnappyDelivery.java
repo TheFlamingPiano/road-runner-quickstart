@@ -4,10 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.InverseKinematics;
-import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
@@ -37,7 +33,7 @@ public class ASnappyDelivery extends LinearOpMode {
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-        snappy.DumpDoor.setPosition(0.3);
+        snappy.ClawServo.setPosition(0.3);
         waitForStart();
 
         snappy.BaseArm.setPower(0.5);
@@ -73,12 +69,12 @@ public class ASnappyDelivery extends LinearOpMode {
         snappy.moveArmToPosition(this, -23.77, 200, 370, 0.4);
         snappy.wait(this,1.0);
         snappy.moveArmToPosition(this, -23.77, 670, 390, 0.4);
-        snappy.DumpDoor.setPosition(snappy.DumpPosition);
-        snappy.IntakeMotor.setPower(-0.25);
+        snappy.ClawServo.setPosition(snappy.DumpPosition);
+        snappy.IntakeServo.setPosition(0);
        // snappy.followTrajectorySequence(trajectory2);
         snappy.wait(2);
-        snappy.IntakeMotor.setPower(0);
-        snappy.DumpDoor.setPosition(snappy.ClosePosition);
+        snappy.IntakeServo.setPosition(0.5);
+        snappy.ClawServo.setPosition(snappy.ClosePosition);
         snappy.moveArmToPosition(this,-35, snappy.INITIAL_DISTANCE, snappy.INITIAL_HEIGHT, 0.8);
 
 //        drive.followTrajectorySequence(trajectory2);

@@ -5,11 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
 
     /*
      * This is an example of a more complex path to really test the tuning.
@@ -42,7 +37,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 
 
-            snappy.DumpDoor.setPosition(0.3);
+            snappy.ClawServo.setPosition(0.3);
             waitForStart();
 
             // top level
@@ -76,7 +71,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             double wristPosition= (0.5)+((wristTargetAngle - (angles[0]- snappy.INITIAL_ARM1_ANGLE) - (angles[1]- snappy.INITIAL_ARM2_ANGLE))/180);
             long startTime = System.nanoTime();
 
-            snappy.DumpDoor.setPosition(0.3);
+            snappy.ClawServo.setPosition(0.3);
 
             snappy.moveArmToPosition (this, -25, firstDistance, firstHeight, firstWrist);
             startTime = System.nanoTime();
@@ -96,8 +91,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
                 // just wait
             }
             // should be a method in SnappyHardware
-            snappy.DumpDoor.setPosition(0.55);
-            snappy.IntakeMotor.setPower(outtakePower);
+            snappy.ClawServo.setPosition(0.55);
+            snappy.IntakeServo.setPosition(outtakePower);
 
 
             startTime = System.nanoTime();
@@ -105,8 +100,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
                 // just wait
             }
 
-            snappy.DumpDoor.setPosition(0.3);
-            snappy.IntakeMotor.setPower(0);
+            snappy.ClawServo.setPosition(0.3);
+            snappy.IntakeServo.setPosition(0);
             snappy.moveArmToPosition(this, -35, snappy.SAFE_POSITION_DISTANCE, snappy.SAFE_POSITION_HEIGHT, 0.85);
 
             startTime = System.nanoTime();

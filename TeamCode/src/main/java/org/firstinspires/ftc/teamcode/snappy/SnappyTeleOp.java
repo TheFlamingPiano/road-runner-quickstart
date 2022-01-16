@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.snappy;
 
+import android.transition.Slide;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode.InverseKinematics;
-import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
-import org.firstinspires.ftc.teamcode.drive.opmode.SnapTeleOp;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -22,6 +18,12 @@ import org.firstinspires.ftc.teamcode.drive.opmode.SnapTeleOp;
 @Disabled
 @TeleOp(group = "drive")
 public class SnappyTeleOp extends LinearOpMode {
+
+    boolean dpadleft;
+    boolean dpadright;
+
+    boolean dpadleftPrevious = false;
+    boolean dpadrightPrevious = false;
 
 
     double height;
@@ -48,9 +50,9 @@ boolean isRED;
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
-        double ClosePosition = 0.15;
-        double IntakePosition = 0.45;
-        double DumpPosition = 0.55;
+        double OpenPosition = 1;
+        double IntakePosition = 0.2;
+        double ClosePosition = 0;
 
         //PIVOT FOR INTAKE THAT JOOEY MADE
         double PivotPosition = 1;
@@ -130,32 +132,35 @@ boolean isRED;
             //KABLAM! HERE SETTING STUFF UP WITH CONTROLLER, THIS STUFF IS GOING ONTO THE SECOND CONTROLER, ALSO KNOWN AS THE OPERATOR CONTROLLER
 
 
+            snappy.UpdateArmMovement();
+
             double OuttakePower = -gamepad2.left_trigger;
             double IntakePower = gamepad2.right_trigger;
-            boolean DumpDoorPower = gamepad2.right_bumper;
+          //  boolean DumpDoorPower = gamepad2.right_bumper;
 
 
             if (IntakePower > 0.1) {
 
-                snappy.DumpDoor.setPosition(IntakePosition);
-
+                snappy.ClawServo.setPosition(IntakePosition);
+                snappy.IntakeServo.setPosition(1);
             } else {
-                if (DumpDoorPower == Boolean.TRUE) {
 
-                    snappy.DumpDoor.setPosition(DumpPosition);
 
-                } else {
-
-                    snappy.DumpDoor.setPosition(ClosePosition);
-
+                if (OuttakePower > -0.1)
+                {snappy.ClawServo.setPosition(ClosePosition);
+                snappy.IntakeServo.setPosition(0.5);}
                 }
+
+            if (OuttakePower < -0.1 ) {
+
+                snappy.IntakeServo.setPosition(0);
+                snappy.ClawServo.setPosition(OpenPosition);
             }
-            if (OuttakePower < -0.1 && IntakePower < 0.1) {
-
-                snappy.IntakeMotor.setPower(OuttakePower);
-
-            } else {
-                snappy.IntakeMotor.setPower(IntakePower);
+            else {
+                if ( IntakePower < 0.1) {
+                    snappy.IntakeServo.setPosition(0.5);
+                    snappy.ClawServo.setPosition(ClosePosition);
+                }
             }
 
 
@@ -177,6 +182,29 @@ boolean isRED;
                 }
             }
 
+            boolean SlideOut = gamepad1.y;
+            boolean SlideIn = gamepad1.a;
+
+            if (SlideOut == true) {
+                snappy.CaraSlideMotor.setPower(1);
+            } else {
+                if (SlideIn == true) {
+                    snappy.CaraSlideMotor.setPower(-1);
+                } else {
+                    snappy.CaraSlideMotor.setPower(0);
+                }
+            }
+
+            boolean ServoUp = gamepad1.dpad_up;
+            boolean ServoDown = gamepad1.dpad_down;
+
+
+            if (ServoDown == true) {
+                snappy.moveEncoderWheelDown();
+            }
+            if (ServoUp == true) {
+                snappy.moveEncoderWheelUp();
+            }
 
             //SETTING STUFF ON THE CONTROLLER ALLL THIS IS ON THE OPERATOR CONTROLLER, TRUST, DRIVER DOES NOT WANNA DO THIS
             //  boolean RotationPowerRight = gamepad2.circle;
@@ -202,6 +230,10 @@ boolean isRED;
 //            }
 
 //GETTING KATELYN'S ARM THING TO ROTATE
+
+
+
+
 
 
 
@@ -296,13 +328,25 @@ boolean isRED;
                 rotation = snappy.MAXIMUM_ROTATION_ANGLE;
             }
             //THIS IS FOR THE AUTOMATIC ARM SWINGING FROM DEPOT TO SHARED HUB
-            if (gamepad2.dpad_left) {
+           dpadleft = gamepad2.dpad_left;
+            dpadright = gamepad2.dpad_right;
+
+            if (dpadleft == true && dpadleftPrevious == false) {
                 if (isRED) rotation = -30;
                 else rotation = 10;
+//                if (isRED) snappy.NoneCodeBlockingArmMovement(this, -30, 100, 10,0.8,3);
+//                else snappy.NoneCodeBlockingArmMovement(this, 10, 100, 10,0.8,3);
             }
-            if (gamepad2.dpad_right) {
+            if (dpadright == true && dpadrightPrevious == false) {
                 if (isRED) rotation = -120;
-                else rotation = 120;            }
+                else rotation = 120;
+//              if (isRED) snappy.NoneCodeBlockingArmMovement(this, -120, 100, 10,0.8,3);
+//              else snappy.NoneCodeBlockingArmMovement(this, 120, 100, 10,0.8,3);
+                }
+
+            dpadrightPrevious = dpadright;
+            dpadleftPrevious = dpadleft;
+
 
             // arm.RotationMotor.setTargetPosition((400));
             // arm.RotationMotor.setPower(.5);
@@ -331,8 +375,9 @@ boolean isRED;
                 }
                 snappy.Pivot.setPosition(PivotPosition);
             }
-
-
+            telemetry.addData("RightTrigger", gamepad2.right_trigger);
+            telemetry.addData("LeftTrigger", gamepad2.left_trigger);
+            telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
             telemetry.addData("Height = ", height);
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", rotation);

@@ -4,9 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.CyrusCarouselHardware;
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
-import org.firstinspires.ftc.teamcode.drive.CyrusOfficialHardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
@@ -39,7 +37,7 @@ public class BlueDuckSnappy extends LinearOpMode {
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-        snappy.DumpDoor.setPosition(0.3);
+        snappy.ClawServo.setPosition(0.3);
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
         int position = 3;
         waitForStart();
@@ -80,7 +78,7 @@ public class BlueDuckSnappy extends LinearOpMode {
         snappy.BlueSpin();
         snappy.followTrajectorySequence(trajectory3);
         snappy.StopCarousel();
-        snappy.DumpDoor.setPosition(.5);
+        snappy.ClawServo.setPosition(.5);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))
