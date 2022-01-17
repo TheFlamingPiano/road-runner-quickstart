@@ -57,6 +57,8 @@ import java.util.List;
 @Config
 public class SnappyHardware extends MecanumDrive {
 
+
+
     //Carousel thingy
     public Servo CarsouselServo;
 
@@ -103,6 +105,12 @@ public class SnappyHardware extends MecanumDrive {
     double height;
     double distance;
     double rotation;
+
+    double TargetRotationAngle;
+    double TargetARM1Angle;
+    double TargetARM2Angle;
+
+
 
     double lastHeight;
     double lastDistance;
@@ -184,9 +192,9 @@ public class SnappyHardware extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         if (teamcolor == TeamColor.RED) {
-            INITIAL_ROTATION_ANGLE = 150;
+            INITIAL_ROTATION_ANGLE = 145;
         } else {
-            INITIAL_ROTATION_ANGLE = -150;
+            INITIAL_ROTATION_ANGLE = -145;
         }
 
         //INVERSE KINEMATICS STUFF
@@ -681,45 +689,50 @@ public class SnappyHardware extends MecanumDrive {
         long numberOfSeconds = 1;
 
         if (position == 1) {
+            ClawServo.setPosition(0);
+
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 200, 370, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 200, 50, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 495, -10, 1, numberOfSeconds);
             // this.wait(opMode, 1.0);
-            ClawServo.setPosition(DumpPosition);
+            ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
         } else if (position == 2) {
+            ClawServo.setPosition(0);
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 200, 370, .8, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 200, 220, 0.9, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 200, 90, 1, numberOfSeconds);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 578, 210, 0.9, numberOfSeconds);
-            ClawServo.setPosition(DumpPosition);
+            StepBreakMovement(opMode, rot, 530, 120, 1, numberOfSeconds);
+            ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
+            StepBreakMovement(opMode, rot, 200, 120, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
         } else {
+            ClawServo.setPosition(0);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 350, 370, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 670, 390, .4, numberOfSeconds);
-            ClawServo.setPosition(DumpPosition);
+            ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
+            StepBreakMovement(opMode, rot, 500, 390, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
@@ -811,6 +824,8 @@ public class SnappyHardware extends MecanumDrive {
 
         ArmMoveData = new ArmData();
 
+        ArmMoveData.opmode = opmode;
+
         ArmMoveData.currentTime = System.nanoTime();
         ArmMoveData.startTime = ArmMoveData.currentTime;
 
@@ -867,9 +882,32 @@ public class SnappyHardware extends MecanumDrive {
                 int BaseArmNew = (int) ((ArmMoveData.TargetBaseArmAngle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
                 int IntakeArmNew = ((int) ((ArmMoveData.TargetIntakeArmAngle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
                 int RotationArmNew = ((int) ((ArmMoveData.rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+                RotationMotor.setTargetPosition(RotationArmNew);
+                IntakeArm.setTargetPosition(IntakeArmNew);
+                BaseArm.setTargetPosition(BaseArmNew);
+
+                TargetARM1Angle = ArmMoveData.TargetBaseArmAngle;
+                TargetARM2Angle = ArmMoveData.TargetIntakeArmAngle;
+                TargetRotationAngle = ArmMoveData.rotation;
 
             }
+        } else {
+            RotationMotor.setTargetPosition((int) ((TargetRotationAngle - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+            BaseArm.setTargetPosition((int) ((TargetARM1Angle - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1));
+            IntakeArm.setTargetPosition((int) ((TargetARM2Angle - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
         }
+    }
+
+    public void pickUpBlock(LinearOpMode opmode) {
+        StepBreakMovement(opmode, 0, 40, 0, 1, (long)1);
+        StepBreakMovement(opmode, 0, 80, -10, 1,(long)1);
+        IntakeServo.setPosition(1);
+        ClawServo.setPosition(0.2);
+        wait(opmode, 1);
+        IntakeServo.setPosition(0.5);
+        ClawServo.setPosition(0);
+        StepBreakMovement(opmode, 0, 50, 40, 1, (long)1);
+        StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);
     }
 
 

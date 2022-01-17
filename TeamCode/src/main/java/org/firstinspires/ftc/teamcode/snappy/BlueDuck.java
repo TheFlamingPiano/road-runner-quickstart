@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-public class TestBLUEmultiblockDUCK extends LinearOpMode {
+public class BlueDuck extends LinearOpMode {
     final double EXTENSION_READY_DISTANCE = 0.0;
     final double EXTENSION_READY_HEIGHT = 55.0;
 
@@ -37,10 +37,10 @@ public class TestBLUEmultiblockDUCK extends LinearOpMode {
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.ClawServo.setPosition(0.3);
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
-        int position = 3;
+//        int position = 3;
         waitForStart();
 
-        position = cam.getPosition();
+        int position = cam.getPosition();
         telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
         telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
         telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
@@ -73,15 +73,15 @@ public class TestBLUEmultiblockDUCK extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,-76,position);
+        snappy.deliverXblocks(this,-36,position);
         snappy.setArmAnglesToHome(this);
 
-//        snappy.followTrajectorySequence(trajectory1);
-//        snappy.followTrajectorySequence(trajectory2);
-//        snappy.BlueSpin();
-//        snappy.followTrajectorySequence(trajectory3);
-//        snappy.StopCarousel();
-//        snappy.DumpDoor.setPosition(.5);
+        snappy.followTrajectorySequence(trajectory1);
+        snappy.followTrajectorySequence(trajectory2);
+        snappy.BlueSpin();
+        snappy.followTrajectorySequence(trajectory3);
+        snappy.StopCarousel();
+        snappy.ClawServo.setPosition(1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))

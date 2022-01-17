@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.snappy;
 
+import android.telecom.Call;
 import android.transition.Slide;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -19,6 +20,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(group = "drive")
 public class SnappyTeleOp extends LinearOpMode {
 
+    double lastHeight;
+    double lastDistance;
+
+    SnappyHardware snappy;
+
     boolean dpadleft;
     boolean dpadright;
 
@@ -26,8 +32,8 @@ public class SnappyTeleOp extends LinearOpMode {
     boolean dpadrightPrevious = false;
 
 
-    double height;
-    double distance;
+    public double height;
+    public double distance;
     double rotation;
 
     double ARM_HEIGHT_VELOCITY = 450.0; //mm/s
@@ -46,7 +52,7 @@ boolean isRED;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SnappyHardware snappy = new SnappyHardware(hardwareMap, false, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.UP);
+        snappy = new SnappyHardware(hardwareMap, false, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.UP);
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
@@ -58,6 +64,8 @@ boolean isRED;
         double PivotPosition = 1;
         double PivotStepSize = 0.03;
         double pivotTargetAngle = -45;
+
+        double currentrotationArmAngle;
 
 
         //THAT ONE THING THAT SPINS THE DUCK
@@ -89,7 +97,7 @@ boolean isRED;
         telemetry.addData("Intake arm angle", currentIntakeArmAndle);
         telemetry.addData("Rotation", rotation);
         telemetry.update();
-        rotation = snappy.INITIAL_ROTATION_ANGLE;
+        snappy.TargetRotationAngle= snappy.INITIAL_ROTATION_ANGLE;
 
         // flag to track whether the user is moving the arms to a safe position.  This is used to reset the
         // current height and distance if the safe move is stopped before reaching the target
@@ -241,11 +249,12 @@ boolean isRED;
             double deltaTime = (currentTime - lastTime) * 1e-9;
             lastTime = currentTime;
 
-            double lastHeight = height;
-            double lastDistance = distance;
+             lastHeight = height;
+             lastDistance = distance;
 
             currentBaseArmAngle = snappy.BaseArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM1 + snappy.INITIAL_ARM1_ANGLE;
             currentIntakeArmAndle = snappy.IntakeArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM2 + snappy.INITIAL_ARM2_ANGLE;
+           // currentrotationArmAngle = snappy.RotationMotor.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ROTATION + snappy.INITIAL_ROTATION_ANGLE;
 
             if (gamepad2.left_bumper) { // set safe driving position for the arm
                 height = snappy.SAFE_POSITION_HEIGHT;
@@ -283,6 +292,9 @@ boolean isRED;
             }
             double[] point = ik.getPoint(angles[0], angles[1]);  // should be the same as (distance, height) if everything is working correctly
 
+            snappy.TargetARM1Angle = angles[0];
+            snappy.TargetARM2Angle = angles[1];
+
 //            if (gamepad2.dpad_down && gamepad2.dpad_up ){
 //                height = 51.976;
 //                distance = 18.006;
@@ -294,10 +306,10 @@ boolean isRED;
 //                rotation = 23.77;
 //            }
 
-            snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
-//            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2
-//                    + (angles[0] - snappy.INITIAL_ARM1_ANGLE) / snappy.GEAR_RATIO_ARM2_STAGE * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
+//            snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
+////            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2
+////                    + (angles[0] - snappy.INITIAL_ARM1_ANGLE) / snappy.GEAR_RATIO_ARM2_STAGE * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
+//            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 
             snappy.BaseArm.setPower(ARM1_POWER);
             snappy.IntakeArm.setPower(ARM2_POWER);
@@ -308,50 +320,54 @@ boolean isRED;
             double velocityScaling = (gamepad2.dpad_down? 0.25:1.0);
 
             if (gamepad2.b) {
-                rotation = rotation + ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * -1;
+                snappy.TargetRotationAngle= snappy.TargetRotationAngle+ ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * -1;
                 //arm.RotationMotor.setPower(.25);
             }
             else {
                 if (gamepad2.x) {
-                    rotation = rotation + ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * 1;
+                    snappy.TargetRotationAngle= snappy.TargetRotationAngle+ ARM_ROTATION_VELOCITY * velocityScaling * deltaTime * 1;
                     //arm.RotationMotor.setPower(-0.25);
                 } else {
-                    snappy.RotationMotor.setPower(0);
+                    snappy.RotationMotor.setPower(1);
                 }
              }
 
 
-            if (rotation < snappy.MINIMUM_ROTATION_ANGLE) {
-                rotation = snappy.MINIMUM_ROTATION_ANGLE;
+            if (snappy.TargetRotationAngle< snappy.MINIMUM_ROTATION_ANGLE) {
+                snappy.TargetRotationAngle= snappy.MINIMUM_ROTATION_ANGLE;
             }
-            if (rotation > snappy.MAXIMUM_ROTATION_ANGLE) {
-                rotation = snappy.MAXIMUM_ROTATION_ANGLE;
+            if (snappy.TargetRotationAngle> snappy.MAXIMUM_ROTATION_ANGLE) {
+                snappy.TargetRotationAngle= snappy.MAXIMUM_ROTATION_ANGLE;
             }
             //THIS IS FOR THE AUTOMATIC ARM SWINGING FROM DEPOT TO SHARED HUB
            dpadleft = gamepad2.dpad_left;
             dpadright = gamepad2.dpad_right;
 
             if (dpadleft == true && dpadleftPrevious == false) {
-                if (isRED) rotation = -30;
-                else rotation = 10;
-//                if (isRED) snappy.NoneCodeBlockingArmMovement(this, -30, 100, 10,0.8,3);
-//                else snappy.NoneCodeBlockingArmMovement(this, 10, 100, 10,0.8,3);
+//                if (isRED) rotation = -30;
+//                else rotation = 10;
+                if (isRED) CallArmMove(this, -30, 100, 10,1,2);
+                else CallArmMove(this, 10, 100, 10,1,2);
             }
             if (dpadright == true && dpadrightPrevious == false) {
-                if (isRED) rotation = -120;
-                else rotation = 120;
-//              if (isRED) snappy.NoneCodeBlockingArmMovement(this, -120, 100, 10,0.8,3);
-//              else snappy.NoneCodeBlockingArmMovement(this, 120, 100, 10,0.8,3);
+//                if (isRED) rotation = -120;
+//                else rotation = 120;
+              if (isRED) CallArmMove(this, -120, 100, 10,1,2);
+              else CallArmMove(this, 120, 100, 10,1,2);
                 }
 
             dpadrightPrevious = dpadright;
             dpadleftPrevious = dpadleft;
 
 
+
             // arm.RotationMotor.setTargetPosition((400));
             // arm.RotationMotor.setPower(.5);
-            snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+            //JUST TOOK THIS OUT
+           // snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
             snappy.RotationMotor.setPower(RotationPower);
+           // snappy.TargetRotationAngle = snappy.ArmMoveData.rotation;
 
 
             //PIVOT WHOSH THING
@@ -382,7 +398,7 @@ boolean isRED;
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", rotation);
             telemetry.addData("PivotPosition", PivotPosition);
-            telemetry.addData("AngleRotation", (rotation - snappy.INITIAL_ROTATION_ANGLE));
+            telemetry.addData("AngleRotation", (snappy.TargetRotationAngle- snappy.INITIAL_ROTATION_ANGLE));
             //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
             telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());
             telemetry.addData("ARM1_ANGLE", angles[0]);
@@ -399,5 +415,16 @@ boolean isRED;
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
         }
+
+
+    }
+    void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, long targetTime) {
+
+        height = heightx;
+        distance = distancex;
+        lastHeight = height;
+        lastDistance = distance;
+
+        snappy.NoneCodeBlockingArmMovement(this, rotationx, distancex, heightx, wrist, targetTime);
     }
 }

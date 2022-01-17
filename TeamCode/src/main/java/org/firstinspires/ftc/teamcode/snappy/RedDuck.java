@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-public class TestREDmultiblockDUCK extends LinearOpMode {
+public class RedDuck extends LinearOpMode {
     final double EXTENSION_READY_DISTANCE = 0.0;
     final double EXTENSION_READY_HEIGHT = 55.0;
 
@@ -25,7 +25,7 @@ public class TestREDmultiblockDUCK extends LinearOpMode {
 
         ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
-        Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));
+        Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(180));
         snappy.setPoseEstimate(startPos);
         telemetry.update();
 
@@ -76,12 +76,12 @@ public class TestREDmultiblockDUCK extends LinearOpMode {
         snappy.deliverXblocks(this,76,position);
         snappy.setArmAnglesToHome(this);
 
-//        snappy.followTrajectorySequence(trajectory1);
-//        snappy.followTrajectorySequence(trajectory2);
-//        snappy.BlueSpin();
-//        snappy.followTrajectorySequence(trajectory3);
-//        snappy.StopCarousel();
-//        snappy.DumpDoor.setPosition(.5);
+        snappy.followTrajectorySequence(trajectory1);
+        snappy.followTrajectorySequence(trajectory2);
+        snappy.BlueSpin();
+        snappy.followTrajectorySequence(trajectory3);
+        snappy.StopCarousel();
+        snappy.ClawServo.setPosition(1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(0, 24), Math.toRadians(90))

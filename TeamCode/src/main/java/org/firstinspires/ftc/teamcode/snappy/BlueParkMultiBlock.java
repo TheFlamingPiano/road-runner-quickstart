@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
      * This is an example of a more complex path to really test the tuning.
      */
     @Autonomous(group = "drive")
-    public class TestREDParkMultiblocknodriving extends LinearOpMode {
+    public class BlueParkMultiBlock extends LinearOpMode {
 
         final double EXTENSION_READY_DISTANCE = 0.0;
         final double EXTENSION_READY_HEIGHT = 55.0;
@@ -20,14 +20,13 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
         @Override
         public void runOpMode() throws InterruptedException {
-            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.RED, SnappyHardware.EncoderPosition.DOWN);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
             CameraSnap cam = new CameraSnap();
 
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
-snappy.INITIAL_ROTATION_ANGLE = 150;
 
-            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
+            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
@@ -35,9 +34,9 @@ snappy.INITIAL_ROTATION_ANGLE = 150;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.ClawServo.setPosition(0.3);
-cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
-int position = 3;
+snappy.ClawServo.setPosition(0);
+cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
+//int position = cam.getPosition();
 //while (position != 4) {
 //     position = cam.getPosition();
 //    telemetry.addData("position", position);
@@ -50,8 +49,8 @@ int position = 3;
 
 
             waitForStart();
-position = 3; //TAKE THIS OUT LATER?!
-            //position = cam.getPosition(); PUT THIS BACK IN LATER!!!!
+ //TAKE THIS OUT LATER?!
+            int position = cam.getPosition(); //PUT THIS BACK IN LATER!!!!
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
             telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
@@ -69,31 +68,33 @@ position = 3; //TAKE THIS OUT LATER?!
             if (isStopRequested()) return;
 
             TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                    .back(4)
-                    .turn(Math.toRadians(90))
-                    .strafeRight(5)
                     .back(35)
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
                     .build();
 
 
-            snappy.deliverXblocks(this,123,position);
+            snappy.deliverXblocks(this,-121,position);
+            snappy.setArmAnglesToHome(this);
+            snappy.followTrajectorySequence(trajectory1);
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);
 //            telemetry.addData("Rotation", snappy.rotation);
 //            telemetry.update();
             //drive foward
-            pickUpBlock(snappy);
+         //   pickUpBlock(snappy);
 
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);
 //            telemetry.addData("Rotation", snappy.rotation);
 //            telemetry.update();
             //drive back
-            snappy.deliverXblocks(this,123,position);
+          //  snappy.deliverXblocks(this,-123,position);
 
-            pickUpBlock(snappy);
+           // pickUpBlock(snappy);
 
-            snappy.deliverXblocks(this,123,position);
+          //  snappy.deliverXblocks(this,-123,position);
 
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);
@@ -117,12 +118,14 @@ position = 3; //TAKE THIS OUT LATER?!
         }
 
         private void pickUpBlock(SnappyHardware snappy) {
-            snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
-            snappy.StepBreakMovement(this, 0, 126, -75, .4,(long)1);
+            snappy.StepBreakMovement(this, 0, 40, 0, 1, (long)1);
+            snappy.StepBreakMovement(this, 0, 80, -10, 1,(long)1);
             snappy.IntakeServo.setPosition(1);
+            snappy.ClawServo.setPosition(0.2);
             snappy.wait(this, 1);
             snappy.IntakeServo.setPosition(0.5);
-            snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
+            snappy.ClawServo.setPosition(0);
+            snappy.StepBreakMovement(this, 0, 50, 40, 1, (long)1);
             snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE,91,-10,1,1);
         }
     }
