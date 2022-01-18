@@ -745,7 +745,7 @@ public class SnappyHardware extends MecanumDrive {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
         double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-        StepBreakMovement(opmode, currentRotationAngle, 91, -10, 1, 1);
+        StepBreakMovement(opmode, currentRotationAngle, 60, 30, 1, 1);
     }
 
 

@@ -25,9 +25,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
-snappy.INITIAL_ROTATION_ANGLE = 150;
 
-            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
+            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
@@ -35,9 +34,9 @@ snappy.INITIAL_ROTATION_ANGLE = 150;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.ClawServo.setPosition(0.3);
+snappy.ClawServo.setPosition(0);
 cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
-int position = 3;
+//int position = 3;
 //while (position != 4) {
 //     position = cam.getPosition();
 //    telemetry.addData("position", position);
@@ -50,7 +49,7 @@ int position = 3;
 
 
             waitForStart();
-position = 3; //TAKE THIS OUT LATER?!
+int position = cam.getPosition(); //TAKE THIS OUT LATER?!
             //position = cam.getPosition(); PUT THIS BACK IN LATER!!!!
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
@@ -76,7 +75,7 @@ position = 3; //TAKE THIS OUT LATER?!
                     .build();
 
 
-            snappy.deliverXblocks(this,123,position);
+            snappy.deliverXblocks(this,121,position);
             snappy.followTrajectorySequence(trajectory1);
             snappy.setArmAnglesToHome(this);
 

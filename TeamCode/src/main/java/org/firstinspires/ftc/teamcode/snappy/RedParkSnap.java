@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
 
-            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(90));
+            Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
@@ -36,9 +36,9 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.ClawServo.setPosition(0.3);
+snappy.ClawServo.setPosition(0);
 cam.runOpMode(this,false, SnappyHardware.TeamColor.RED);
-int position = 3;
+//int position = 3;
 //while (position != 4) {
 //     position = cam.getPosition();
 //    telemetry.addData("position", position);
@@ -49,7 +49,7 @@ int position = 3;
 //    telemetry.update();
 //}
             waitForStart();
-            position = cam.getPosition();
+            int position = cam.getPosition();
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
             telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);

@@ -206,7 +206,6 @@ boolean isRED;
             boolean ServoUp = gamepad1.dpad_up;
             boolean ServoDown = gamepad1.dpad_down;
 
-
             if (ServoDown == true) {
                 snappy.moveEncoderWheelDown();
             }

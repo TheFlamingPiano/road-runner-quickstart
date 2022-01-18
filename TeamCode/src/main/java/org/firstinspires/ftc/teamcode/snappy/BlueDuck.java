@@ -25,7 +25,7 @@ public class BlueDuck extends LinearOpMode {
 
         ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 
-        Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(90));
+        Pose2d startPos = new Pose2d(-35, 60, Math.toRadians(180));
         snappy.setPoseEstimate(startPos);
         telemetry.update();
 
@@ -75,7 +75,6 @@ public class BlueDuck extends LinearOpMode {
 
         snappy.deliverXblocks(this,-36,position);
         snappy.setArmAnglesToHome(this);
-
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.BlueSpin();
