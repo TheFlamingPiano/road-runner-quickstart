@@ -283,7 +283,7 @@ public class SnappyHardware extends MecanumDrive {
             RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             RotationMotor.setTargetPosition(0);
         } else {
-            RotationMotor.setTargetPosition(IntakeArm.getCurrentPosition());
+            RotationMotor.setTargetPosition(RotationMotor.getCurrentPosition());
         }
         RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
