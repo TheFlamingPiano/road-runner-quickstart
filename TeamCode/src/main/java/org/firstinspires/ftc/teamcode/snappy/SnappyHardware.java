@@ -251,8 +251,7 @@ public class SnappyHardware extends MecanumDrive {
         BaseArm.setDirection(DcMotorSimple.Direction.REVERSE);
         IntakeArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        RotationMotor.setTargetPosition(0);
-        RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 //       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         CaraSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -280,6 +279,14 @@ public class SnappyHardware extends MecanumDrive {
         }
         IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        if (resetEncocders) {
+            RotationMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            RotationMotor.setTargetPosition(0);
+        } else {
+            RotationMotor.setTargetPosition(IntakeArm.getCurrentPosition());
+        }
+        RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         ik = new InverseKinematicsSnap(ARM1_LENGTH, ARM2_LENGTH);
 
         double currentBaseArmAngle = BaseArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
@@ -287,7 +294,7 @@ public class SnappyHardware extends MecanumDrive {
         double[] coordinates = ik.getPoint(currentBaseArmAngle, currentIntakeArmAngle);
         distance = coordinates[0];
         height = coordinates[1];
-        rotation = INITIAL_ROTATION_ANGLE;
+        TargetRotationAngle = INITIAL_ROTATION_ANGLE;
 
         double lastHeight = height;
 
