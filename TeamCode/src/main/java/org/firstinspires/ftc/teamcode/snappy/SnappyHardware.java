@@ -71,8 +71,8 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
-    public final double MINIMUM_ROTATION_ANGLE = -150.0; //degrees //-135
-    public final double MAXIMUM_ROTATION_ANGLE = 150.0; //degrees
+    public final double MINIMUM_ROTATION_ANGLE = -160.0; //degrees //-135
+    public final double MAXIMUM_ROTATION_ANGLE = 160.0; //degrees
     public double INITIAL_ROTATION_ANGLE; //= -45.0 degrees
     public final double INITIAL_ARM1_ANGLE = 177.18; //180;//216;//degree
     public final double INITIAL_ARM2_ANGLE = -176.2; //-180;//degree
@@ -684,9 +684,10 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
-    public void deliverXblocks(LinearOpMode opMode, double rot, int position) {
+    public void deliverXblocks(LinearOpMode opMode, double rot, int position, double distOffset) {
 
         long numberOfSeconds = 1;
+
 
         if (position == 1) {
             ClawServo.setPosition(0);
@@ -695,7 +696,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 50, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 495, -10, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 495 + distOffset, -10, 0.8, numberOfSeconds);
             // this.wait(opMode, 1.0);
             ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
@@ -703,7 +704,7 @@ public class SnappyHardware extends MecanumDrive {
             this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71, 30, 0.8, numberOfSeconds);
         } else if (position == 2) {
             ClawServo.setPosition(0);
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
@@ -711,31 +712,31 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 90, 1, numberOfSeconds);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 530, 120, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 535 + distOffset, 110, 0.8, numberOfSeconds);
             ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
-            StepBreakMovement(opMode, rot, 200, 120, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71, 30, 1, numberOfSeconds);
         } else {
             ClawServo.setPosition(0);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 350, 370, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 350 , 370, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 670, 390, .4, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 650 + distOffset/2, 370, .4, numberOfSeconds);
             ClawServo.setPosition(1);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
-            StepBreakMovement(opMode, rot, 500, 390, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 500 , 370, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71 , 30, 1, numberOfSeconds);
         }
 
     }
@@ -745,7 +746,7 @@ public class SnappyHardware extends MecanumDrive {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
         double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-        StepBreakMovement(opmode, currentRotationAngle, 60, 30, 1, 1);
+        StepBreakMovement(opmode, currentRotationAngle, 60 , 30, 1, 1);
     }
 
 

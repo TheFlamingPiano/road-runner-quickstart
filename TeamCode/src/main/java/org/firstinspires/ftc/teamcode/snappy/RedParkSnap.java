@@ -67,7 +67,7 @@ cam.runOpMode(this,false, SnappyHardware.TeamColor.RED);
                     .build();
 
 
-            snappy.deliverXblocks(this,-23,position);
+            snappy.deliverXblocks(this,-23,position, 40);
             snappy.followTrajectorySequence(trajectory1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())

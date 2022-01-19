@@ -35,7 +35,7 @@ public class BlueDuck extends LinearOpMode {
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-        snappy.ClawServo.setPosition(0.3);
+        snappy.ClawServo.setPosition(0);
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
 //        int position = 3;
         waitForStart();
@@ -55,9 +55,9 @@ public class BlueDuck extends LinearOpMode {
         if (isStopRequested()) return;
 
         TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                .back(4)
-                .strafeLeft(28)
-                .turn(Math.toRadians(45))
+                .strafeLeft(8)
+                .forward(18)
+                .turn(Math.toRadians(-45))
                 .build();
 
         TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
@@ -65,20 +65,28 @@ public class BlueDuck extends LinearOpMode {
                 .build();
         TrajectorySequence trajectory3 = snappy.trajectorySequenceBuilder(trajectory2.end())
                 .waitSeconds(4)
+                .back(10)
+                .build();
+
+        TrajectorySequence trajectory4 = snappy.trajectorySequenceBuilder(trajectory3.end())
+                .waitSeconds(2)
                 .turn(Math.toRadians(-45))
-                .back(26)
+                .back(17)
+                .strafeLeft(7)
                 .build();
 
 
 
 
 
-        snappy.deliverXblocks(this,-36,position);
-        snappy.setArmAnglesToHome(this);
+        snappy.deliverXblocks(this,-65,position, 180);
+        snappy.StepBreakMovement(this, 0, 15,10,1,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.BlueSpin();
         snappy.followTrajectorySequence(trajectory3);
+        snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 1,(long)1);
+        snappy.followTrajectorySequence(trajectory4);
         snappy.StopCarousel();
         snappy.ClawServo.setPosition(1);
 

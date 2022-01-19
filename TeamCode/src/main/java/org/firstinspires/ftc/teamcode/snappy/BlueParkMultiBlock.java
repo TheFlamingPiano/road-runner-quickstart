@@ -75,7 +75,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
                     .build();
 
 
-            snappy.deliverXblocks(this,-121,position);
+            snappy.deliverXblocks(this,-119,position, 0);
             snappy.setArmAnglesToHome(this);
             snappy.followTrajectorySequence(trajectory1);
 //            telemetry.addData("Height", snappy.height);

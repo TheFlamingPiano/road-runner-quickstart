@@ -97,7 +97,9 @@ boolean isRED;
         telemetry.addData("Intake arm angle", currentIntakeArmAndle);
         telemetry.addData("Rotation", rotation);
         telemetry.update();
-        snappy.TargetRotationAngle= snappy.INITIAL_ROTATION_ANGLE;
+
+        snappy.TargetRotationAngle = snappy.RotationMotor.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ROTATION + snappy.INITIAL_ROTATION_ANGLE;
+
 
         // flag to track whether the user is moving the arms to a safe position.  This is used to reset the
         // current height and distance if the safe move is stopped before reaching the target
@@ -395,8 +397,8 @@ boolean isRED;
             telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
             telemetry.addData("Height = ", height);
             telemetry.addData("Distance =", distance);
-            telemetry.addData("Rotation =", rotation);
-            telemetry.addData("PivotPosition", PivotPosition);
+            telemetry.addData("Rotation =", snappy.TargetRotationAngle);
+            telemetry.addData("PivotPosition", snappy.Pivot.getPosition());
             telemetry.addData("AngleRotation", (snappy.TargetRotationAngle- snappy.INITIAL_ROTATION_ANGLE));
             //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
             telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());

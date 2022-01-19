@@ -69,7 +69,7 @@ int position = 3;
                     .build();
 
 
-            snappy.deliverXblocks(this,-23,position);
+            snappy.deliverXblocks(this,-23,position, 0);
             snappy.followTrajectorySequence(trajectory1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
