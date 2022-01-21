@@ -38,7 +38,7 @@ public class SnappyTeleOp extends LinearOpMode {
 
     double ARM_HEIGHT_VELOCITY = 450.0; //mm/s
     double ARM_DISTANCE_VELOCITY = 450.0; //mm/s
-    double ARM_ROTATION_VELOCITY = 60.0; //Degrees
+    double ARM_ROTATION_VELOCITY = 100.0; //Degrees
 
     InverseKinematicsSnap ik;
 
@@ -57,7 +57,7 @@ boolean isRED;
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
         double OpenPosition = 1;
-        double IntakePosition = 0.2;
+        double IntakePosition = 0.1;
         double ClosePosition = 0;
 
         //PIVOT FOR INTAKE THAT JOOEY MADE
@@ -333,6 +333,9 @@ boolean isRED;
                 }
              }
 
+//            if (gamepad2.dpad_down && gamepad2.cross){
+//
+//            }
 
             if (snappy.TargetRotationAngle< snappy.MINIMUM_ROTATION_ANGLE) {
                 snappy.TargetRotationAngle= snappy.MINIMUM_ROTATION_ANGLE;
@@ -347,14 +350,14 @@ boolean isRED;
             if (dpadleft == true && dpadleftPrevious == false) {
 //                if (isRED) rotation = -30;
 //                else rotation = 10;
-                if (isRED) CallArmMove(this, -30, 100, 10,1,2);
-                else CallArmMove(this, 10, 100, 10,1,2);
+                if (isRED) CallArmMove(this, 0, 210, -101,1,1);
+                else CallArmMove(this, 0, 210, -101,1,1);
             }
             if (dpadright == true && dpadrightPrevious == false) {
 //                if (isRED) rotation = -120;
 //                else rotation = 120;
-              if (isRED) CallArmMove(this, -120, 100, 10,1,2);
-              else CallArmMove(this, 120, 100, 10,1,2);
+              if (isRED) CallArmMove(this, -120, 50, 20,0.8,1);
+              else CallArmMove(this, 120, 50, 20,0.8,1);
                 }
 
             dpadrightPrevious = dpadright;

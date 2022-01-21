@@ -247,6 +247,7 @@ public class SnappyHardware extends MecanumDrive {
         IntakeServo.setDirection(Servo.Direction.FORWARD);
         ClawServo.setDirection(Servo.Direction.FORWARD);
 
+      //  RotationMotor.setTargetPosition(0);
         RotationMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         BaseArm.setDirection(DcMotorSimple.Direction.REVERSE);
         IntakeArm.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -255,7 +256,7 @@ public class SnappyHardware extends MecanumDrive {
 //       RotationMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         CaraSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       // RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (encoderPosition == EncoderPosition.DOWN) {
             moveEncoderWheelDown();

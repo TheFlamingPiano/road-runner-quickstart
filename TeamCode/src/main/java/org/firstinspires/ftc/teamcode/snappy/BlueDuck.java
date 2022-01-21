@@ -79,7 +79,7 @@ public class BlueDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,-65,position, 180);
+        snappy.deliverXblocks(this,-60,position, 160);
         snappy.StepBreakMovement(this, 0, 15,10,1,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
