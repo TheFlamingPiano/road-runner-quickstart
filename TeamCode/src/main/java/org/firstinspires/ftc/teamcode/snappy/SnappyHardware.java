@@ -130,7 +130,7 @@ public class SnappyHardware extends MecanumDrive {
     double ARM2_POWER = 1;
 
 
-    double ClosePosition = 0.3;
+    double ClosePosition = 0.2;
     double IntakePosition = 0.45;
     double DumpPosition = 0.55;
     //VELOCITIES
@@ -188,7 +188,7 @@ public class SnappyHardware extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public SnappyHardware(HardwareMap hardwareMap, boolean resetEncocders, TeamColor teamcolor, EncoderPosition encoderPosition) {
+    public SnappyHardware(HardwareMap hardwareMap, boolean resetEncocders, TeamColor teamcolor) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         if (teamcolor == TeamColor.RED) {
@@ -257,13 +257,13 @@ public class SnappyHardware extends MecanumDrive {
         RotationMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         CaraSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
        // RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        if (encoderPosition == EncoderPosition.DOWN) {
-            moveEncoderWheelDown();
-        }
-        else {
-            moveEncoderWheelUp();
-        }
+//
+//        if (encoderPosition == EncoderPosition.DOWN) {
+//            moveEncoderWheelDown();
+//        }
+//        else {
+//            moveEncoderWheelUp();
+//        }
         if (resetEncocders) {
             BaseArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             BaseArm.setTargetPosition(0);
@@ -706,7 +706,7 @@ public class SnappyHardware extends MecanumDrive {
             //   this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 495 + distOffset, -10, 0.8, numberOfSeconds);
             // this.wait(opMode, 1.0);
-            ClawServo.setPosition(1);
+            ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
@@ -721,7 +721,7 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, rot, 200, 90, 1, numberOfSeconds);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 535 + distOffset, 110, 0.8, numberOfSeconds);
-            ClawServo.setPosition(1);
+            ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);
@@ -737,7 +737,7 @@ public class SnappyHardware extends MecanumDrive {
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 650 + distOffset/2, 370, .4, numberOfSeconds);
-            ClawServo.setPosition(1);
+            ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 1);

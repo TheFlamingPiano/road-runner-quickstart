@@ -20,7 +20,7 @@ public class RedDuck extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.RED, SnappyHardware.EncoderPosition.DOWN);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.RED);
         CameraSnap cam = new CameraSnap();
 
         ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
@@ -39,6 +39,7 @@ public class RedDuck extends LinearOpMode {
         cam.runOpMode(this,false, SnappyHardware.TeamColor.RED);
         //int position = 3;
         waitForStart();
+        snappy.moveEncoderWheelDown();
 
         int position = cam.getPosition();
         telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);

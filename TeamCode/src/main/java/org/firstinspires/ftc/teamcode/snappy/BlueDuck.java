@@ -20,7 +20,7 @@ public class BlueDuck extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
         CameraSnap cam = new CameraSnap();
 
         ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
@@ -39,6 +39,7 @@ public class BlueDuck extends LinearOpMode {
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
 //        int position = 3;
         waitForStart();
+        snappy.moveEncoderWheelDown();
 
         int position = cam.getPosition();
         telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
@@ -79,7 +80,7 @@ public class BlueDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,-60,position, 160);
+        snappy.deliverXblocks(this,-60,position, 150);
         snappy.StepBreakMovement(this, 0, 15,10,1,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);

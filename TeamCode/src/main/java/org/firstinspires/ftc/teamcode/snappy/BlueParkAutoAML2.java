@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
         @Override
         public void runOpMode() throws InterruptedException {
-            SnappyHardware snappy = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap, true, SnappyHardware.TeamColor.BLUE);
 
             ik = new InverseKinematicsSnap(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
 

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@TeleOp(name = "opmode name", group = "your group")
 //@Autonomous(name = "opmode name", group = "your group")
   // remove this line so opmode shows up in list
+@Disabled
 @TeleOp
 public class Encoder_Check extends LinearOpMode {
 
@@ -17,7 +18,7 @@ public class Encoder_Check extends LinearOpMode {
     // Main run loop. Begins when Init pressed.
     @Override
     public void runOpMode() throws InterruptedException {
-        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
+        SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
 
 
 

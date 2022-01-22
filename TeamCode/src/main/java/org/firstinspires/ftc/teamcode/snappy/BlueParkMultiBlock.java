@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
         @Override
         public void runOpMode() throws InterruptedException {
-            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.DOWN);
+            SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
             CameraSnap cam = new CameraSnap();
 
             ik = new CyrusIntakeArmHardware(snappy.ARM1_LENGTH, snappy.ARM2_LENGTH);
@@ -49,7 +49,9 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
 
             waitForStart();
- //TAKE THIS OUT LATER?!
+            snappy.moveEncoderWheelDown();
+
+            //TAKE THIS OUT LATER?!
             int position = cam.getPosition(); //PUT THIS BACK IN LATER!!!!
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);

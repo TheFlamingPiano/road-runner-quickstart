@@ -31,7 +31,7 @@ public class SnappyTeleOp extends LinearOpMode {
     boolean dpadleftPrevious = false;
     boolean dpadrightPrevious = false;
 
-
+    public  double PivotPosition;
     public double height;
     public double distance;
     double rotation;
@@ -52,18 +52,21 @@ boolean isRED;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        snappy = new SnappyHardware(hardwareMap, false, SnappyHardware.TeamColor.BLUE, SnappyHardware.EncoderPosition.UP);
+        snappy = new SnappyHardware(hardwareMap, false, (isRED)?SnappyHardware.TeamColor.RED: SnappyHardware.TeamColor.BLUE);
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
-        double OpenPosition = 1;
-        double IntakePosition = 0.1;
+        double OpenPosition = 0.5;
+        double IntakePosition = 0.3;
         double ClosePosition = 0;
+        double DuckPosition = 0.1;
 
         //PIVOT FOR INTAKE THAT JOOEY MADE
-        double PivotPosition = 1;
+         PivotPosition = 1;
         double PivotStepSize = 0.03;
         double pivotTargetAngle = -45;
+
+        boolean toggleSwitchModeOn = false;
 
         double currentrotationArmAngle;
 
@@ -118,6 +121,7 @@ boolean isRED;
 //        arm.Pivot.setPosition(PivotPosition);
 
         waitForStart();
+        snappy.moveEncoderWheelUp();
         snappy.Pivot.setPosition(PivotPosition);
 
         // move above wait for start
@@ -128,6 +132,9 @@ boolean isRED;
 
         long currentTime = System.nanoTime(); //System.currentTimeMillis();
         long lastTime = currentTime;
+        snappy.BaseArm.setPower(ARM1_POWER);
+        snappy.IntakeArm.setPower(ARM2_POWER);
+        snappy.RotationMotor.setPower(RotationPower);
 
 
         while (!isStopRequested()) {
@@ -144,30 +151,73 @@ boolean isRED;
 
             snappy.UpdateArmMovement();
 
+
+             toggleSwitchModeOn = gamepad2.dpad_up || toggleSwitchModeOn;
+
+             if (gamepad2.dpad_up && gamepad2.left_bumper && gamepad2.right_bumper) {
+                 toggleSwitchModeOn = false;
+             }
+
+            if (toggleSwitchModeOn && gamepad2.left_bumper){
+                if (isRED) CallArmMove(this,-13,615,282,0.6,1);
+                else CallArmMove(this,13,615,282,0.6,1);
+            }
+
+            if (toggleSwitchModeOn && gamepad2.right_bumper){
+                if (isRED)CallArmMove(this,-60,79,32,0.5,1);
+                else CallArmMove(this,60,79,32,0.5,1);
+            }
+
             double OuttakePower = -gamepad2.left_trigger;
             double IntakePower = gamepad2.right_trigger;
           //  boolean DumpDoorPower = gamepad2.right_bumper;
 
-
-            if (IntakePower > 0.1) {
+//THIS IS THE NORMAL THING
+            if (IntakePower > 0.1 && !toggleSwitchModeOn) {
 
                 snappy.ClawServo.setPosition(IntakePosition);
                 snappy.IntakeServo.setPosition(1);
             } else {
 
 
-                if (OuttakePower > -0.1)
+                if (OuttakePower > -0.1 && !toggleSwitchModeOn)
                 {snappy.ClawServo.setPosition(ClosePosition);
                 snappy.IntakeServo.setPosition(0.5);}
                 }
 
-            if (OuttakePower < -0.1 ) {
+            if (OuttakePower < -0.1 && !toggleSwitchModeOn) {
 
                 snappy.IntakeServo.setPosition(0);
                 snappy.ClawServo.setPosition(OpenPosition);
             }
             else {
-                if ( IntakePower < 0.1) {
+                if ( IntakePower < 0.1 && !toggleSwitchModeOn) {
+                    snappy.IntakeServo.setPosition(0.5);
+                    snappy.ClawServo.setPosition(ClosePosition);
+                }
+            }
+
+
+            //THIS IS THE DUCK MODE
+            if (IntakePower > 0.1 && toggleSwitchModeOn) {
+
+                snappy.ClawServo.setPosition(DuckPosition);
+                snappy.IntakeServo.setPosition(1);
+            } else {
+
+
+                if (OuttakePower > -0.1 && toggleSwitchModeOn)
+                {snappy.ClawServo.setPosition(ClosePosition);
+                    snappy.IntakeServo.setPosition(0.5);}
+            }
+
+            if (OuttakePower < -0.1 && toggleSwitchModeOn) {
+
+                snappy.IntakeServo.setPosition(0);
+                snappy.ClawServo.setPosition(OpenPosition);
+            }
+            else {
+                if ( IntakePower < 0.1 && toggleSwitchModeOn) {
                     snappy.IntakeServo.setPosition(0.5);
                     snappy.ClawServo.setPosition(ClosePosition);
                 }
@@ -221,6 +271,8 @@ boolean isRED;
             // double Shoulder = gamepad2.left_stick_y;
             //double Elbow = gamepad2.right_stick_y;
 
+
+
             boolean pivotSnapToPosition = (gamepad2.right_trigger > 0.5) && (gamepad2.left_trigger > 0.5);
             boolean PivotTiltUp = gamepad2.y && !pivotSnapToPosition;
             boolean PivotTiltDown = gamepad2.a && !pivotSnapToPosition;
@@ -244,8 +296,6 @@ boolean isRED;
 
 
 
-
-
             currentTime = System.nanoTime(); //System.currentTimeMillis();
             double deltaTime = (currentTime - lastTime) * 1e-9;
             lastTime = currentTime;
@@ -253,17 +303,18 @@ boolean isRED;
              lastHeight = height;
              lastDistance = distance;
 
-            currentBaseArmAngle = snappy.BaseArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM1 + snappy.INITIAL_ARM1_ANGLE;
-            currentIntakeArmAndle = snappy.IntakeArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM2 + snappy.INITIAL_ARM2_ANGLE;
+
            // currentrotationArmAngle = snappy.RotationMotor.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ROTATION + snappy.INITIAL_ROTATION_ANGLE;
 
-            if (gamepad2.left_bumper) { // set safe driving position for the arm
+            if (gamepad2.left_bumper && !toggleSwitchModeOn) { // set safe driving position for the arm
                 height = snappy.SAFE_POSITION_HEIGHT;
                 distance = snappy.SAFE_POSITION_DISTANCE;
                 movingToSafePosition = true;
             } else if (movingToSafePosition) { // bumper is no longer pressed, but we were just moving to the safe position
                 // reset the targets using the current position of the arms
                 movingToSafePosition = false;
+                currentBaseArmAngle = snappy.BaseArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM1 + snappy.INITIAL_ARM1_ANGLE;
+                currentIntakeArmAndle = snappy.IntakeArm.getCurrentPosition() * 1.0 / snappy.ENCODER_TICKS_PER_DEGREE_ARM2 + snappy.INITIAL_ARM2_ANGLE;
                 coordinates = ik.getPoint(currentBaseArmAngle, currentIntakeArmAndle);
                 distance = coordinates[0];
                 height = coordinates[1];
@@ -280,7 +331,7 @@ boolean isRED;
                 distance = lastDistance;
             }
             // limit reach to almost fully extended
-            if (Math.hypot(height, distance) > 0.98 * (snappy.ARM1_LENGTH + snappy.ARM2_LENGTH)) {
+            if (Math.hypot(height, distance) > 0.999 * (snappy.ARM1_LENGTH + snappy.ARM2_LENGTH)) {
                 height = lastHeight;
                 distance = lastDistance;
             }
@@ -295,6 +346,11 @@ boolean isRED;
 
             snappy.TargetARM1Angle = angles[0];
             snappy.TargetARM2Angle = angles[1];
+
+
+
+
+
 
 //            if (gamepad2.dpad_down && gamepad2.dpad_up ){
 //                height = 51.976;
@@ -312,8 +368,8 @@ boolean isRED;
 ////                    + (angles[0] - snappy.INITIAL_ARM1_ANGLE) / snappy.GEAR_RATIO_ARM2_STAGE * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 //            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
 
-            snappy.BaseArm.setPower(ARM1_POWER);
-            snappy.IntakeArm.setPower(ARM2_POWER);
+
+
 
 
           //  rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime / 1000 * (gamepad2.right_stick_x);
@@ -350,8 +406,8 @@ boolean isRED;
             if (dpadleft == true && dpadleftPrevious == false) {
 //                if (isRED) rotation = -30;
 //                else rotation = 10;
-                if (isRED) CallArmMove(this, 0, 210, -101,1,1);
-                else CallArmMove(this, 0, 210, -101,1,1);
+                if (isRED) CallArmMove(this, 0, 210, -96,1,1);
+                else CallArmMove(this, 0, 210, -96,1,1);
             }
             if (dpadright == true && dpadrightPrevious == false) {
 //                if (isRED) rotation = -120;
@@ -370,7 +426,6 @@ boolean isRED;
 
             //JUST TOOK THIS OUT
            // snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
-            snappy.RotationMotor.setPower(RotationPower);
            // snappy.TargetRotationAngle = snappy.ArmMoveData.rotation;
 
 
@@ -397,14 +452,14 @@ boolean isRED;
             }
             telemetry.addData("RightTrigger", gamepad2.right_trigger);
             telemetry.addData("LeftTrigger", gamepad2.left_trigger);
-            telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
+          //  telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
             telemetry.addData("Height = ", height);
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", snappy.TargetRotationAngle);
-            telemetry.addData("PivotPosition", snappy.Pivot.getPosition());
+           // telemetry.addData("PivotPosition", snappy.Pivot.getPosition());
             telemetry.addData("AngleRotation", (snappy.TargetRotationAngle- snappy.INITIAL_ROTATION_ANGLE));
             //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
-            telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());
+           // telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());
             telemetry.addData("ARM1_ANGLE", angles[0]);
             telemetry.addData("ARM2_ANGLE", angles[1]);
             //telemetry.addData("POINT",point[0]);
@@ -424,6 +479,7 @@ boolean isRED;
     }
     void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, long targetTime) {
 
+        PivotPosition = wrist;
         height = heightx;
         distance = distancex;
         lastHeight = height;
