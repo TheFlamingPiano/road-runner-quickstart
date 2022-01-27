@@ -620,12 +620,12 @@ public class SnappyHardware extends MecanumDrive {
 //
 //    }
 
-    public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
+    public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {
 
-        long currentTime = System.nanoTime();
-        long startTime = currentTime;
+        double currentTime = System.nanoTime() * 1.0;
+        double startTime = currentTime;
 
-        targetTime = (long) (targetTime * 1e9);
+        targetTime =  targetTime * 1e9;
 
         Pivot.setPosition(wrist);
         double[] angles = ik.getAngles(distance, height);
@@ -679,22 +679,26 @@ public class SnappyHardware extends MecanumDrive {
             IntakeArm.setTargetPosition(IntakeArmNew);
             BaseArm.setTargetPosition(BaseArmNew);
 
-
             //while (opmode.opModeIsActive() && (System.nanoTime() < currentTime + 3e9) &&
             //  (RotationMotor.isBusy() || BaseArm.isBusy() || IntakeArm.isBusy())) {
-
-
             //RotationMotor.setPower(RotationPower);
-            RotationMotor.setPower(1.0);
-            BaseArm.setPower(0.6);
-            IntakeArm.setPower(0.6);
+
         }
+
+        BaseArmNew = (int) ((angles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+        IntakeArmNew = ((int) ((angles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+
+        RotationArmNew = ((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+        RotationMotor.setTargetPosition(RotationArmNew);
+        IntakeArm.setTargetPosition(IntakeArmNew);
+        BaseArm.setTargetPosition(BaseArmNew);
 
     }
 
     public void deliverXblocks(LinearOpMode opMode, double rot, int position, double distOffset) {
 
-        long numberOfSeconds = 1;
+        double numberOfSeconds = .69;
 
 
         if (position == 1) {
@@ -733,10 +737,10 @@ public class SnappyHardware extends MecanumDrive {
             ClawServo.setPosition(0);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 350 , 370, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 650 + distOffset/2, 370, .4, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 650 + distOffset/2, 383, .4, numberOfSeconds);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
@@ -754,7 +758,7 @@ public class SnappyHardware extends MecanumDrive {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
         double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-        StepBreakMovement(opmode, currentRotationAngle, 60 , 30, 1, 1);
+        StepBreakMovement(opmode, currentRotationAngle, 60 , 30, 1, .35);
     }
 
 
@@ -907,16 +911,21 @@ public class SnappyHardware extends MecanumDrive {
         }
     }
 
-    public void pickUpBlock(LinearOpMode opmode) {
-        StepBreakMovement(opmode, 0, 40, 0, 1, (long)1);
-        StepBreakMovement(opmode, 0, 80, -10, 1,(long)1);
+    public void PrepickUpBlock(LinearOpMode opmode) {
+        StepBreakMovement(opmode, 0, 40, 10, 1, 0.36);
+        StepBreakMovement(opmode, 0, 210, -80,1,0.4);
         IntakeServo.setPosition(1);
-        ClawServo.setPosition(0.2);
-        wait(opmode, 1);
-        IntakeServo.setPosition(0.5);
-        ClawServo.setPosition(0);
-        StepBreakMovement(opmode, 0, 50, 40, 1, (long)1);
-        StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);
+        ClawServo.setPosition(0.3);
+
+
+    }
+
+    public void postPickUpBlock (LinearOpMode opmode) {
+        StepBreakMovement(opmode, 0, 50, 40, 1, .35);
+//        ClawServo.setPosition(0);
+//        IntakeServo.setPosition(0.5);
+        //StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);
+
     }
 
 

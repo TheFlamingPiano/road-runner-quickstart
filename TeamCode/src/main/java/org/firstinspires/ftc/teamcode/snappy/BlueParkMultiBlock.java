@@ -70,7 +70,13 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
             if (isStopRequested()) return;
 
             TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                    .back(35)
+                    .back(27)
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+                    .build();
+            TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
+                    .forward(27)
 //                    .turn(Math.toRadians(90))
 //                    .strafeRight(5)
 //                    .back(35)
@@ -78,8 +84,20 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
 
             snappy.deliverXblocks(this,-119,position, 0);
-            snappy.setArmAnglesToHome(this);
-            snappy.followTrajectorySequence(trajectory1);
+            //snappy.setArmAnglesToHome(this);
+            for (int i = 0; i < 3; i++) {
+                snappy.PrepickUpBlock(this);
+                snappy.followTrajectorySequence(trajectory1);
+                snappy.ClawServo.setPosition(0);
+                snappy.IntakeServo.setPosition(0.5);
+                snappy.followTrajectorySequence(trajectory2);
+                snappy.postPickUpBlock(this);
+                position = 3;
+                snappy.deliverXblocks(this, -119, position, 0);
+            }
+
+
+
 //            telemetry.addData("Height", snappy.height);
 //            telemetry.addData("Distance", snappy.distance);
 //            telemetry.addData("Rotation", snappy.rotation);
@@ -119,17 +137,17 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
             //);
         }
 
-        private void pickUpBlock(SnappyHardware snappy) {
-            snappy.StepBreakMovement(this, 0, 40, 0, 1, (long)1);
-            snappy.StepBreakMovement(this, 0, 80, -10, 1,(long)1);
-            snappy.IntakeServo.setPosition(1);
-            snappy.ClawServo.setPosition(0.2);
-            snappy.wait(this, 1);
-            snappy.IntakeServo.setPosition(0.5);
-            snappy.ClawServo.setPosition(0);
-            snappy.StepBreakMovement(this, 0, 50, 40, 1, (long)1);
-            snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE,91,-10,1,1);
-        }
+//        private void pickUpBlock(SnappyHardware snappy) {
+//            snappy.StepBreakMovement(this, 0, 40, 0, 1, (long)1);
+//            snappy.StepBreakMovement(this, 0, 80, -10, 1,(long)1);
+//            snappy.IntakeServo.setPosition(1);
+//            snappy.ClawServo.setPosition(0.2);
+//            snappy.wait(this, 1);
+//            snappy.IntakeServo.setPosition(0.5);
+//            snappy.ClawServo.setPosition(0);
+//            snappy.StepBreakMovement(this, 0, 50, 40, 1, (long)1);
+//            snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE,91,-10,1,1);
+//        }
     }
 
 
