@@ -740,7 +740,7 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 650 + distOffset/2, 383, .4, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 650 + distOffset/2, 383, .4, numberOfSeconds + 0.4);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
@@ -912,8 +912,8 @@ public class SnappyHardware extends MecanumDrive {
     }
 
     public void PrepickUpBlock(LinearOpMode opmode) {
-        StepBreakMovement(opmode, 0, 40, 10, 1, 0.36);
-        StepBreakMovement(opmode, 0, 210, -80,1,0.4);
+        StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
+        StepBreakMovement(opmode, -10, 210, -76,1,0.4);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
 
@@ -921,7 +921,7 @@ public class SnappyHardware extends MecanumDrive {
     }
 
     public void postPickUpBlock (LinearOpMode opmode) {
-        StepBreakMovement(opmode, 0, 50, 40, 1, .35);
+        StepBreakMovement(opmode, -10, 50, 40, 1, .01);
 //        ClawServo.setPosition(0);
 //        IntakeServo.setPosition(0.5);
         //StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);

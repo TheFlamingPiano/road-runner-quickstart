@@ -70,6 +70,8 @@ boolean isRED;
 
         double currentrotationArmAngle;
 
+        double xFingerTouch = 1;
+        double yFingerTouch = 1;
 
         //THAT ONE THING THAT SPINS THE DUCK
         double CarouselPosition = 0.5;
@@ -151,12 +153,20 @@ boolean isRED;
 
             snappy.UpdateArmMovement();
 
+            if (gamepad2.touchpad_finger_1) {
+               xFingerTouch = gamepad2.touchpad_finger_1_x;
+               if (xFingerTouch < 0) {
+                   toggleSwitchModeOn = true;
+               } else {
+                   toggleSwitchModeOn = false;
+               }
+            }
 
-             toggleSwitchModeOn = gamepad2.dpad_up || toggleSwitchModeOn;
+             //toggleSwitchModeOn = gamepad2.touchpad_finger_1 || toggleSwitchModeOn;
 
-             if (gamepad2.dpad_up && gamepad2.left_bumper && gamepad2.right_bumper) {
-                 toggleSwitchModeOn = false;
-             }
+//             if (gamepad2.dpad_up && gamepad2.left_bumper && gamepad2.right_bumper) {
+//                 toggleSwitchModeOn = false;
+//             }
 
             if (toggleSwitchModeOn && gamepad2.left_bumper){
                 if (isRED) CallArmMove(this,-13,615,282,0.6,1);
@@ -462,6 +472,8 @@ boolean isRED;
            // telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());
             telemetry.addData("ARM1_ANGLE", angles[0]);
             telemetry.addData("ARM2_ANGLE", angles[1]);
+            telemetry.addData("FingerXPosition", xFingerTouch);
+            telemetry.addData("Mode", toggleSwitchModeOn);
             //telemetry.addData("POINT",point[0]);
             //telemetry.addData("POINT2",point[1]);
             //telemetry.addData("ARM2_INITIAL",((int) (angles[1] - arm.INITIAL_ARM2_ANGLE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));

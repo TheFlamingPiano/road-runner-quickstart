@@ -69,23 +69,39 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
             if (isStopRequested()) return;
 
-            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                    .back(27)
-//                    .turn(Math.toRadians(90))
-//                    .strafeRight(5)
-//                    .back(35)
-                    .build();
-            TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
-                    .forward(27)
-//                    .turn(Math.toRadians(90))
-//                    .strafeRight(5)
-//                    .back(35)
-                    .build();
+//            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
+//                    .back(29)
+////                    .turn(Math.toRadians(90))
+////                    .strafeRight(5)
+////                    .back(35)
+//                    .build();
+//            TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
+//                    .forward(29)
+////                    .turn(Math.toRadians(90))
+////                    .strafeRight(5)
+////                    .back(35)
+//                    .build();
 
 
             snappy.deliverXblocks(this,-119,position, 0);
             //snappy.setArmAnglesToHome(this);
             for (int i = 0; i < 3; i++) {
+if (i > 0) {
+    startPos = snappy.getPoseEstimate();
+}
+                TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
+                        .back(29 + i)
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+                        .build();
+                TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
+                        .forward(29 + i)
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+                        .build();
+
                 snappy.PrepickUpBlock(this);
                 snappy.followTrajectorySequence(trajectory1);
                 snappy.ClawServo.setPosition(0);
