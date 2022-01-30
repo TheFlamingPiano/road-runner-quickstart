@@ -92,7 +92,7 @@ public class SnappyHardware extends MecanumDrive {
 
     //ARM LENGTH
     public final double ARM1_LENGTH = 446.5; //460.0; //millimeters
-    public final double ARM2_LENGTH = 438.2;//476.00;//405.0; //millimeters
+    public final double ARM2_LENGTH = 468.2;//476.00;//405.0; //millimeters//438.2
 
     public final double INITIAL_HEIGHT = ARM1_LENGTH * Math.sin(Math.toRadians(INITIAL_ARM1_ANGLE)) + ARM2_LENGTH * Math.sin(Math.toRadians(INITIAL_ARM1_ANGLE + INITIAL_ARM2_ANGLE));
     public final double INITIAL_DISTANCE = ARM1_LENGTH * Math.cos(Math.toRadians(INITIAL_ARM1_ANGLE)) + ARM2_LENGTH * Math.cos(Math.toRadians(INITIAL_ARM1_ANGLE + INITIAL_ARM2_ANGLE));
@@ -708,7 +708,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 50, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 495 + distOffset, -10, 0.8, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 547 + distOffset, -90, 0.16, numberOfSeconds);
             // this.wait(opMode, 1.0);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
@@ -724,7 +724,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 90, 1, numberOfSeconds);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 535 + distOffset, 110, 0.8, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 618 + distOffset, 213, 0.07, numberOfSeconds);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
@@ -740,7 +740,7 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 650 + distOffset/2, 383, .4, numberOfSeconds + 0.4);
+            StepBreakMovement(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);

@@ -416,8 +416,8 @@ boolean isRED;
             if (dpadleft == true && dpadleftPrevious == false) {
 //                if (isRED) rotation = -30;
 //                else rotation = 10;
-                if (isRED) CallArmMove(this, 0, 210, -96,1,1);
-                else CallArmMove(this, 0, 210, -96,1,1);
+                if (isRED) CallArmMove(this, 0, 45, -50,0.64,1);
+                else CallArmMove(this, 0, 45, -50,0.64,1);
             }
             if (dpadright == true && dpadrightPrevious == false) {
 //                if (isRED) rotation = -120;
@@ -466,7 +466,9 @@ boolean isRED;
             telemetry.addData("Height = ", height);
             telemetry.addData("Distance =", distance);
             telemetry.addData("Rotation =", snappy.TargetRotationAngle);
-           // telemetry.addData("PivotPosition", snappy.Pivot.getPosition());
+
+            telemetry.addData("PivotPosition", snappy.Pivot.getPosition()); //TAKE THIS OUT!!!!! DONt LET thIS STAY IN!
+
             telemetry.addData("AngleRotation", (snappy.TargetRotationAngle- snappy.INITIAL_ROTATION_ANGLE));
             //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
            // telemetry.addData("ENCODER_COUNT_ROTO", snappy.RotationMotor.getCurrentPosition());
