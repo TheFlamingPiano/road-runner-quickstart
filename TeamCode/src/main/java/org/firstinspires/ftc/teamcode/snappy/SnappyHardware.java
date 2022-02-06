@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -71,6 +72,8 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotorEx RotationMotor;
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
+    public DistanceSensor sensorRange;
+
     public final double MINIMUM_ROTATION_ANGLE = -160.0; //degrees //-135
     public final double MAXIMUM_ROTATION_ANGLE = 160.0; //degrees
     public double INITIAL_ROTATION_ANGLE; //= -45.0 degrees
@@ -200,8 +203,12 @@ public class SnappyHardware extends MecanumDrive {
         //INVERSE KINEMATICS STUFF
         ik = new InverseKinematicsSnap(ARM1_LENGTH, ARM2_LENGTH);
 
+// decrease timeout from .5 sec to 0 sec to deliver more blocks
+// only use for park not duck auto?
+//        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+//                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -239,6 +246,8 @@ public class SnappyHardware extends MecanumDrive {
 
         FrontEncoderServo = hardwareMap.get(Servo.class, "FrontEncoderServo"); //port 3 control hub
 
+        sensorRange = hardwareMap.get(DistanceSensor.class, "IntakeDistanceSensor");
+
         FrontEncoderServo.setDirection(Servo.Direction.FORWARD);
 
         Pivot.setDirection(Servo.Direction.REVERSE);
@@ -269,6 +278,7 @@ public class SnappyHardware extends MecanumDrive {
             BaseArm.setTargetPosition(0);
         } else {
             BaseArm.setTargetPosition(BaseArm.getCurrentPosition());
+            TargetARM1Angle = BaseArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
         }
         BaseArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -277,6 +287,7 @@ public class SnappyHardware extends MecanumDrive {
             IntakeArm.setTargetPosition(0);
         } else {
             IntakeArm.setTargetPosition(IntakeArm.getCurrentPosition());
+            TargetARM2Angle = IntakeArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
         }
         IntakeArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -285,6 +296,7 @@ public class SnappyHardware extends MecanumDrive {
             RotationMotor.setTargetPosition(0);
         } else {
             RotationMotor.setTargetPosition(RotationMotor.getCurrentPosition());
+            TargetRotationAngle = RotationMotor.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
         }
         RotationMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -696,6 +708,65 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
+    public void moveToPosition(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {
+
+        // all time is measured in seconds
+        double currentTime = System.nanoTime() * 1.0e-9;
+        double startTime = currentTime;
+
+        Pivot.setPosition(wrist);
+        double[] angles = ik.getAngles(distance, height);
+
+        int BaseArmCurrent = BaseArm.getCurrentPosition();
+        int IntakeArmCurrent = IntakeArm.getCurrentPosition();
+        int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
+
+        int BaseArmNew = (int) ((angles[0] - INITIAL_ARM1_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM1);
+        int IntakeArmNew = ((int) ((angles[1] - INITIAL_ARM2_ANGLE) * ENCODER_TICKS_PER_DEGREE_ARM2));
+        int RotationArmNew = ((int) ((rotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+        // estimate the time to get from the current position to the new position
+        double MOTOR_RPM = 4500;
+        double TICKS_PER_SECOND = 28.0 * (MOTOR_RPM / 60);
+        double MIN_MOTOR_POWER = 0.3;
+        double baseArmTime = Math.abs(BaseArmNew - BaseArmCurrent) / TICKS_PER_SECOND;
+        double intakeArmTime = Math.abs(IntakeArmNew - IntakeArmCurrent) / TICKS_PER_SECOND;
+        double rotationTime = Math.abs(RotationArmNew - RotationArmCurrent) / TICKS_PER_SECOND;
+
+        // scale power by the longest time
+        double longestTime = baseArmTime;
+        if (intakeArmTime > longestTime) longestTime = intakeArmTime;
+        if (rotationTime > longestTime) longestTime = rotationTime;
+
+        double baseArmPower = baseArmTime / longestTime;
+        if (baseArmPower < MIN_MOTOR_POWER) baseArmPower = MIN_MOTOR_POWER;
+        BaseArm.setTargetPosition(BaseArmNew);
+        BaseArm.setPower(baseArmPower);
+
+// always give the second arm full power
+//        double intakeArmPower = intakeArmTime / longestTime;
+        double intakeArmPower = 1.0;
+        if (intakeArmPower < MIN_MOTOR_POWER) intakeArmPower = MIN_MOTOR_POWER;
+        IntakeArm.setTargetPosition(IntakeArmNew);
+        IntakeArm.setPower(intakeArmPower);
+
+        double rotationPower = rotationTime / longestTime;
+        if (rotationPower < MIN_MOTOR_POWER) rotationPower = MIN_MOTOR_POWER;
+        RotationMotor.setTargetPosition(RotationArmNew);
+        RotationMotor.setPower(rotationPower);
+
+        // wait the estimated time
+        while ((currentTime < targetTime + startTime) && (currentTime < longestTime *0.9 + startTime) && opmode.opModeIsActive()) {
+            this.wait(opmode, 0.01);
+            currentTime = System.nanoTime() * 1e-9;
+        }
+
+        // hold position
+        BaseArm.setPower(1);
+        IntakeArm.setPower(1);
+        RotationMotor.setPower(1);
+    }
+
     public void deliverXblocks(LinearOpMode opMode, double rot, int position, double distOffset) {
 
         double numberOfSeconds = .69;
@@ -737,18 +808,19 @@ public class SnappyHardware extends MecanumDrive {
             ClawServo.setPosition(0);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
+//            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
+            moveToPosition(opMode, rot, 430 , 350, 1, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
+            moveToPosition(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 1);
-            StepBreakMovement(opMode, rot, 500 , 370, 1, numberOfSeconds);
+            this.wait(opMode, 0.85);
+//            moveToPosition(opMode, rot, 500 , 370, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 71 , 30, 1, numberOfSeconds);
+            moveToPosition(opMode, rot, 71 , 30, 1, numberOfSeconds);
         }
 
     }
