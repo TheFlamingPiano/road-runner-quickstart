@@ -35,7 +35,7 @@ public class BlueDuck extends LinearOpMode {
         snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
         //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
         snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-        snappy.ClawServo.setPosition(0);
+        snappy.ClawServo.setPosition(0.1);
         cam.runOpMode(this,false, SnappyHardware.TeamColor.BLUE);
 //        int position = 3;
         waitForStart();
@@ -80,15 +80,15 @@ public class BlueDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,-60,position, 150);
-        snappy.StepBreakMovement(this, 0, 15,10,1,(long)1);
+        snappy.deliverXblocks(this,-60,position, 125);
+        snappy.StepBreakMovement(this, 0, 33,-4,1,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.BlueSpin();
         snappy.followTrajectorySequence(trajectory3);
+        snappy.StopCarousel();
         snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 1,(long)1);
         snappy.followTrajectorySequence(trajectory4);
-        snappy.StopCarousel();
         snappy.ClawServo.setPosition(1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())

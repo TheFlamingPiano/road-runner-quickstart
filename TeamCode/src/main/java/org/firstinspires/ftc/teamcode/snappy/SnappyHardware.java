@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -771,6 +772,8 @@ public class SnappyHardware extends MecanumDrive {
 
         double numberOfSeconds = .69;
 
+        double waitTime = 2.0;
+
 
         if (position == 1) {
             ClawServo.setPosition(0);
@@ -779,7 +782,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 50, 1, numberOfSeconds);
             //   this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 547 + distOffset, -90, 0.16, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 521 + distOffset, 26, 0.42, numberOfSeconds);
             // this.wait(opMode, 1.0);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
@@ -795,7 +798,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 90, 1, numberOfSeconds);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 618 + distOffset, 213, 0.07, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 565 + distOffset, 204, 0.28, numberOfSeconds);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
@@ -815,6 +818,10 @@ public class SnappyHardware extends MecanumDrive {
             moveToPosition(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
+            double startTime = System.nanoTime() * 1e-9;
+            while ((opMode.opModeIsActive())
+                    && startTime + waitTime > System.nanoTime() * 1e-9
+                    && sensorRange.getDistance(DistanceUnit.MM) < 30.0);
             // snappy.followTrajectorySequence(trajectory2);
             this.wait(opMode, 0.85);
 //            moveToPosition(opMode, rot, 500 , 370, 1, numberOfSeconds);
@@ -824,6 +831,48 @@ public class SnappyHardware extends MecanumDrive {
         }
 
     }
+
+
+    public void deliverExtraBlock(TeamColor teamColor, int i, LinearOpMode opMode) {
+
+        Pose2d startPos;
+
+
+        startPos = getPoseEstimate();
+
+    TrajectorySequence trajectory1 = trajectorySequenceBuilder(startPos)
+            .back(29 + (2*i))
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+            .build();
+    TrajectorySequence trajectory2 = trajectorySequenceBuilder(trajectory1.end())
+            .forward(29 + (2*i))
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+            .build();
+
+                PrepickUpBlock(opMode);
+                followTrajectorySequence(trajectory1);
+                ClawServo.setPosition(0);
+                IntakeServo.setPosition(0.5);
+    double startTime = System.nanoTime() * 1e-9;
+    double waitTime = 1.0;
+                while (opMode.opModeIsActive()
+            && startTime + waitTime > System.nanoTime() * 1e-9
+            && sensorRange.getDistance(DistanceUnit.MM) > 30.0);
+                followTrajectorySequence(trajectory2);
+                postPickUpBlock(opMode, teamColor);
+    int position = 3;
+        if (teamColor == TeamColor.BLUE){
+            deliverXblocks(opMode, -119, position, 0);
+            StepBreakMovement(opMode, -10, 22, -22, 1, .5);
+        } else {
+            deliverXblocks(opMode, 119, position, 0);
+            StepBreakMovement(opMode, 10, 22, -22, 1, .5);
+        }
+}
 
 
     public void setArmAnglesToHome(LinearOpMode opmode) {
@@ -984,16 +1033,22 @@ public class SnappyHardware extends MecanumDrive {
     }
 
     public void PrepickUpBlock(LinearOpMode opmode) {
-        StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
-        StepBreakMovement(opmode, -10, 210, -76,1,0.4);
+        //StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
+        StepBreakMovement(opmode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
-
+        Pivot.setPosition(0.74);
 
     }
 
-    public void postPickUpBlock (LinearOpMode opmode) {
-        StepBreakMovement(opmode, -10, 50, 40, 1, .01);
+    public void postPickUpBlock (LinearOpMode opmode, TeamColor teamColor) {
+        if (teamColor == TeamColor.BLUE) {
+            StepBreakMovement(opmode, -10, 22, -22, 1, .4);
+            StepBreakMovement(opmode, -119, 22, -22, 1, .4);
+        } else {
+            StepBreakMovement(opmode, 10, 22, -22, 1, .4);
+        StepBreakMovement(opmode, 119, 22, -22, 1, .4);
+    }
 //        ClawServo.setPosition(0);
 //        IntakeServo.setPosition(0.5);
         //StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);

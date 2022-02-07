@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.ClawServo.setPosition(0);
+snappy.ClawServo.setPosition(0.1);
 cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
 //int position = 3;
 //while (position != 4) {
@@ -69,7 +69,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
 
             if (isStopRequested()) return;
 
-            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
+            TrajectorySequence trajectory5 = snappy.trajectorySequenceBuilder(startPos)
                     .back(35)
 //                    .turn(Math.toRadians(90))
 //                    .strafeRight(5)
@@ -77,8 +77,17 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
                     .build();
 
 
-            snappy.deliverXblocks(this,119,position, 0);
-            snappy.setArmAnglesToHome(this);
+            snappy.deliverXblocks(this,117,position, 0);
+            for (int i = 0; i < 3; i++) {
+                snappy.deliverExtraBlock(SnappyHardware.TeamColor.RED, i, this);
+            }
+            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
+                    .back(29)
+//                    .turn(Math.toRadians(90))
+//                    .strafeRight(5)
+//                    .back(35)
+                    .build();
+
             snappy.followTrajectorySequence(trajectory1);
 
 

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.CyrusIntakeArmHardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
@@ -34,7 +35,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
             snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
             //arm.IntakeArm.setTargetPosition((int) ((angles[1] - arm.INITIAL_ARM2_ANGLE + (angles[0] - arm.INITIAL_ARM1_ANGLE) / arm.GEAR_RATIO_ARM2_STAGE) * arm.ENCODER_TICKS_PER_DEGREE_ARM2));
             snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-snappy.ClawServo.setPosition(0);
+snappy.ClawServo.setPosition(0.1);
 cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 //int position = cam.getPosition();
 //while (position != 4) {
@@ -69,12 +70,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
             if (isStopRequested()) return;
 
-//            TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-//                    .back(29)
-////                    .turn(Math.toRadians(90))
-////                    .strafeRight(5)
-////                    .back(35)
-//                    .build();
+
 //            TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
 //                    .forward(29)
 ////                    .turn(Math.toRadians(90))
@@ -86,31 +82,47 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
             snappy.deliverXblocks(this,-119,position, 0);
             //snappy.setArmAnglesToHome(this);
             for (int i = 0; i < 3; i++) {
-if (i > 0) {
-    startPos = snappy.getPoseEstimate();
-}
+                snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this);
+            }
                 TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                        .back(29 + i)
-//                    .turn(Math.toRadians(90))
-//                    .strafeRight(5)
-//                    .back(35)
-                        .build();
-                TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
-                        .forward(29 + i)
+                        .back(29)
 //                    .turn(Math.toRadians(90))
 //                    .strafeRight(5)
 //                    .back(35)
                         .build();
 
-                snappy.PrepickUpBlock(this);
                 snappy.followTrajectorySequence(trajectory1);
-                snappy.ClawServo.setPosition(0);
-                snappy.IntakeServo.setPosition(0.5);
-                snappy.followTrajectorySequence(trajectory2);
-                snappy.postPickUpBlock(this);
-                position = 3;
-                snappy.deliverXblocks(this, -119, position, 0);
-            }
+//if (i > 0) {
+//    startPos = snappy.getPoseEstimate();
+//}
+//                TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
+//                        .back(29 + (2*i))
+////                    .turn(Math.toRadians(90))
+////                    .strafeRight(5)
+////                    .back(35)
+//                        .build();
+//                TrajectorySequence trajectory2 = snappy.trajectorySequenceBuilder(trajectory1.end())
+//                        .forward(29 + (2*i))
+////                    .turn(Math.toRadians(90))
+////                    .strafeRight(5)
+////                    .back(35)
+//                        .build();
+//
+//                snappy.PrepickUpBlock(this);
+//                snappy.followTrajectorySequence(trajectory1);
+//                snappy.ClawServo.setPosition(0);
+//                snappy.IntakeServo.setPosition(0.5);
+//                double startTime = System.nanoTime() * 1e-9;
+//                double waitTime = 1.0;
+//                while ((opModeIsActive())
+//                    && startTime + waitTime > System.nanoTime() * 1e-9
+//                        && snappy.sensorRange.getDistance(DistanceUnit.MM) > 30.0);
+//                snappy.followTrajectorySequence(trajectory2);
+//                snappy.postPickUpBlock(this);
+//                position = 3;
+//                snappy.deliverXblocks(this, -119, position, 0);
+//                snappy.StepBreakMovement(this, -10, 22, -22, 1, .5);
+//            }
 
 
 

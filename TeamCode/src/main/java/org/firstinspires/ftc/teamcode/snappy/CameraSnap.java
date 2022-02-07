@@ -39,6 +39,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 public class CameraSnap
 {
+    SnappyHardware.TeamColor teamColor;
     OpenCvWebcam webcam;
     double greenleft ;
     double redleft ;
@@ -63,6 +64,7 @@ public class CameraSnap
 
     public void runOpMode(LinearOpMode opmode, boolean boxSet, SnappyHardware.TeamColor teamcolor)
     {
+        this.teamColor = teamcolor;
         String cameraName;
         if (teamcolor == SnappyHardware.TeamColor.RED){
             cameraName = "CameraRed";
@@ -246,20 +248,20 @@ public class CameraSnap
             int rightpointstarty;
 
 
-if (boxSet) {
+if (teamColor == SnappyHardware.TeamColor.BLUE) {
      leftpointstartx = 19;
      leftpointstarty = 100;
-     middlepointstartx = 249;
+     middlepointstartx = 269;
      middlepointstarty = 100;
      rightpointstartx = 529;
      rightpointstarty = 100;
 }
 else {
-    leftpointstartx = 0;
+    leftpointstartx = 19;
     leftpointstarty = 100;
-    middlepointstartx = 289;
+    middlepointstartx = 269;
     middlepointstarty = 100;
-    rightpointstartx = 559;
+    rightpointstartx = 509;
     rightpointstarty = 100;
 }
 //
