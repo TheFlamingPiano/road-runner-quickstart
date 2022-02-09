@@ -44,7 +44,9 @@ public class SnappyTeleOp extends LinearOpMode {
 
     InverseKinematicsSnap ik;
 
-boolean isRED;
+    boolean isRED;
+    // keep a list of positions to move the arms
+    MoveStep bufferedMoves;
 
     public SnappyTeleOp (boolean isRED){
 
@@ -111,7 +113,7 @@ boolean isRED;
         // flag to track whether the user is moving the arms to a safe position.  This is used to reset the
         // current height and distance if the safe move is stopped before reaching the target
         boolean movingToSafePosition = false;
-
+        bufferedMoves = null;
 
         // arm.setEncoders();  //set encoders
         snappy.StopArmMovement();
@@ -160,8 +162,7 @@ boolean isRED;
                 if (xFingerTouch < -0.5) {
                     toggleSwitchModeOn = 1; //This is normal mode
                     gamepad2.rumbleBlips(1);
-                }
-                if (xFingerTouch > 0.5) {  //This is duck mode
+                } else if (xFingerTouch > 0.5) {  //This is duck mode
                     toggleSwitchModeOn = 2;
                     gamepad2.rumbleBlips(2);
                 } else {
@@ -196,15 +197,40 @@ boolean isRED;
                 }
             }
             if (toggleSwitchModeOn == 3) {// Alliance Hub Mode
-                if (gamepad2.dpad_left) { //Move to the alliance hub
-                    if (isRED) CallArmMove(this, 0, 60, -57, 0.74, 1);
-                    else CallArmMove(this, 0, 60, -57, 0.74, 1);
-                } else if (gamepad2.dpad_right) { // Move to the ducks
-                    if (isRED)  CallArmMove(this, 122, 659, 366, 0.1, 1);
-                    CallArmMove(this, -122, 659, 366, 0.1, 1);
+                if (gamepad2.dpad_left) { //Move to the warehouse
+                    double rotation = snappy.getCurrentRotationAngle();
+                    if (isRED) {
+                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
+                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
+                    } else { // blue
+                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
+                    }
+                } else if (gamepad2.dpad_right) { // Move to the alliance hub
+                    double rotation = snappy.getCurrentRotationAngle();
+                    if (isRED)  {
+                        CallArmMove(this, 122, 22, -22, 0.8, 1);
+                        bufferedMoves = new MoveStep(122, 659, 366, 0.1, 1);
+                    } else {
+                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
+                        bufferedMoves = new MoveStep(-122, 60, 100, 0.8, 0.5);
+                        bufferedMoves.next = new MoveStep(-122, 300, 360, 0.8, 0.2);
+                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0.1, 0.2);
+                    }
                 }
             }
 
+            // if the arm is not moving and there is a buffered move, queue it up
+            if ((!snappy.ArmMoveIsActive) && (bufferedMoves != null)) {
+                telemetry.addData("read arm enc", snappy.IntakeArm.getCurrentPosition());
+
+                // see if there's another move in the sequence
+                CallArmMove(this, bufferedMoves.rotation, bufferedMoves.distance, bufferedMoves.height,
+                        bufferedMoves.wrist, bufferedMoves.time);
+                bufferedMoves = bufferedMoves.next;
+            }
 
 
             double OuttakePower = -gamepad2.left_trigger;
@@ -360,7 +386,6 @@ boolean isRED;
                 snappy.TargetARM1Angle = angles[0];
                 snappy.TargetARM2Angle = angles[1];
 
-
 //            if (gamepad2.dpad_down && gamepad2.dpad_up ){
 //                height = 51.976;
 //                distance = 18.006;
@@ -474,7 +499,7 @@ boolean isRED;
 
 
     }
-    void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, long targetTime) {
+    void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, double targetTime) {
 
         PivotPosition = wrist;
         height = heightx;
@@ -483,5 +508,22 @@ boolean isRED;
         lastDistance = distance;
 
         snappy.NoneCodeBlockingArmMovement(this, rotationx, distancex, heightx, wrist, targetTime);
+    }
+
+    private class MoveStep {
+        double rotation;
+        double distance;
+        double height;
+        double wrist;
+        double time;
+        MoveStep next;
+        public MoveStep(double rotation, double distance, double height, double wrist, double time) {
+            this.rotation = rotation;
+            this.distance = distance;
+            this.height = height;
+            this.wrist = wrist;
+            this.time = time;
+            this.next = null;
+        }
     }
 }

@@ -357,6 +357,16 @@ public class SnappyHardware extends MecanumDrive {
         IntakeArm.setPower(0.0);
     }
 
+    public double getCurrentRotationAngle() {
+        return RotationMotor.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
+    }
+    public double getCurrentBaseArmAngle() {
+        return BaseArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM1 + INITIAL_ARM1_ANGLE;
+    }
+    public double getCurrentIntakeArmAngle() {
+        return IntakeArm.getCurrentPosition() * 1.0 / ENCODER_TICKS_PER_DEGREE_ARM2 + INITIAL_ARM2_ANGLE;
+    }
+
     public void StopCarousel() {
 
         CarsouselServo.setPosition(0.5);
@@ -770,7 +780,7 @@ public class SnappyHardware extends MecanumDrive {
 
     public void deliverXblocks(LinearOpMode opMode, double rot, int position, double distOffset) {
 
-        double numberOfSeconds = .69;
+        double numberOfSeconds = .4;
 
         double waitTime = 2.0;
 
@@ -787,7 +797,8 @@ public class SnappyHardware extends MecanumDrive {
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 1);
+            waitForFreightNotDetected(opMode, 1);
+//            this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 0.8, numberOfSeconds);
@@ -802,8 +813,9 @@ public class SnappyHardware extends MecanumDrive {
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
             // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 1);
-            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
+            waitForFreightNotDetected(opMode, 1);
+//            this.wait(opMode, 1);
+//            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 1, numberOfSeconds);
@@ -812,68 +824,139 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
-            moveToPosition(opMode, rot, 430 , 350, 1, numberOfSeconds + 0.50);
+            StepBreakMovement(opMode, rot, 430 , 350, 1, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            moveToPosition(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
+            StepBreakMovement(opMode, rot, 644 + distOffset/2, 379, 0, numberOfSeconds + 0.4);
             ClawServo.setPosition(0.5);
             IntakeServo.setPosition(0);
-            double startTime = System.nanoTime() * 1e-9;
-            while ((opMode.opModeIsActive())
-                    && startTime + waitTime > System.nanoTime() * 1e-9
-                    && sensorRange.getDistance(DistanceUnit.MM) < 30.0);
-            // snappy.followTrajectorySequence(trajectory2);
-            this.wait(opMode, 0.85);
+            waitForFreightNotDetected(opMode, 1);
+
+//            double startTime = System.nanoTime() * 1e-9;
+//            while ((opMode.opModeIsActive())
+//                    && startTime + waitTime > System.nanoTime() * 1e-9
+//                    && sensorRange.getDistance(DistanceUnit.MM) < 30.0);
+//            // snappy.followTrajectorySequence(trajectory2);
+//            this.wait(opMode, 0.85);
 //            moveToPosition(opMode, rot, 500 , 370, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            moveToPosition(opMode, rot, 71 , 30, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71 , 30, 1, numberOfSeconds);
         }
 
     }
 
 
     public void deliverExtraBlock(TeamColor teamColor, int i, LinearOpMode opMode) {
-
-        Pose2d startPos;
-
-
-        startPos = getPoseEstimate();
-
-    TrajectorySequence trajectory1 = trajectorySequenceBuilder(startPos)
-            .back(29 + (2*i))
-//                    .turn(Math.toRadians(90))
-//                    .strafeRight(5)
-//                    .back(35)
-            .build();
-    TrajectorySequence trajectory2 = trajectorySequenceBuilder(trajectory1.end())
-            .forward(29 + (2*i))
-//                    .turn(Math.toRadians(90))
-//                    .strafeRight(5)
-//                    .back(35)
-            .build();
-
-                PrepickUpBlock(opMode);
-                followTrajectorySequence(trajectory1);
-                ClawServo.setPosition(0);
-                IntakeServo.setPosition(0.5);
-    double startTime = System.nanoTime() * 1e-9;
-    double waitTime = 1.0;
-                while (opMode.opModeIsActive()
-            && startTime + waitTime > System.nanoTime() * 1e-9
-            && sensorRange.getDistance(DistanceUnit.MM) > 30.0);
-                followTrajectorySequence(trajectory2);
-                postPickUpBlock(opMode, teamColor);
-    int position = 3;
+        double home_height = -22;
+        double home_distance = 22;
+        double deliverRotation, finalRotation;
         if (teamColor == TeamColor.BLUE){
-            deliverXblocks(opMode, -119, position, 0);
-            StepBreakMovement(opMode, -10, 22, -22, 1, .5);
+            deliverRotation = -119;
+            finalRotation = -10;
         } else {
-            deliverXblocks(opMode, 119, position, 0);
-            StepBreakMovement(opMode, 10, 22, -22, 1, .5);
+            deliverRotation = 119;
+            finalRotation = 10;
         }
-}
 
+        Pose2d startPos = getPoseEstimate();
+
+        // drive into warehouse
+        TrajectorySequence trajectory1 = trajectorySequenceBuilder(startPos)
+            .back(29 + (2*i))
+            .build();
+        // drive out of warehouse
+        TrajectorySequence trajectory2 = trajectorySequenceBuilder(trajectory1.end())
+            .forward(29 + (2*i))
+            .build();
+
+        // lower the intake and turn on rollers
+        moveToPosition(opMode, 0, 70, -60, 1, 1);
+//        moveToPosition(opMode, 0, 60, -57, 1, 1);
+        IntakeServo.setPosition(1);
+        ClawServo.setPosition(0.3);
+//        Pivot.setPosition(0.74);
+        Pivot.setPosition(0.7);
+
+        // drive into the warehouse
+        followTrajectorySequence(trajectory1);
+        double startTime = System.nanoTime() * 1e-9;
+        double timeout = 1.5;
+        boolean done = false;
+        double offset = 0;
+        double pivotOffset = 0.06;
+        while (opMode.opModeIsActive()
+                    && startTime + timeout > System.nanoTime() * 1e-9
+                    && !done) {
+            if (sensorRange.getDistance(DistanceUnit.MM) < 30.0) {
+                done = true;
+            } else {
+                offset += 25;
+                pivotOffset -=0.06;
+                moveToPosition(opMode, 0, 70 + offset, -60, .7 + pivotOffset, 1);
+                wait(opMode, 0.25);
+            }
+        }
+
+//        waitForFreightDetected(opMode, 1.0);
+
+        moveToPosition(opMode, finalRotation, home_distance , home_height, 1, 0.3);
+        // stop intake and close the claw
+        ClawServo.setPosition(0);
+        IntakeServo.setPosition(0.5);
+
+        // wait to clamp
+//        wait(opMode,0.2);
+
+        // try to rotate while driving
+//        RotationMotor.setPower(0.5);
+//        RotationMotor.setTargetPosition((int) ((deliverRotation - INITIAL_ROTATION_ANGLE) * ENCODER_TICKS_PER_DEGREE_ROTATION));
+
+        // drive out of the warehouse
+        followTrajectorySequence(trajectory2);
+//        RotationMotor.setPower(1.0);
+
+
+       moveToPosition(opMode, deliverRotation, home_distance , home_height, 1, 1);
+        moveToPosition(opMode, deliverRotation, 430 , 350, 1, 1);
+        moveToPosition(opMode, deliverRotation, 644, 379, 0, 1);
+
+        wait(opMode, 0.4); // wait for arm to settle?
+        // open claw and outtake rollers
+        ClawServo.setPosition(0.5);
+        IntakeServo.setPosition(0);
+        waitForFreightNotDetected(opMode, 1.5);
+
+        // is this needed?
+//        this.wait(opMode, 0.85);
+
+        IntakeServo.setPosition(0.5);
+        ClawServo.setPosition(ClosePosition);
+//        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .4);
+//        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
+        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .5);
+        moveToPosition(opMode, finalRotation, home_distance , home_height, 1, .5);
+    }
+
+
+    public void waitForFreightDetected(LinearOpMode opmode, double timeout) {
+        double startTime = System.nanoTime() * 1e-9;
+//        while (opmode.opModeIsActive()
+//                && startTime + 0.5 > System.nanoTime() * 1e-9);
+        while (opmode.opModeIsActive()
+                && startTime + timeout > System.nanoTime() * 1e-9
+                && sensorRange.getDistance(DistanceUnit.MM) > 55.0);
+    }
+
+    public void waitForFreightNotDetected(LinearOpMode opmode, double timeout) {
+        double startTime = System.nanoTime() * 1e-9;
+        // wait a minimum of 0.5 seconds
+        while (opmode.opModeIsActive()
+                && startTime + 0.5 > System.nanoTime() * 1e-9);
+        while (opmode.opModeIsActive()
+                && startTime + timeout > System.nanoTime() * 1e-9
+                && sensorRange.getDistance(DistanceUnit.MM) < 55.0);
+    }
 
     public void setArmAnglesToHome(LinearOpMode opmode) {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
@@ -954,7 +1037,7 @@ public class SnappyHardware extends MecanumDrive {
         }
     }
 
-    public void NoneCodeBlockingArmMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, long targetTime) {
+    public void NoneCodeBlockingArmMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {
 
         ArmMoveData = new ArmData();
 
@@ -1006,6 +1089,11 @@ public class SnappyHardware extends MecanumDrive {
 
                 RotationMotor.setTargetPosition(RotationArmNew);
                 IntakeArm.setTargetPosition(IntakeArmNew);
+                ArmMoveData.opmode.telemetry.addData("new arm angle", newIntakeArmAngle);
+                ArmMoveData.opmode.telemetry.addData("current arm angle", ArmMoveData.currentIntakeArmAngle);
+                ArmMoveData.opmode.telemetry.addData("target arm angle", ArmMoveData.TargetIntakeArmAngle);
+                ArmMoveData.opmode.telemetry.addData("read arm enc", IntakeArm.getCurrentPosition());
+
                 BaseArm.setTargetPosition(BaseArmNew);
 
                 RotationMotor.setPower(1.0);

@@ -48,6 +48,11 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 //    telemetry.update();
 //}
 
+//            double start = System.nanoTime() * 1e-9;
+//            while (System.nanoTime() + 30 > start) {
+//                telemetry.addData("Distance", snappy.sensorRange.getDistance(DistanceUnit.MM));
+//                telemetry.update();
+//            }
 
             waitForStart();
             snappy.moveEncoderWheelDown();
@@ -81,11 +86,11 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
             snappy.deliverXblocks(this,-119,position, 0);
             //snappy.setArmAnglesToHome(this);
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 2; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this);
             }
                 TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                        .back(29)
+                        .back(31)
 //                    .turn(Math.toRadians(90))
 //                    .strafeRight(5)
 //                    .back(35)
