@@ -192,8 +192,8 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) CallArmMove(this, -12, 695, 360, 0, 1);
                     else CallArmMove(this, 12, 695, 360, 0, 1);
                 } else if (gamepad2.dpad_right) { // Move to the ducks
-                    if (isRED) CallArmMove(this, -130, 108, 62, 1, 1);
-                    else CallArmMove(this, 130, 108, 62, 1, 1);
+                    if (isRED) CallArmMove(this, -130, 108, 62, 0, 1);
+                    else CallArmMove(this, 130, 108, 62, 0, 1);
                 }
             }
             if (toggleSwitchModeOn == 3) {// Alliance Hub Mode

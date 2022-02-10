@@ -80,15 +80,15 @@ public class RedDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,55,position, 140);
+        snappy.deliverXblocks(this,60,position, 135);
         snappy.StepBreakMovement(this, 0, 33,-4,1,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
-        snappy.BlueSpin();
+        snappy.RedSpin();
         snappy.followTrajectorySequence(trajectory3);
+        snappy.StopCarousel();
         snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 1,(long)1);
         snappy.followTrajectorySequence(trajectory4);
-        snappy.StopCarousel();
         snappy.ClawServo.setPosition(1);
 
 //        Trajectory traj = drive.trajectoryBuilder(new Pose2d())

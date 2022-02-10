@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 //@TeleOp(name = "opmode name", group = "your group")
 //@Autonomous(name = "opmode name", group = "your group")
   // remove this line so opmode shows up in list
@@ -33,6 +35,7 @@ public class Encoder_Check extends LinearOpMode {
             telemetry.addData("Left Encoder", snappy.leftFront.getCurrentPosition());
             telemetry.addData("Right Encoder", snappy.rightFront.getCurrentPosition());
             telemetry.addData("Front Encoder", snappy.rightRear.getCurrentPosition());
+            telemetry.addData("Intake Sensor", snappy.sensorRange.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
 
