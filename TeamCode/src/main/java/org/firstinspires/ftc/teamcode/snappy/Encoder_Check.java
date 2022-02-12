@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //@TeleOp(name = "opmode name", group = "your group")
 //@Autonomous(name = "opmode name", group = "your group")
   // remove this line so opmode shows up in list
-@Disabled
+//@Disabled
 @TeleOp
 public class Encoder_Check extends LinearOpMode {
 
@@ -21,7 +21,9 @@ public class Encoder_Check extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SnappyHardware snappy = new SnappyHardware(hardwareMap,true, SnappyHardware.TeamColor.BLUE);
+        CameraSnap cam = new CameraSnap();
 
+        cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
 
 
@@ -29,6 +31,9 @@ public class Encoder_Check extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
+            telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
+            telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
             telemetry.addData("Arm 2 Encoder", snappy.IntakeArm.getCurrentPosition());
             telemetry.addData("Arm 1 Encoder", snappy.BaseArm.getCurrentPosition());
             telemetry.addData("Rotation", snappy.RotationMotor.getCurrentPosition());

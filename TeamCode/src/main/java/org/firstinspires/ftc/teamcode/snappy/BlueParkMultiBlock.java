@@ -84,7 +84,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 //                    .build();
 
 
-            snappy.deliverXblocks(this,-119,position, 0);
+            snappy.deliverXblocks(this,-119,position, 10);
             //snappy.setArmAnglesToHome(this);
             for (int i = 0; i < 2; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this);

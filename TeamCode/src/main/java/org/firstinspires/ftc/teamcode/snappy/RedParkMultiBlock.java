@@ -77,7 +77,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
                     .build();
 
 
-            snappy.deliverXblocks(this,117,position, 0);
+            snappy.deliverXblocks(this,119,position, 10);
             for (int i = 0; i < 2; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.RED, i, this);
             }

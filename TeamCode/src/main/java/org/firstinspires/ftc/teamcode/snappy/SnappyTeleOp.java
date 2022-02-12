@@ -192,16 +192,20 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) CallArmMove(this, -12, 695, 360, 0, 1);
                     else CallArmMove(this, 12, 695, 360, 0, 1);
                 } else if (gamepad2.dpad_right) { // Move to the ducks
-                    if (isRED) CallArmMove(this, -130, 108, 62, 0, 1);
-                    else CallArmMove(this, 130, 108, 62, 0, 1);
+                    if (isRED) CallArmMove(this, -40, 108, 62, 0, 1);
+                    else CallArmMove(this, 40, 108, 62, 0, 1);
                 }
             }
             if (toggleSwitchModeOn == 3) {// Alliance Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
                     double rotation = snappy.getCurrentRotationAngle();
                     if (isRED) {
-                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
-                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
+//                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
+//                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
+                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
                     } else { // blue
                         CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
                         bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
@@ -211,13 +215,17 @@ public class SnappyTeleOp extends LinearOpMode {
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
                     if (isRED)  {
-                        CallArmMove(this, 122, 22, -22, 0.8, 1);
-                        bufferedMoves = new MoveStep(122, 659, 366, 0.1, 1);
+//                        CallArmMove(this, 122, 22, -22, 0.8, 1);
+//                        bufferedMoves = new MoveStep(122, 659, 366, 0.1, 1);
+                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
+                        bufferedMoves = new MoveStep(122, 60, 100, 0.8, 0.5);
+                        bufferedMoves.next = new MoveStep(122, 300, 360, 0.8, .6);
+                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 0.5, 0.2);
                     } else {
                         CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
                         bufferedMoves = new MoveStep(-122, 60, 100, 0.8, 0.5);
-                        bufferedMoves.next = new MoveStep(-122, 300, 360, 0.8, 0.2);
-                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0.1, 0.2);
+                        bufferedMoves.next = new MoveStep(-122, 300, 360, 0.8, 0.6);
+                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0.5, 0.2);
                     }
                 }
             }
