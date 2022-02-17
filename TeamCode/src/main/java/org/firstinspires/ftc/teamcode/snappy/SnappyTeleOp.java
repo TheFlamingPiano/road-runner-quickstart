@@ -178,10 +178,11 @@ public class SnappyTeleOp extends LinearOpMode {
 //                 toggleSwitchModeOn = false;
 //             }
 
+
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
-                    if (isRED) CallArmMove(this, 0, 60, -57, 0.74, 1);
-                    else CallArmMove(this, 0, 60, -57, 0.74, 1);
+                    if (isRED) CallArmMove(this, 0, 60, -57, 47, 1);
+                    else CallArmMove(this, 0, 60, -57, 47, 1);
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
                     if (isRED) CallArmMove(this, -121, 27, -9.4, 0.7, 1);
                     else CallArmMove(this, 121, 27, -9.4, 0.7, 1);
@@ -441,8 +442,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 dpadleft = gamepad2.dpad_left;
                 dpadright = gamepad2.dpad_right;
 
-
-
                 dpadrightPrevious = dpadright;
                 dpadleftPrevious = dpadleft;
 
@@ -453,6 +452,7 @@ public class SnappyTeleOp extends LinearOpMode {
                 //JUST TOOK THIS OUT
                 // snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
                 // snappy.TargetRotationAngle = snappy.ArmMoveData.rotation;
+
 
 
                 //PIVOT WHOSH THING
@@ -476,6 +476,12 @@ public class SnappyTeleOp extends LinearOpMode {
                     }
                     snappy.Pivot.setPosition(PivotPosition);
                 }
+
+
+
+
+
+
                 telemetry.addData("RightTrigger", gamepad2.right_trigger);
                 telemetry.addData("LeftTrigger", gamepad2.left_trigger);
                 //  telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
@@ -508,6 +514,8 @@ public class SnappyTeleOp extends LinearOpMode {
 
     }
     void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, double targetTime) {
+
+
 
         PivotPosition = wrist;
         height = heightx;

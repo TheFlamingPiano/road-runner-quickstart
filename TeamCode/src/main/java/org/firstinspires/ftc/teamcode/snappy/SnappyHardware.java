@@ -32,6 +32,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -133,10 +134,12 @@ public class SnappyHardware extends MecanumDrive {
     double ARM1_POWER = 1;
     double ARM2_POWER = 1;
 
-
     double ClosePosition = 0.2;
     double IntakePosition = 0.45;
     double DumpPosition = 0.55;
+
+    double wristAngleTarget;
+
     //VELOCITIES
     //public final double ROTATION_VELOCITY = 50; //degrees per second
 //    public final double HEIGHT_VELOCITY = 100; //millimeters per second
@@ -643,6 +646,24 @@ public class SnappyHardware extends MecanumDrive {
 //
 //    }
 
+    public void setWristPosition(double wristAngle, double distance, double height) {
+        double[] angles = ik.getAngles(distance, height);
+
+           double wristAngleBar2 = ((wristAngle - (angles[0] - INITIAL_ARM1_ANGLE) - (angles[1] - INITIAL_ARM2_ANGLE)) / 180);
+
+            //pivotposition 0.88 = 75 degrees
+        //pivot position 0.15 = -70 degrees
+
+         double deltaAngle = 70+ 75;
+         double deltaPosition = 0.88-0.15;
+
+         double wristPosition = 0.15 + (deltaPosition/deltaAngle) * (wristAngleBar2 + 70);
+
+
+         Pivot.setPosition(wristPosition);
+
+    }
+
     public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {
 
         double currentTime = System.nanoTime() * 1.0;
@@ -1083,7 +1104,8 @@ public class SnappyHardware extends MecanumDrive {
 
         ArmMoveData.targetTime = (long) (targetTime * 1e9);
 
-        Pivot.setPosition(wrist);
+       // Pivot.setPosition(wrist);
+        setWristPosition(wrist,distance,height);
         double[] angles = ik.getAngles(distance, height);
 
         ArmMoveData.TargetIntakeArmAngle = angles[1];
