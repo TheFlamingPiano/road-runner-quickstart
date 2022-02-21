@@ -53,6 +53,7 @@ import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.qualcomm.robotcore.util.Range;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -646,22 +647,28 @@ public class SnappyHardware extends MecanumDrive {
 //
 //    }
 
-    public void setWristPosition(double wristAngle, double distance, double height) {
+    public double setWristPosition(double wristAngle, double distance, double height) {
+        // added return type for servo position
         double[] angles = ik.getAngles(distance, height);
 
-           double wristAngleBar2 = ((wristAngle - (angles[0] - INITIAL_ARM1_ANGLE) - (angles[1] - INITIAL_ARM2_ANGLE)) / 180);
+        //   double wristAngleBar2 = ((wristAngle - (angles[0] - INITIAL_ARM1_ANGLE) - (angles[1] - INITIAL_ARM2_ANGLE)) / 180);
+        double wristAngleBar2 = (-angles[0] - angles[1]) + wristAngle;
 
-            //pivotposition 0.88 = 75 degrees
+        //pivotposition 0.88 = 75 degrees
         //pivot position 0.15 = -70 degrees
 
-         double deltaAngle = 70+ 75;
-         double deltaPosition = 0.88-0.15;
+        // TEST - replace this with built in calculation
+//         double deltaAngle = 70+ 75;
+//         double deltaPosition = 0.88-0.15;
+//         double wristPosition = 0.15 + (deltaPosition/deltaAngle) * (wristAngleBar2 + 70);
+        double AngleMin = -70;
+        double AngleMax = 75;
+        double ServoMin = 0.15;
+        double ServoMax = 0.88;
+        double wristPosition = Range.scale(wristAngleBar2, AngleMin, AngleMax, ServoMin, ServoMax);
 
-         double wristPosition = 0.15 + (deltaPosition/deltaAngle) * (wristAngleBar2 + 70);
-
-
-         Pivot.setPosition(wristPosition);
-
+        Pivot.setPosition(wristPosition);
+        return wristPosition;   //
     }
 
     public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {

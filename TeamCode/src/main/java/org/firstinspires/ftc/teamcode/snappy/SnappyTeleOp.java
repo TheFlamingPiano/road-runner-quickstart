@@ -184,17 +184,17 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) CallArmMove(this, 0, 60, -57, 47, 1);
                     else CallArmMove(this, 0, 60, -57, 47, 1);
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
-                    if (isRED) CallArmMove(this, -121, 27, -9.4, 0.7, 1);
-                    else CallArmMove(this, 121, 27, -9.4, 0.7, 1);
+                    if (isRED) CallArmMove(this, -121, 27, -9.4, 39, 1);
+                    else CallArmMove(this, 121, 27, -9.4, 39, 1);
                 }
             }
             if (toggleSwitchModeOn == 2) {// Duck Mode
                 if (gamepad2.dpad_left) { //Move to the alliance hub
-                    if (isRED) CallArmMove(this, -12, 695, 360, 0, 1);
-                    else CallArmMove(this, 12, 695, 360, 0, 1);
+                    if (isRED) CallArmMove(this, -12, 695, 360, -70, 1); //-70 because thats the lowest it can go,should be -99
+                    else CallArmMove(this, 12, 695, 360, -70, 1);
                 } else if (gamepad2.dpad_right) { // Move to the ducks
-                    if (isRED) CallArmMove(this, -40, 108, 62, 0, 1);
-                    else CallArmMove(this, 40, 108, 62, 0, 1);
+                    if (isRED) CallArmMove(this, -40, 108, 62, -70, 1);//-70 because thats the lowest it can go,should be -99
+                    else CallArmMove(this, 40, 108, 62, -70, 1);
                 }
             }
             if (toggleSwitchModeOn == 3) {// Alliance Hub Mode
@@ -203,30 +203,30 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) {
 //                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
 //                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
-                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
+                        CallArmMove(this, rotation, 300, 360, 59, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, 47, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, 47, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 47, 0.2);
                     } else { // blue
-                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
+                        CallArmMove(this, rotation, 300, 360, 59, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, 47, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, 47, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 47, 0.2);
                     }
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
                     if (isRED)  {
 //                        CallArmMove(this, 122, 22, -22, 0.8, 1);
 //                        bufferedMoves = new MoveStep(122, 659, 366, 0.1, 1);
-                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
-                        bufferedMoves = new MoveStep(122, 60, 100, 0.8, 0.5);
-                        bufferedMoves.next = new MoveStep(122, 300, 360, 0.8, .6);
-                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 0.5, 0.2);
+                        CallArmMove(this, rotation, 60, 100, 59, 0.2);
+                        bufferedMoves = new MoveStep(122, 60, 100, 59, 0.5);
+                        bufferedMoves.next = new MoveStep(122, 300, 360, 59, .6);
+                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 0, 0.2);
                     } else {
-                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
-                        bufferedMoves = new MoveStep(-122, 60, 100, 0.8, 0.5);
-                        bufferedMoves.next = new MoveStep(-122, 300, 360, 0.8, 0.6);
-                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0.5, 0.2);
+                        CallArmMove(this, rotation, 60, 100, 59, 0.2);
+                        bufferedMoves = new MoveStep(-122, 60, 100, 59, 0.5);
+                        bufferedMoves.next = new MoveStep(-122, 300, 360, 59, 0.6);
+                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0, 0.2);
                     }
                 }
             }
@@ -515,9 +515,8 @@ public class SnappyTeleOp extends LinearOpMode {
     }
     void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, double targetTime) {
 
-
-
-        PivotPosition = wrist;
+        //PivotPosition = wrist;   // This is a problem since wrist is now an angle, not servo position
+        PivotPosition = snappy.setWristPosition(wrist, distancex, heightx);  // this is a Hack to get the correct servo position for wrist and set global wrist variable
         height = heightx;
         distance = distancex;
         lastHeight = height;
