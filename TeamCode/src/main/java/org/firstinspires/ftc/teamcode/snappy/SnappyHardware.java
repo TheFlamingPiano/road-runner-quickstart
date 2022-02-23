@@ -661,24 +661,26 @@ public class SnappyHardware extends MecanumDrive {
 //         double deltaAngle = 70+ 75;
 //         double deltaPosition = 0.88-0.15;
 //         double wristPosition = 0.15 + (deltaPosition/deltaAngle) * (wristAngleBar2 + 70);
-        double AngleMin = -70;
-        double AngleMax = 75;
-        double ServoMin = 0.15;
-        double ServoMax = 0.88;
+        double AngleMin = -10; //-70;
+        double AngleMax = 135; //75;
+        double ServoMin = 0.166;
+        double ServoMax = 0.9;
         double wristPosition = Range.scale(wristAngleBar2, AngleMin, AngleMax, ServoMin, ServoMax);
 
         Pivot.setPosition(wristPosition);
         return wristPosition;   //
     }
 
-    public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wrist, double targetTime) {
+    public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wristAng, double targetTime) {
 
         double currentTime = System.nanoTime() * 1.0;
         double startTime = currentTime;
 
+        //setWristPosition(wristAng,height,distance);  // Cyrus.... you switched height and distance :-)
+        setWristPosition(wristAng,distance,height);
+
         targetTime =  targetTime * 1e9;
 
-        Pivot.setPosition(wrist);
         double[] angles = ik.getAngles(distance, height);
 
         int BaseArmCurrent = BaseArm.getCurrentPosition();
@@ -753,7 +755,7 @@ public class SnappyHardware extends MecanumDrive {
         double currentTime = System.nanoTime() * 1.0e-9;
         double startTime = currentTime;
 
-        Pivot.setPosition(wrist);
+        setWristPosition(wrist,distance,height);
         double[] angles = ik.getAngles(distance, height);
 
         int BaseArmCurrent = BaseArm.getCurrentPosition();
@@ -814,11 +816,13 @@ public class SnappyHardware extends MecanumDrive {
 
         if (position == 1) {
             double wristSpot;
-            if (distOffset > 100) {
-                wristSpot = 0.34;
-            } else {
-                wristSpot = 0.42;
-            }
+            wristSpot = 0;
+//            if (distOffset > 100) {
+//                wristSpot = 0.34;
+//                setWristPosition(0,distance, height);
+//            } else {
+//                wristSpot = 0.42;
+//            }
 
             double hubHeight;
             double heightOffset;
@@ -843,16 +847,18 @@ public class SnappyHardware extends MecanumDrive {
 //            this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 71, 30, 0.8, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else if (position == 2) {
             double wristSpot;
             double hubHeight;
 
+            wristSpot = 0;
+
             if (distOffset > 100) {
-                wristSpot = 0.21;
+//                wristSpot = 0.21;
                 hubHeight = 204;
             } else {
-                wristSpot = 0.28;
+//                wristSpot = 0.28;
                 hubHeight = 195;
 
             }
@@ -871,7 +877,7 @@ public class SnappyHardware extends MecanumDrive {
 //            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 71, 30, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else {
             double hubHeight;
             if (distOffset > 100) {
@@ -901,7 +907,7 @@ public class SnappyHardware extends MecanumDrive {
 //            moveToPosition(opMode, rot, 500 , 370, 1, numberOfSeconds);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 71 , 30, 1, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71 , 30, 60, numberOfSeconds);
         }
 
     }
@@ -931,12 +937,12 @@ public class SnappyHardware extends MecanumDrive {
             .build();
 
         // lower the intake and turn on rollers
-        moveToPosition(opMode, 0, 70, -55, 1, 1);
+        moveToPosition(opMode, 0, 60, -57, 0, 1); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
 //        Pivot.setPosition(0.74);
-        Pivot.setPosition(0.7);
+        Pivot.setPosition(0);
 
         // drive into the warehouse
         followTrajectorySequence(trajectory1);
@@ -953,7 +959,7 @@ public class SnappyHardware extends MecanumDrive {
             } else {
                 offset += 25;
                 pivotOffset -=0.06;
-                moveToPosition(opMode, 0, 70 + offset, -60, .7 + pivotOffset, 1);
+                moveToPosition(opMode, 0, 70 + offset, -60, 0, 1);
                 wait(opMode, 0.25);
             }
         }
@@ -965,7 +971,7 @@ public class SnappyHardware extends MecanumDrive {
         ClawServo.setPosition(0);
         IntakeServo.setPosition(0.5);
 
-        moveToPosition(opMode, finalRotation, home_distance , home_height, 1, 0.3);
+        moveToPosition(opMode, finalRotation, home_distance , home_height, 70, 0.3);
 
 
         // wait to clamp
@@ -977,11 +983,10 @@ public class SnappyHardware extends MecanumDrive {
 
         // drive out of the warehouse
         followTrajectorySequence(trajectory2);
-//        RotationMotor.setPower(1.0);
 
 
-       moveToPosition(opMode, deliverRotation, home_distance , home_height, 1, 1);
-        moveToPosition(opMode, deliverRotation, 430 , 350, 1, 1);
+       moveToPosition(opMode, deliverRotation, home_distance , home_height, 70, 1);
+        moveToPosition(opMode, deliverRotation, 430 , 350, 70, 1);
         moveToPosition(opMode, deliverRotation, 644, 379, 0, 1);
 
         wait(opMode, 0.4); // wait for arm to settle?
@@ -997,8 +1002,8 @@ public class SnappyHardware extends MecanumDrive {
         ClawServo.setPosition(ClosePosition);
 //        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .4);
 //        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
-        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .5);
-        moveToPosition(opMode, finalRotation, home_distance , home_height, 1, .5);
+        moveToPosition(opMode, deliverRotation, 71 , 30, 40, .5);
+        moveToPosition(opMode, finalRotation, home_distance , home_height, 50, .5);
     }
 
 
@@ -1025,7 +1030,7 @@ public class SnappyHardware extends MecanumDrive {
         int RotationArmCurrent = RotationMotor.getCurrentPosition();//rotation
         double currentRotationAngle = RotationArmCurrent / ENCODER_TICKS_PER_DEGREE_ROTATION + INITIAL_ROTATION_ANGLE;
 
-        StepBreakMovement(opmode, currentRotationAngle, 60 , 30, 1, .35);
+        StepBreakMovement(opmode, currentRotationAngle, 60 , 30, 70, .35);
     }
 
 
@@ -1186,20 +1191,20 @@ public class SnappyHardware extends MecanumDrive {
 
     public void PrepickUpBlock(LinearOpMode opmode) {
         //StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
-        StepBreakMovement(opmode, 0, 60, -57, 1, 1);
+        StepBreakMovement(opmode, 0, 60, -57, 20, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
-        Pivot.setPosition(0.74);
+        Pivot.setPosition(-10);
 
     }
 
     public void postPickUpBlock (LinearOpMode opmode, TeamColor teamColor) {
         if (teamColor == TeamColor.BLUE) {
-            StepBreakMovement(opmode, -10, 22, -22, 1, .4);
-            StepBreakMovement(opmode, -119, 22, -22, 1, .4);
+            StepBreakMovement(opmode, -10, 22, -22, 70, .4);
+            StepBreakMovement(opmode, -119, 22, -22, 70, .4);
         } else {
-            StepBreakMovement(opmode, 10, 22, -22, 1, .4);
-        StepBreakMovement(opmode, 119, 22, -22, 1, .4);
+            StepBreakMovement(opmode, 10, 22, -22, 70, .4);
+        StepBreakMovement(opmode, 119, 22, -22, 70, .4);
     }
 //        ClawServo.setPosition(0);
 //        IntakeServo.setPosition(0.5);

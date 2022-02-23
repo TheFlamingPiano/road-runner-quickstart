@@ -181,8 +181,8 @@ public class SnappyTeleOp extends LinearOpMode {
 
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
-                    if (isRED) CallArmMove(this, 0, 60, -57, 47, 1);
-                    else CallArmMove(this, 0, 60, -57, 47, 1);
+                    if (isRED) CallArmMove(this, 0, 60, -57, -10, 1); //47
+                    else CallArmMove(this, 0, 60, -57, -10, 1); //47
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
                     if (isRED) CallArmMove(this, -121, 27, -9.4, 39, 1);
                     else CallArmMove(this, 121, 27, -9.4, 39, 1);
@@ -190,8 +190,8 @@ public class SnappyTeleOp extends LinearOpMode {
             }
             if (toggleSwitchModeOn == 2) {// Duck Mode
                 if (gamepad2.dpad_left) { //Move to the alliance hub
-                    if (isRED) CallArmMove(this, -12, 695, 360, -70, 1); //-70 because thats the lowest it can go,should be -99
-                    else CallArmMove(this, 12, 695, 360, -70, 1);
+                    if (isRED) CallArmMove(this, -12, 695, 360, 0, 1); //-70 because thats the lowest it can go,should be -99
+                    else CallArmMove(this, 12, 695, 360, 0, 1);
                 } else if (gamepad2.dpad_right) { // Move to the ducks
                     if (isRED) CallArmMove(this, -40, 108, 62, -70, 1);//-70 because thats the lowest it can go,should be -99
                     else CallArmMove(this, 40, 108, 62, -70, 1);
@@ -203,15 +203,15 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) {
 //                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
 //                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
-                        CallArmMove(this, rotation, 300, 360, 59, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 47, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 47, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 47, 0.2);
+                        CallArmMove(this, rotation, 300, 360, -10, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, -10, 0.2);
                     } else { // blue
-                        CallArmMove(this, rotation, 300, 360, 59, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 47, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 47, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 47, 0.2);
+                        CallArmMove(this, rotation, 300, 360, -10, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, -10, 0.2);
                     }
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
@@ -221,12 +221,12 @@ public class SnappyTeleOp extends LinearOpMode {
                         CallArmMove(this, rotation, 60, 100, 59, 0.2);
                         bufferedMoves = new MoveStep(122, 60, 100, 59, 0.5);
                         bufferedMoves.next = new MoveStep(122, 300, 360, 59, .6);
-                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 0, 0.2);
+                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 60, 0.2);
                     } else {
                         CallArmMove(this, rotation, 60, 100, 59, 0.2);
                         bufferedMoves = new MoveStep(-122, 60, 100, 59, 0.5);
                         bufferedMoves.next = new MoveStep(-122, 300, 360, 59, 0.6);
-                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0, 0.2);
+                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 60, 0.2);
                     }
                 }
             }
