@@ -116,7 +116,7 @@ public class SnappyHardware extends MecanumDrive {
     double TargetARM1Angle;
     double TargetARM2Angle;
 
-
+    double RequestedWristAngle;
 
     double lastHeight;
     double lastDistance;
@@ -667,6 +667,8 @@ public class SnappyHardware extends MecanumDrive {
         double ServoMax = 0.9;
         double wristPosition = Range.scale(wristAngleBar2, AngleMin, AngleMax, ServoMin, ServoMax);
 
+        RequestedWristAngle = wristAngle;
+
         Pivot.setPosition(wristPosition);
         return wristPosition;   //
     }
@@ -823,7 +825,6 @@ public class SnappyHardware extends MecanumDrive {
 //            } else {
 //                wristSpot = 0.42;
 //            }
-
             double hubHeight;
             double heightOffset;
             if (distOffset > 100) {
@@ -889,7 +890,7 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
-            StepBreakMovement(opMode, rot, 430 , 390, 0, numberOfSeconds + 0.50);
+            StepBreakMovement(opMode, rot, 430 , 390, 50, numberOfSeconds + 0.50);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 644 + distOffset/2, hubHeight, 0, numberOfSeconds + 0.4);
@@ -937,12 +938,12 @@ public class SnappyHardware extends MecanumDrive {
             .build();
 
         // lower the intake and turn on rollers
-        moveToPosition(opMode, 0, 60, -57, 0, 1); // 0, 50, -60, -10
+        moveToPosition(opMode, 0, 50, -58, -10, 1); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
 //        Pivot.setPosition(0.74);
-        Pivot.setPosition(0);
+//        Pivot.setPosition(0);
 
         // drive into the warehouse
         followTrajectorySequence(trajectory1);
@@ -959,7 +960,7 @@ public class SnappyHardware extends MecanumDrive {
             } else {
                 offset += 25;
                 pivotOffset -=0.06;
-                moveToPosition(opMode, 0, 70 + offset, -60, 0, 1);
+                moveToPosition(opMode, 0, 70 + offset, -60, -10, 1);
                 wait(opMode, 0.25);
             }
         }
@@ -1191,10 +1192,10 @@ public class SnappyHardware extends MecanumDrive {
 
     public void PrepickUpBlock(LinearOpMode opmode) {
         //StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
-        StepBreakMovement(opmode, 0, 60, -57, 20, 1);
+        StepBreakMovement(opmode, 0, 60, -57, -10, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
-        Pivot.setPosition(-10);
+//        Pivot.setPosition(-10);
 
     }
 

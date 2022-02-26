@@ -181,8 +181,8 @@ public class SnappyTeleOp extends LinearOpMode {
 
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
-                    if (isRED) CallArmMove(this, 0, 60, -57, -10, 1); //47
-                    else CallArmMove(this, 0, 60, -57, -10, 1); //47
+                    if (isRED) CallArmMove(this, 0, 50, -58, -10, 1); //0 50 -57 - 10
+                    else CallArmMove(this, 0, 50, -58, -10, 1); //47
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
                     if (isRED) CallArmMove(this, -121, 27, -9.4, 39, 1);
                     else CallArmMove(this, 121, 27, -9.4, 39, 1);
@@ -211,7 +211,7 @@ public class SnappyTeleOp extends LinearOpMode {
                         CallArmMove(this, rotation, 300, 360, -10, 0.3);
                         bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
                         bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, -10, 0.2);
+                        bufferedMoves.next.next = new MoveStep(0, 50, -58, -10, 0.2);
                     }
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
@@ -489,7 +489,7 @@ public class SnappyTeleOp extends LinearOpMode {
                 telemetry.addData("Distance =", distance);
                 telemetry.addData("Rotation =", snappy.TargetRotationAngle);
 
-                telemetry.addData("PivotPosition", snappy.Pivot.getPosition()); //TAKE THIS OUT!!!!! DONt LET thIS STAY IN!
+                telemetry.addData("PivotAngle", snappy.RequestedWristAngle); //TAKE THIS OUT!!!!! DONt LET thIS STAY IN! ON SECOND thOGUHT I CAHNGED IT SO NEVERMIND :D
 
                 telemetry.addData("AngleRotation", (snappy.TargetRotationAngle - snappy.INITIAL_ROTATION_ANGLE));
                 //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
