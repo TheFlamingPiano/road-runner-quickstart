@@ -819,12 +819,7 @@ public class SnappyHardware extends MecanumDrive {
         if (position == 1) {
             double wristSpot;
             wristSpot = 0;
-//            if (distOffset > 100) {
-//                wristSpot = 0.34;
-//                setWristPosition(0,distance, height);
-//            } else {
-//                wristSpot = 0.42;
-//            }
+
             double hubHeight;
             double heightOffset;
             if (distOffset > 100) {
@@ -965,7 +960,6 @@ public class SnappyHardware extends MecanumDrive {
             }
         }
 
-//        waitForFreightDetected(opMode, 1.0);
         wait(opMode, 1.8); // extra time to intake block
 
         // stop intake and close the claw
@@ -986,15 +980,15 @@ public class SnappyHardware extends MecanumDrive {
         followTrajectorySequence(trajectory2);
 
 
-       moveToPosition(opMode, deliverRotation, home_distance , home_height, 70, 1);
-        moveToPosition(opMode, deliverRotation, 430 , 350, 70, 1);
-        moveToPosition(opMode, deliverRotation, 644, 379, 0, 1);
+       moveToPosition(opMode, deliverRotation, home_distance , home_height, 70, 0.5);
+        moveToPosition(opMode, deliverRotation, 430 , 350, 70, 0.5);
+        moveToPosition(opMode, deliverRotation, 644, 379, 0, 0.5);
 
-        wait(opMode, 0.4); // wait for arm to settle?
+        //wait(opMode, 0.4); // wait for arm to settle?
         // open claw and outtake rollers
         ClawServo.setPosition(0.5);
         IntakeServo.setPosition(0);
-        waitForFreightNotDetected(opMode, 1.5);
+        waitForFreightNotDetected(opMode, 1.0);
 
         // is this needed?
 //        this.wait(opMode, 0.85);

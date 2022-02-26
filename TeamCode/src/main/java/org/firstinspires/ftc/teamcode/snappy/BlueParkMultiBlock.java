@@ -96,7 +96,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 //                    .back(35)
                         .build();
 
-                snappy.followTrajectorySequence(trajectory1);
+                snappy.followTrajectorySequenceAsync(trajectory1);
 //if (i > 0) {
 //    startPos = snappy.getPoseEstimate();
 //}
