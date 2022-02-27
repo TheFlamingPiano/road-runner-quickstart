@@ -267,7 +267,13 @@ public class TrajectorySequenceRunner {
         return lastPoseError;
     }
 
+    public void breakFollowing() {
+        currentTrajectorySequence = null;
+        remainingMarkers.clear();
+    }
+
     public boolean isBusy() {
         return currentTrajectorySequence != null;
     }
 }
+
