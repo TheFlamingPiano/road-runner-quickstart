@@ -930,9 +930,9 @@ public class SnappyHardware extends MecanumDrive {
 
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(startPos)
-                .back(23)
+                .back(27)
                 .setVelConstraint(getVelocityConstraint(15, MAX_ANG_VEL, TRACK_WIDTH))
-                .back(12)
+                .back(10)
             .build();
 
 
@@ -1010,7 +1010,7 @@ public class SnappyHardware extends MecanumDrive {
 
 
 //       moveToPosition(opMode, deliverRotation, home_distance , home_height, 70, 0.5);
-        moveToPosition(opMode, deliverRotation, 430 , 370, 70, 0.7);
+        moveToPosition(opMode, deliverRotation, 430 , 415, 70, 1);
         moveToPosition(opMode, deliverRotation, 644, 415, -14, 0.6);
 
         //wait(opMode, 0.4); // wait for arm to settle?
