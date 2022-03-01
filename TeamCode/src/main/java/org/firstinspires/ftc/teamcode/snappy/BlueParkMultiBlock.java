@@ -1,5 +1,7 @@
 
     package org.firstinspires.ftc.teamcode.snappy;
+import android.graphics.PorterDuff;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,6 +30,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
             Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
+            Pose2d warehousePos = new Pose2d(32, 60, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
@@ -87,7 +90,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
             snappy.deliverXblocks(this,-119,position, 10);
             //snappy.setArmAnglesToHome(this);
             for (int i = 0; i < 4; i++) {
-                snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this, startPos);
+                snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this, startPos, warehousePos);
             }
                 TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
                         .back(31)
@@ -96,7 +99,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 //                    .back(35)
                         .build();
 
-                snappy.followTrajectorySequenceAsync(trajectory1);
+                snappy.followTrajectorySequence(trajectory1);
 //if (i > 0) {
 //    startPos = snappy.getPoseEstimate();
 //}

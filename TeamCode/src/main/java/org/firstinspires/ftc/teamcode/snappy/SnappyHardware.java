@@ -165,7 +165,7 @@ public class SnappyHardware extends MecanumDrive {
 
 
     public final double ENCODER_WHEEL_UP = 0.145;
-    public final double ENCODER_WHEEL_DOWN = .58;
+    public final double ENCODER_WHEEL_DOWN = .68; //.685 was original
 
 
     /*
@@ -175,8 +175,8 @@ public class SnappyHardware extends MecanumDrive {
      * using the current encoder values.
      */
     //DRIVE VARIABLES
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7.5, 0, 0); // set to default 8 from 0 on quickstart quide
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7.5, 0, 0);  // set to default 8 from 0 on quickstart quide
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0, 0); // set to default 8 from 0 on quickstart quide //7.5 before i changed to 8
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(9, 0, 0);  // set to default 8 from 0 on quickstart quide//7.5 before i changed to 8 to test it would fix moving away from wall
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -214,7 +214,7 @@ public class SnappyHardware extends MecanumDrive {
 //        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
 //                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0);
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -841,11 +841,11 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, rot, 200, 26+heightOffset, wristSpot, 1);
             //   this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 521 + distOffset, hubHeight, -20, numberOfSeconds);
-             this.wait(opMode, 1.0);
+             //this.wait(opMode, 1.0);
             IntakeServo.setPosition(0);
             ClawServo.setPosition(0.5);
             // snappy.followTrajectorySequence(trajectory2);
-            waitForFreightNotDetected(opMode, 1.5);
+            waitForFreightNotDetected(opMode, .2);
 //            this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
@@ -861,7 +861,7 @@ public class SnappyHardware extends MecanumDrive {
                 hubHeight = 204;
             } else {
 //                wristSpot = 0.28;
-                hubHeight = 195;
+                hubHeight = 160;
 
             }
             ClawServo.setPosition(0);
@@ -869,12 +869,12 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 209, wristSpot, 1);
-            StepBreakMovement(opMode, rot, 565 + distOffset, hubHeight, -20, numberOfSeconds);
-            this.wait(opMode, 1.0);
+            StepBreakMovement(opMode, rot, 565 + distOffset, hubHeight, -25, numberOfSeconds);
+            //this.wait(opMode, 1.0);
             IntakeServo.setPosition(0);
             ClawServo.setPosition(0.5);
             // snappy.followTrajectorySequence(trajectory2);
-            waitForFreightNotDetected(opMode, 1.5);
+            waitForFreightNotDetected(opMode, 1);
 //            this.wait(opMode, 1);
 //            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
             IntakeServo.setPosition(0.5);
@@ -891,14 +891,14 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
-            StepBreakMovement(opMode, rot, 430 , 390, 50, numberOfSeconds + 0.50);
+            StepBreakMovement(opMode, rot, 430 , 390, 50, numberOfSeconds + 0.40);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
-            StepBreakMovement(opMode, rot, 644 + distOffset/2, hubHeight, -18, numberOfSeconds + 0.4);
-              this.wait(opMode, 0.5);
+            StepBreakMovement(opMode, rot, 644 + distOffset/2, hubHeight, -23, numberOfSeconds + 0.4);
+             // this.wait(opMode, 0.5);
             IntakeServo.setPosition(0);
             ClawServo.setPosition(0.5);
-            waitForFreightNotDetected(opMode, 1.5);
+            waitForFreightNotDetected(opMode, .6);
 
 //            double startTime = System.nanoTime() * 1e-9;
 //            while ((opMode.opModeIsActive())
@@ -915,7 +915,7 @@ public class SnappyHardware extends MecanumDrive {
     }
 
 
-    public void deliverExtraBlock(TeamColor teamColor, int i, LinearOpMode opMode, Pose2d startPos) {
+    public void deliverExtraBlock(TeamColor teamColor, int i, LinearOpMode opMode, Pose2d startPos, Pose2d warehousePos) {
         double home_height = -22;
         double home_distance = 22;
         double deliverRotation, finalRotation;
@@ -930,12 +930,15 @@ public class SnappyHardware extends MecanumDrive {
 
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(startPos)
-            .back(32 + (2*i))
+                .back(23)
+                .setVelConstraint(getVelocityConstraint(15, MAX_ANG_VEL, TRACK_WIDTH))
+                .back(12)
             .build();
 
 
         // lower the intake and turn on rollers
-        moveToPosition(opMode, 0, 50, -56, -20, 1); // 0, 50, -60, -10
+       // moveToPosition(opMode, 0-(i*6), 50, -56, -20, .8); // MAY NEED ADDED BACK IN IF ASYCH ARM MOVE DOESNT WORK :D
+        NoneCodeBlockingArmMovement(opMode, 0-(i*6), 50, -56, -25, 0.9); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
@@ -963,31 +966,32 @@ public class SnappyHardware extends MecanumDrive {
 //        }
 
         while (this.isBusy()) {
+            UpdateArmMovement();
             this.update();
-            if (sensorRange.getDistance(DistanceUnit.MM) < 20) {
+            if (!ArmMoveIsActive && sensorRange.getDistance(DistanceUnit.MM) < 30) {
                this.breakFollowing();
                break;
             }
         }
 
 
+        // stop intake and close the claw
+        IntakeServo.setPosition(0.5);
+        ClawServo.setPosition(0);
+
         wait(opMode, 0.3);
 
-        // stop intake and close the claw
-        ClawServo.setPosition(0);
-        IntakeServo.setPosition(0.5);
+        moveToPosition(opMode, finalRotation, home_distance , home_height, 40, .3);
+        NoneCodeBlockingArmMovement(opMode, deliverRotation, home_distance , home_height, 70, 1.5);
 
         // drive out of warehouse
         TrajectorySequence trajectory2 = trajectorySequenceBuilder(getPoseEstimate())
+                //.lineToLinearHeading(warehousePos)
                 .lineToLinearHeading(startPos)
                 .build();
 
         // drive out of the warehouse
         followTrajectorySequenceAsync(trajectory2);
-
-        moveToPosition(opMode, finalRotation, home_distance , home_height, 70, .3);
-        NoneCodeBlockingArmMovement(opMode, deliverRotation, home_distance , home_height, 70, 1.5);
-
 
         while (this.isBusy()){
             this.update();
@@ -1006,8 +1010,8 @@ public class SnappyHardware extends MecanumDrive {
 
 
 //       moveToPosition(opMode, deliverRotation, home_distance , home_height, 70, 0.5);
-        moveToPosition(opMode, deliverRotation, 430 , 350, 70, 0.5);
-        moveToPosition(opMode, deliverRotation, 644, 379, -16, 0.5);
+        moveToPosition(opMode, deliverRotation, 430 , 370, 70, 0.7);
+        moveToPosition(opMode, deliverRotation, 644, 415, -14, 0.6);
 
         //wait(opMode, 0.4); // wait for arm to settle?
         // open claw and outtake rollers
@@ -1022,6 +1026,7 @@ public class SnappyHardware extends MecanumDrive {
         ClawServo.setPosition(ClosePosition);
 //        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .4);
 //        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
+        moveToPosition(opMode, deliverRotation, 600, 395, 20, .2);
         moveToPosition(opMode, deliverRotation, 71 , 30, 40, .5);
         moveToPosition(opMode, finalRotation, home_distance , home_height, 50, .5);
     }
