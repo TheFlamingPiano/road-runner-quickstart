@@ -30,8 +30,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
             Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
-            Pose2d startMod = new Pose2d(10,61.4,Math.toRadians(180));
-            Pose2d warehousePos = new Pose2d(29, 60, Math.toRadians(180));
+            Pose2d startMod = new Pose2d(10,61.6,Math.toRadians(180));
+            Pose2d warehousePos = new Pose2d(41, 62.6, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
             double angles[] = ik.getAngles(EXTENSION_READY_DISTANCE, EXTENSION_READY_HEIGHT);
@@ -90,11 +90,11 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
             snappy.deliverXblocks(this,-119,position, 10);
             //snappy.setArmAnglesToHome(this);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this, startPos, warehousePos, startMod);
             }
                 TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
-                        .back(31)
+                        .lineToLinearHeading(warehousePos)
 //                    .turn(Math.toRadians(90))
 //                    .strafeRight(5)
 //                    .back(35)
