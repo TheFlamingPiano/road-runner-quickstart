@@ -942,12 +942,10 @@ public class SnappyHardware extends MecanumDrive {
 
         // lower the intake and turn on rollers
        // moveToPosition(opMode, 0-(i*6), 50, -56, -20, .8); // MAY NEED ADDED BACK IN IF ASYCH ARM MOVE DOESNT WORK :D
-        NoneCodeBlockingArmMovement(opMode, 0-(i*4), 50, -56, -25, 0.9); // 0, 50, -60, -10
+        NoneCodeBlockingArmMovement(opMode, 0-(i*4), 50, -20, -45, 0.9); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
-//        Pivot.setPosition(0.74);
-//        Pivot.setPosition(0);
 
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(getPoseEstimate())

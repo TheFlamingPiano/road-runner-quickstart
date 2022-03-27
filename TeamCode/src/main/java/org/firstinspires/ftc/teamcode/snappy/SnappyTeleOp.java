@@ -178,15 +178,16 @@ public class SnappyTeleOp extends LinearOpMode {
 //                 toggleSwitchModeOn = false;
 //             }
 
+//about to work some magic with these new positions watch this
 
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
-                    if (isRED) CallArmMove(this, 0, 50, -58, -25, 1); //0 50 -57 - 10
-                    else CallArmMove(this, 0, 50, -58, -25, 1); //47
+                    if (isRED) CallArmMove(this, 0, 50, -21.6, -45, 1); //0 50 -57 - 10
+                    else CallArmMove(this, 0, 50, -21.6, -45, 1); //47
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
                     if (isRED) CallArmMove(this, -121, 27, -9.4, 39, 1);
                     else CallArmMove(this, 121, 27, -9.4, 39, 1);
-                }
+                }  //that was cool
             }
             if (toggleSwitchModeOn == 2) {// Duck Mode
                 if (gamepad2.dpad_left) { //Move to the alliance hub
