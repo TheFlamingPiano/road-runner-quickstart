@@ -611,48 +611,6 @@ public class SnappyHardware extends MecanumDrive {
 
     }
 
-//    public void deliverXblocks (LinearOpMode opMode, double rot, int position ) {
-//
-//                long numberOfSeconds = 1;
-//
-//
-//        if (position == 1) {
-//            StepBreakMovement(opMode, -23.77, 200, 370, 1, numberOfSeconds);
-//            StepBreakMovement (opMode, rot, 530, 80, 1, numberOfSeconds);
-//            StepBreakMovement(opMode, rot, 530, 80, 1, numberOfSeconds);
-//            DumpDoor.setPosition(DumpPosition);
-//            IntakeMotor.setPower(-0.25);
-//            // snappy.followTrajectorySequence(trajectory2);
-//            this.wait(opMode, 2);
-//            IntakeMotor.setPower(0);
-//            DumpDoor.setPosition(ClosePosition);
-//            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
-//        }
-//        else if (position == 2) {
-//            StepBreakMovement(opMode, -23.77, 200, 370, .8, numberOfSeconds);
-//            StepBreakMovement(opMode, rot, 200, 220, 0.9, numberOfSeconds);
-//            StepBreakMovement(opMode, rot, 578, 210, 0.9, numberOfSeconds);
-//            DumpDoor.setPosition(DumpPosition);
-//            IntakeMotor.setPower(-0.25);
-//            // snappy.followTrajectorySequence(trajectory2);
-//            IntakeMotor.setPower(0);
-//            DumpDoor.setPosition(ClosePosition);
-//            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
-//        }
-//        else {
-//            StepBreakMovement(opMode, -23.77, 200, 370, 0.4, numberOfSeconds);
-//            StepBreakMovement(opMode, rot, 200, 370, 0.4, numberOfSeconds);
-//            StepBreakMovement(opMode, rot, 670, 390, 0.4, numberOfSeconds);
-//            DumpDoor.setPosition(DumpPosition);
-//            IntakeMotor.setPower(-0.25);
-//            // snappy.followTrajectorySequence(trajectory2);
-//            IntakeMotor.setPower(0);
-//            DumpDoor.setPosition(ClosePosition);
-//            StepBreakMovement(opMode, -20, INITIAL_DISTANCE, INITIAL_HEIGHT, 1, numberOfSeconds);
-//        }
-//
-//    }
-
     public double setWristPosition(double wristAngle, double distance, double height) {
         // added return type for servo position
         double[] angles = ik.getAngles(distance, height);
@@ -703,13 +661,6 @@ public class SnappyHardware extends MecanumDrive {
         int IntakeArmNew;
         int RotationArmNew;
 
-
-        //double[] baseArmStart = ik.getPoint(currentBaseArmAngle,currentIntakeArmAngle);
-
-
-//       int DeltaBaseArm = (int) ((BaseArmNew-BaseArmCurrent)/steps);
-//       int DeltaIntakeArm = (int) ((IntakeArmNew-IntakeArmCurrent)/steps);
-
         BaseArm.setPower(1);
         IntakeArm.setPower(1);
         RotationMotor.setPower(1);
@@ -718,10 +669,6 @@ public class SnappyHardware extends MecanumDrive {
             currentTime = System.nanoTime();
 
             double elapsedTime = (currentTime - startTime);
-            //double[] baseArmStart = ik.getPoint(BaseArmNew,IntakeArmNew);
-
-            //double newHeight = baseArmStart[1] + (elapsedTime/targetTime)*(height - baseArmStart[1]);
-            //double newDistance = current[0] + (elapsedTime/targetTime)*(distance - baseArmStart[0]);
             double newRotation = currentRotationAngle + (elapsedTime / targetTime) * (rotation - currentRotationAngle);
             double newBaseArmAngle = currentBaseArmAngle + (elapsedTime / targetTime) * (angles[0] - currentBaseArmAngle);
             double newIntakeArmAngle = currentIntakeArmAngle + (elapsedTime / targetTime) * (angles[1] - currentIntakeArmAngle);
@@ -942,13 +889,14 @@ public class SnappyHardware extends MecanumDrive {
 
         // lower the intake and turn on rollers
        // moveToPosition(opMode, 0-(i*6), 50, -56, -20, .8); // MAY NEED ADDED BACK IN IF ASYCH ARM MOVE DOESNT WORK :D
-        NoneCodeBlockingArmMovement(opMode, 0-(i*4), 50, -20, -45, 0.9); // 0, 50, -60, -10
+        NoneCodeBlockingArmMovement(opMode, 0-(i*2), 50, -20, -45, .8); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
 
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(getPoseEstimate())
+                //.setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
                 .back(18)  //27
                 //.lineToLinearHeading(warehousePos)
                 .setVelConstraint(getVelocityConstraint(15, MAX_ANG_VEL, TRACK_WIDTH))
@@ -959,8 +907,8 @@ public class SnappyHardware extends MecanumDrive {
         followTrajectorySequenceAsync(trajectory1);
 
         while (this.isBusy() && opMode.opModeIsActive()) {
-            UpdateArmMovement();
             this.update();
+            UpdateArmMovement();
             double deltaX = getPoseEstimate().getX() - startPos.getX();
             if (deltaX > 27.0 && !ArmMoveIsActive && sensorRange.getDistance(DistanceUnit.MM) < 30.0) {
                this.breakFollowing();
@@ -1045,7 +993,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 //        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
         moveToPosition(opMode, deliverRotation, 600, 395, 20, .2); //0.2
         moveToPosition(opMode, deliverRotation, 71 , 30, 40, .5);
-        moveToPosition(opMode, finalRotation, home_distance , home_height, 50, .5);
+       // moveToPosition(opMode, deliverRotation, home_distance , home_height, 50, .3);
     }
 
 
@@ -1185,6 +1133,13 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 
     }
 
+    public void ArmQue () {
+
+
+    }
+
+
+
     public void UpdateArmMovement() {
         if (ArmMoveIsActive) {
             double currentTime = System.nanoTime();
@@ -1253,6 +1208,10 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 //        ClawServo.setPosition(0);
 //        IntakeServo.setPosition(0.5);
         //StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);
+
+
+
+
 
     }
 

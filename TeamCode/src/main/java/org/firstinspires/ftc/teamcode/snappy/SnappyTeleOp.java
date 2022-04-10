@@ -172,12 +172,6 @@ public class SnappyTeleOp extends LinearOpMode {
             }
 
 
-            //toggleSwitchModeOn = gamepad2.touchpad_finger_1 || toggleSwitchModeOn;
-
-//             if (gamepad2.dpad_up && gamepad2.left_bumper && gamepad2.right_bumper) {
-//                 toggleSwitchModeOn = false;
-//             }
-
 //about to work some magic with these new positions watch this
 
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
@@ -330,17 +324,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 boolean PivotTiltDown = gamepad2.a && !pivotSnapToPosition;
 
 
-//            if (gamepad2.y) {
-//                arm.Pivot.setPosition(1);
-//            }
-//            else{
-//                if (gamepad2.b) {
-//                    arm.Pivot.setPosition(0);
-//                }
-//                else {
-//                    arm.Pivot.setPosition(.5);
-//                }
-//            }
 
 //GETTING KATELYN'S ARM THING TO ROTATE
 
@@ -396,25 +379,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 snappy.TargetARM1Angle = angles[0];
                 snappy.TargetARM2Angle = angles[1];
 
-//            if (gamepad2.dpad_down && gamepad2.dpad_up ){
-//                height = 51.976;
-//                distance = 18.006;
-//            }
-
-//            if (gamepad2.dpad_up) {
-//                height = 366.16;
-//                distance = 683.91;
-//                rotation = 23.77;
-//            }
-
-//            snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
-////            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2
-////                    + (angles[0] - snappy.INITIAL_ARM1_ANGLE) / snappy.GEAR_RATIO_ARM2_STAGE * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-//            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-
-
-                //  rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime / 1000 * (gamepad2.right_stick_x);
-
                 double velocityScaling = (gamepad2.dpad_down ? 0.25 : 1.0);
 
                 if (gamepad2.b) {
@@ -429,9 +393,6 @@ public class SnappyTeleOp extends LinearOpMode {
                     }
                 }
 
-//            if (gamepad2.dpad_down && gamepad2.cross){
-//
-//            }
 
                 if (snappy.TargetRotationAngle < snappy.MINIMUM_ROTATION_ANGLE) {
                     snappy.TargetRotationAngle = snappy.MINIMUM_ROTATION_ANGLE;
@@ -446,9 +407,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 dpadrightPrevious = dpadright;
                 dpadleftPrevious = dpadleft;
 
-
-                // arm.RotationMotor.setTargetPosition((400));
-                // arm.RotationMotor.setPower(.5);
 
                 //JUST TOOK THIS OUT
                 // snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
