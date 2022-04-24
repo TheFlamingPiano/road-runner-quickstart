@@ -80,66 +80,21 @@ public class RedDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,60,position, 135);
-        snappy.StepBreakMovement(this, 0, 33,-4,1,(long)1);
+        snappy.deliverXblocks(this,60,position, 143);
+        snappy.StepBreakMovement(this, 0, 33,-4,70,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);
         snappy.RedSpin();
         snappy.followTrajectorySequence(trajectory3);
         snappy.StopCarousel();
-        snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 1,(long)1);
+        snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 140,(long)1);
         snappy.followTrajectorySequence(trajectory4);
         snappy.ClawServo.setPosition(1);
 
-//        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-//                .splineTo(new Vector2d(0, 24), Math.toRadians(90))
-//                .build();
-//
-//        drive.followTrajectory(traj);
-//
-//        sleep(2000);
-//
-//        drive.followTrajectory(
-//                drive.trajectoryBuilder(traj.end(), true)
-//                        .splineTo(new Vector2d(-24, -12), Math.toRadians(180))
-//                        .build()
-        //);
     }
 }
 
 
-
-
-
-    /*
-     * This is an example of a more complex path to really test the tuning.
-     */
-        //     @Override
-        //    public void runOpMode() throws InterruptedException {
-        //       SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        //      Pose2d startPos = new Pose2d(-48, -48, Math.toRadians(0));
-        //       drive.setPoseEstimate(startPos);
-        //       telemetry.update();
-
-        //    waitForStart();
-
-        //      if (isStopRequested()) return;
-
-        //      Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-        //              .splineTo(new Vector2d(0, 24), Math.toRadians(90))
-        //              .build();
-
-        //      drive.followTrajectory(traj);
-
-        //      sleep(2000);
-
-        //    drive.followTrajectory(
-        //             drive.trajectoryBuilder(traj.end(), true)
-        //                     .splineTo(new Vector2d(-24, -12), Math.toRadians(180))
-//build()
-        //     );
-        //   }
 
 
 

@@ -172,28 +172,24 @@ public class SnappyTeleOp extends LinearOpMode {
             }
 
 
-            //toggleSwitchModeOn = gamepad2.touchpad_finger_1 || toggleSwitchModeOn;
-
-//             if (gamepad2.dpad_up && gamepad2.left_bumper && gamepad2.right_bumper) {
-//                 toggleSwitchModeOn = false;
-//             }
+//about to work some magic with these new positions watch this
 
             if (toggleSwitchModeOn == 1) {// Shared Hub Mode
                 if (gamepad2.dpad_left) { //Move to the warehouse
-                    if (isRED) CallArmMove(this, 0, 60, -57, 0.74, 1);
-                    else CallArmMove(this, 0, 60, -57, 0.74, 1);
+                    if (isRED) CallArmMove(this, 0, 50, -21.6, -45, 1); //0 50 -57 - 10
+                    else CallArmMove(this, 0, 50, -21.6, -45, 1); //47
                 } else if (gamepad2.dpad_right) { // Move to the shared hub
-                    if (isRED) CallArmMove(this, -121, 27, -9.4, 0.7, 1);
-                    else CallArmMove(this, 121, 27, -9.4, 0.7, 1);
-                }
+                    if (isRED) CallArmMove(this, -121, 27, -9.4, 39, 1);
+                    else CallArmMove(this, 121, 27, -9.4, 39, 1);
+                }  //that was cool
             }
             if (toggleSwitchModeOn == 2) {// Duck Mode
                 if (gamepad2.dpad_left) { //Move to the alliance hub
-                    if (isRED) CallArmMove(this, -12, 695, 360, 0, 1);
+                    if (isRED) CallArmMove(this, -12, 695, 360, 0, 1); //-70 because thats the lowest it can go,should be -99
                     else CallArmMove(this, 12, 695, 360, 0, 1);
                 } else if (gamepad2.dpad_right) { // Move to the ducks
-                    if (isRED) CallArmMove(this, -40, 108, 62, 0, 1);
-                    else CallArmMove(this, 40, 108, 62, 0, 1);
+                    if (isRED) CallArmMove(this, -40, 108, 62, -70, 1);//-70 because thats the lowest it can go,should be -99
+                    else CallArmMove(this, 40, 108, 62, -70, 1);
                 }
             }
             if (toggleSwitchModeOn == 3) {// Alliance Hub Mode
@@ -202,30 +198,30 @@ public class SnappyTeleOp extends LinearOpMode {
                     if (isRED) {
 //                        CallArmMove(this, rotation, 60, -57, 0.8, 1);
 //                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
-                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
+                        CallArmMove(this, rotation, 300, 360, -10, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 60, -57, -25, 0.2);
                     } else { // blue
-                        CallArmMove(this, rotation, 300, 360, 0.8, 0.3);
-                        bufferedMoves = new MoveStep(rotation, 60, 100, 0.74, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, 0.74, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, 0.74, 0.2);
+                        CallArmMove(this, rotation, 300, 360, -10, 0.3);
+                        bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 50, -58, -25, 0.2);
                     }
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
                     if (isRED)  {
 //                        CallArmMove(this, 122, 22, -22, 0.8, 1);
 //                        bufferedMoves = new MoveStep(122, 659, 366, 0.1, 1);
-                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
-                        bufferedMoves = new MoveStep(122, 60, 100, 0.8, 0.5);
-                        bufferedMoves.next = new MoveStep(122, 300, 360, 0.8, .6);
-                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 0.5, 0.2);
+                        CallArmMove(this, rotation, 60, 100, 59, 0.2);
+                        bufferedMoves = new MoveStep(122, 60, 100, 59, 0.5);
+                        bufferedMoves.next = new MoveStep(122, 300, 360, 59, .6);
+                        bufferedMoves.next.next = new MoveStep(122, 659, 366, 60, 0.2);
                     } else {
-                        CallArmMove(this, rotation, 60, 100, 0.8, 0.2);
-                        bufferedMoves = new MoveStep(-122, 60, 100, 0.8, 0.5);
-                        bufferedMoves.next = new MoveStep(-122, 300, 360, 0.8, 0.6);
-                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 0.5, 0.2);
+                        CallArmMove(this, rotation, 60, 100, 59, 0.2);
+                        bufferedMoves = new MoveStep(-122, 60, 100, 59, 0.5);
+                        bufferedMoves.next = new MoveStep(-122, 300, 360, 59, 0.6);
+                        bufferedMoves.next.next = new MoveStep(-122, 659, 366, 60, 0.2);
                     }
                 }
             }
@@ -328,17 +324,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 boolean PivotTiltDown = gamepad2.a && !pivotSnapToPosition;
 
 
-//            if (gamepad2.y) {
-//                arm.Pivot.setPosition(1);
-//            }
-//            else{
-//                if (gamepad2.b) {
-//                    arm.Pivot.setPosition(0);
-//                }
-//                else {
-//                    arm.Pivot.setPosition(.5);
-//                }
-//            }
 
 //GETTING KATELYN'S ARM THING TO ROTATE
 
@@ -394,25 +379,6 @@ public class SnappyTeleOp extends LinearOpMode {
                 snappy.TargetARM1Angle = angles[0];
                 snappy.TargetARM2Angle = angles[1];
 
-//            if (gamepad2.dpad_down && gamepad2.dpad_up ){
-//                height = 51.976;
-//                distance = 18.006;
-//            }
-
-//            if (gamepad2.dpad_up) {
-//                height = 366.16;
-//                distance = 683.91;
-//                rotation = 23.77;
-//            }
-
-//            snappy.BaseArm.setTargetPosition((int) ((angles[0] - snappy.INITIAL_ARM1_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM1));
-////            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2
-////                    + (angles[0] - snappy.INITIAL_ARM1_ANGLE) / snappy.GEAR_RATIO_ARM2_STAGE * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-//            snappy.IntakeArm.setTargetPosition((int) ((angles[1] - snappy.INITIAL_ARM2_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ARM2));
-
-
-                //  rotation = rotation + ARM_ROTATION_VELOCITY * deltaTime / 1000 * (gamepad2.right_stick_x);
-
                 double velocityScaling = (gamepad2.dpad_down ? 0.25 : 1.0);
 
                 if (gamepad2.b) {
@@ -427,9 +393,6 @@ public class SnappyTeleOp extends LinearOpMode {
                     }
                 }
 
-//            if (gamepad2.dpad_down && gamepad2.cross){
-//
-//            }
 
                 if (snappy.TargetRotationAngle < snappy.MINIMUM_ROTATION_ANGLE) {
                     snappy.TargetRotationAngle = snappy.MINIMUM_ROTATION_ANGLE;
@@ -441,18 +404,14 @@ public class SnappyTeleOp extends LinearOpMode {
                 dpadleft = gamepad2.dpad_left;
                 dpadright = gamepad2.dpad_right;
 
-
-
                 dpadrightPrevious = dpadright;
                 dpadleftPrevious = dpadleft;
 
 
-                // arm.RotationMotor.setTargetPosition((400));
-                // arm.RotationMotor.setPower(.5);
-
                 //JUST TOOK THIS OUT
                 // snappy.RotationMotor.setTargetPosition((int) ((rotation - snappy.INITIAL_ROTATION_ANGLE) * snappy.ENCODER_TICKS_PER_DEGREE_ROTATION));
                 // snappy.TargetRotationAngle = snappy.ArmMoveData.rotation;
+
 
 
                 //PIVOT WHOSH THING
@@ -476,6 +435,12 @@ public class SnappyTeleOp extends LinearOpMode {
                     }
                     snappy.Pivot.setPosition(PivotPosition);
                 }
+
+
+
+
+
+
                 telemetry.addData("RightTrigger", gamepad2.right_trigger);
                 telemetry.addData("LeftTrigger", gamepad2.left_trigger);
                 //  telemetry.addData("IntakeCheck", snappy.IntakeServo.getPosition());
@@ -483,7 +448,7 @@ public class SnappyTeleOp extends LinearOpMode {
                 telemetry.addData("Distance =", distance);
                 telemetry.addData("Rotation =", snappy.TargetRotationAngle);
 
-                telemetry.addData("PivotPosition", snappy.Pivot.getPosition()); //TAKE THIS OUT!!!!! DONt LET thIS STAY IN!
+                telemetry.addData("PivotAngle", snappy.RequestedWristAngle); //TAKE THIS OUT!!!!! DONt LET thIS STAY IN! ON SECOND thOGUHT I CAHNGED IT SO NEVERMIND :D
 
                 telemetry.addData("AngleRotation", (snappy.TargetRotationAngle - snappy.INITIAL_ROTATION_ANGLE));
                 //telemetry.addData("RotationMotorInt",((int)(rotation * arm.ENCODER_TICKS_PER_DEGREE_ROTATION)));
@@ -509,7 +474,8 @@ public class SnappyTeleOp extends LinearOpMode {
     }
     void CallArmMove(LinearOpMode opmode, double rotationx, double distancex, double heightx, double wrist, double targetTime) {
 
-        PivotPosition = wrist;
+        //PivotPosition = wrist;   // This is a problem since wrist is now an angle, not servo position
+        PivotPosition = snappy.setWristPosition(wrist, distancex, heightx);  // this is a Hack to get the correct servo position for wrist and set global wrist variable
         height = heightx;
         distance = distancex;
         lastHeight = height;
