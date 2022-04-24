@@ -1138,8 +1138,6 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 
     }
 
-
-
     public void UpdateArmMovement() {
         if (ArmMoveIsActive) {
             double currentTime = System.nanoTime();
@@ -1214,6 +1212,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 
 
     }
+//https://www.youtube.com/watch?v=BFrkRFgHLVk hehehe lasagna
 
 
 
