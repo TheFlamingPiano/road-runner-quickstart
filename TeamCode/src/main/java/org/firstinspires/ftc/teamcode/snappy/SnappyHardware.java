@@ -176,7 +176,7 @@ public class SnappyHardware extends MecanumDrive {
      */
     //DRIVE VARIABLES
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0); // set to default 8 from 0 on quickstart quide //7.5 before i changed to 8
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0);  // set to default 8 from 0 on quickstart quide//7.5 before i changed to 8 to test it would fix moving away from wall
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0, 0);  // set to default 8 from 0 on quickstart quide//7.5 before i changed to 8 to test it would fix moving away from wall
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -765,9 +765,9 @@ public class SnappyHardware extends MecanumDrive {
 
     public void deliverXblocks(LinearOpMode opMode, double rot, int position, double distOffset) {
 
-        double numberOfSeconds = .4;
+        double numberOfSeconds = .3;
 
-        double waitTime = 2.0;
+        double waitTime =2.0 ;
 
         if (position == 1) {
             double wristSpot;
@@ -844,7 +844,7 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
-            StepBreakMovement(opMode, rot, 430 , 390, 50, numberOfSeconds + 0.40);
+            StepBreakMovement(opMode, rot, 430 , 390, 50, numberOfSeconds + 0.4);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 644 + distOffset/2, hubHeight, -23, numberOfSeconds + 0.4);
@@ -889,7 +889,7 @@ public class SnappyHardware extends MecanumDrive {
 
         // lower the intake and turn on rollers
        // moveToPosition(opMode, 0-(i*6), 50, -56, -20, .8); // MAY NEED ADDED BACK IN IF ASYCH ARM MOVE DOESNT WORK :D
-        NoneCodeBlockingArmMovement(opMode, 0-(i*2), 50, -20, -45, .8); // 0, 50, -60, -10
+        NoneCodeBlockingArmMovement(opMode, 0-(i*5), 50, -20, -45, 1); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
@@ -899,7 +899,7 @@ public class SnappyHardware extends MecanumDrive {
                 //.setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
                 .back(18)  //27
                 //.lineToLinearHeading(warehousePos)
-                .setVelConstraint(getVelocityConstraint(15, MAX_ANG_VEL, TRACK_WIDTH))
+                .setVelConstraint(getVelocityConstraint(20, MAX_ANG_VEL, TRACK_WIDTH))
                 .back(18) //14
                 .build();
 
@@ -910,7 +910,7 @@ public class SnappyHardware extends MecanumDrive {
             this.update();
             UpdateArmMovement();
             double deltaX = getPoseEstimate().getX() - startPos.getX();
-            if (deltaX > 27.0 && !ArmMoveIsActive && sensorRange.getDistance(DistanceUnit.MM) < 30.0) {
+            if (deltaX > 26.0 && !ArmMoveIsActive && sensorRange.getDistance(DistanceUnit.MM) < 30.0) {  //the deltaX used to be 27, changing to 26 to speed up
                this.breakFollowing();
                this.setDrivePower(new Pose2d());
                break;
@@ -922,13 +922,13 @@ public class SnappyHardware extends MecanumDrive {
         IntakeServo.setPosition(0.5);
         ClawServo.setPosition(0);
 
-        wait(opMode, 0.3);
+        wait(opMode, 0.1);    //taking out the wait after picking up block, may need added back in  //CHANGES ARE BEING MADE TO THE WAITS
 
         moveToPosition(opMode, finalRotation, home_distance , home_height, 40, .5);
 
-        wait(opMode, 0.1);// wait for odometry to come back into contact
+        //wait(opMode, 0.1);// wait for odometry to come back into contact  //THIS IS BEING TAKEN OUT AS WELL TO SPEED THINGS UP
 
-        NoneCodeBlockingArmMovement(opMode, deliverRotation, home_distance , home_height, 70, 1.5);
+        NoneCodeBlockingArmMovement(opMode, deliverRotation, home_distance , home_height, 70, 1.2);
 
        TrajectorySequence trajectory2;
 
@@ -962,7 +962,7 @@ public class SnappyHardware extends MecanumDrive {
         //followTrajectorySequence(trajectory2);
 
 boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
-        moveToPosition(opMode, deliverRotation, 430 , 415, 70, .5);
+        moveToPosition(opMode, deliverRotation, 430 , 415, 70, 0.5);
         moveToPosition(opMode, deliverRotation, 644, 415, -24, 0.5); //0.6
 
 //        if (sensorRange.getDistance(DistanceUnit.MM) > 30.0){
@@ -979,20 +979,20 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         } else{
             ClawServo.setPosition(0.46);
             IntakeServo.setPosition(0);
-            wait(opMode, 1.5);
+            wait(opMode, 0.5);             //ORIGNALLY WAS 1.5 BOTH ARE BEING CHANGED TO DECREASE TIME
 
         }
-        waitForFreightNotDetected(opMode, 5);
+        waitForFreightNotDetected(opMode, .5);       //ORIGINALLY WAS 5
 
         // is this needed?
 //        this.wait(opMode, 0.85);
 
-        IntakeServo.setPosition(0.5);
-        ClawServo.setPosition(ClosePosition);
+       // IntakeServo.setPosition(0.5);         //SAME AS BELOW but still may needed to be put back in        a
+      //  ClawServo.setPosition(ClosePosition); // THESE AREN'T TO NESSACARY CAUSE THESE ARE CHANGED AT BEGGINING OF LOOP
 //        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .4);
 //        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
         moveToPosition(opMode, deliverRotation, 600, 395, 20, .2); //0.2
-        moveToPosition(opMode, deliverRotation, 71 , 30, 40, .5);
+        moveToPosition(opMode, deliverRotation, 71 , 30, 40, .6);
        // moveToPosition(opMode, deliverRotation, home_distance , home_height, 50, .3);
     }
 
