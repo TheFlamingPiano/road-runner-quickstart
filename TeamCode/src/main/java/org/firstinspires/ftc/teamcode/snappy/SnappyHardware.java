@@ -915,6 +915,10 @@ public class SnappyHardware extends MecanumDrive {
         IntakeServo.setPosition(0.5);
         ClawServo.setPosition(0.1);
 
+        if(i==4){
+            return;
+        }
+
         wait(opMode, 0.1);    //taking out the wait after picking up block, may need added back in  //CHANGES ARE BEING MADE TO THE WAITS RMOEVE THIS WITH NEW INTAKE
 
         moveToPosition(opMode, finalRotation, home_distance , home_height, 40, .5);
@@ -957,19 +961,19 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         }
 
 
-        if (i == 3) {
-
-            followTrajectorySequenceAsync(trajectory1);
-
-            NoneCodeBlockingArmMovement(opMode, 0, home_distance , home_height, 70, 1.2);
-
-            while(opMode.opModeIsActive()){
-                this.update();
-                UpdateArmMovement();
-            }
-            return;
-
-        }
+//        if (i == 3) {
+//
+//            followTrajectorySequenceAsync(trajectory1);
+//
+//            NoneCodeBlockingArmMovement(opMode, 0, home_distance , home_height, 70, 1.2);
+//
+//            while(opMode.opModeIsActive()){
+//                this.update();
+//                UpdateArmMovement();
+//            }
+//            return;
+//
+//        }
 
         moveToPosition(opMode, deliverRotation, 600, 395, 20, .2); //0.2
         moveToPosition(opMode, middleStageRotation, 71 , 30, 40, .6);

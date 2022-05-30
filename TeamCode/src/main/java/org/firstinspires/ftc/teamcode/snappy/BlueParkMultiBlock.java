@@ -67,7 +67,7 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.BLUE);
 
             snappy.deliverXblocks(this,-119,position, 10);
             //snappy.setArmAnglesToHome(this);
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i <= 4; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.BLUE, i, this, startPos, warehousePos, startMod);
             }
                 TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(snappy.getPoseEstimate())
