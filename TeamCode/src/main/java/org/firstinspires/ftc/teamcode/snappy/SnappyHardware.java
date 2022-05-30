@@ -795,7 +795,7 @@ public class SnappyHardware extends MecanumDrive {
             IntakeServo.setPosition(0);
             ClawServo.setPosition(0.5);
             // snappy.followTrajectorySequence(trajectory2);
-            waitForFreightNotDetected(opMode, 1);
+            waitForFreightNotDetected(opMode, 1); // These waits wont be needed once new intake it switched on
 //            this.wait(opMode, 1);
             IntakeServo.setPosition(0.5);
             ClawServo.setPosition(ClosePosition);
@@ -874,11 +874,13 @@ public class SnappyHardware extends MecanumDrive {
     public void deliverExtraBlock(TeamColor teamColor, int i, LinearOpMode opMode, Pose2d startPos, Pose2d warehousePos, Pose2d startMod) {
         double home_height = -22;
         double home_distance = 22;
-        double deliverRotation, finalRotation;
+        double deliverRotation, finalRotation, middleStageRotation;
         if (teamColor == TeamColor.BLUE){
+            middleStageRotation = -80;
             deliverRotation = -119;
             finalRotation = -10;
         } else {
+            middleStageRotation = 80;
             deliverRotation = 119;
             finalRotation = 10;
         }
@@ -893,14 +895,13 @@ public class SnappyHardware extends MecanumDrive {
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         IntakeServo.setPosition(1);
         ClawServo.setPosition(0.3);
-
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(getPoseEstimate())
                 //.setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
-                .back(18)  //27
+                .back(20)  //27
                 //.lineToLinearHeading(warehousePos)
-                .setVelConstraint(getVelocityConstraint(20, MAX_ANG_VEL, TRACK_WIDTH))
-                .back(18) //14
+                .setVelConstraint(getVelocityConstraint(22, MAX_ANG_VEL, TRACK_WIDTH))
+                .back(16) //14
                 .build();
 
         // drive into the warehouse
@@ -920,9 +921,9 @@ public class SnappyHardware extends MecanumDrive {
 
         // stop intake and close the claw
         IntakeServo.setPosition(0.5);
-        ClawServo.setPosition(0);
+        ClawServo.setPosition(0.1);
 
-        wait(opMode, 0.1);    //taking out the wait after picking up block, may need added back in  //CHANGES ARE BEING MADE TO THE WAITS
+        wait(opMode, 0.1);    //taking out the wait after picking up block, may need added back in  //CHANGES ARE BEING MADE TO THE WAITS RMOEVE THIS WITH NEW INTAKE
 
         moveToPosition(opMode, finalRotation, home_distance , home_height, 40, .5);
 
@@ -935,11 +936,11 @@ public class SnappyHardware extends MecanumDrive {
         // drive out of warehouse
         if (teamColor == teamColor.RED) {
              trajectory2 = trajectorySequenceBuilder(getPoseEstimate())
-                    .lineToLinearHeading(startPos)
+                     .lineToLinearHeading(startPos)
                     .build();
         } else{
              trajectory2 = trajectorySequenceBuilder(getPoseEstimate())
-                    .lineToLinearHeading(startMod)
+                     .lineToLinearHeading(startMod)
                     .build();
         }
 
@@ -964,7 +965,6 @@ public class SnappyHardware extends MecanumDrive {
 boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         moveToPosition(opMode, deliverRotation, 430 , 415, 70, 0.5);
         moveToPosition(opMode, deliverRotation, 644, 415, -24, 0.5); //0.6
-
 //        if (sensorRange.getDistance(DistanceUnit.MM) > 30.0){
 //            ClawServo.setPosition(0.475);
 //            IntakeServo.setPosition(0);
@@ -980,19 +980,25 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
             ClawServo.setPosition(0.46);
             IntakeServo.setPosition(0);
             wait(opMode, 0.5);             //ORIGNALLY WAS 1.5 BOTH ARE BEING CHANGED TO DECREASE TIME
+        }
+
+
+        if (i == 3) {
+
+            followTrajectorySequenceAsync(trajectory1);
+
+            NoneCodeBlockingArmMovement(opMode, 0, home_distance , home_height, 70, 1.2);
+
+            while(opMode.opModeIsActive()){
+                this.update();
+                UpdateArmMovement();
+            }
+            return;
 
         }
-        waitForFreightNotDetected(opMode, .5);       //ORIGINALLY WAS 5
 
-        // is this needed?
-//        this.wait(opMode, 0.85);
-
-       // IntakeServo.setPosition(0.5);         //SAME AS BELOW but still may needed to be put back in        a
-      //  ClawServo.setPosition(ClosePosition); // THESE AREN'T TO NESSACARY CAUSE THESE ARE CHANGED AT BEGGINING OF LOOP
-//        moveToPosition(opMode, deliverRotation, 71 , 30, 1, .4);
-//        moveToPosition(opMode, finalRotation, 60, 0, 1, .5);
         moveToPosition(opMode, deliverRotation, 600, 395, 20, .2); //0.2
-        moveToPosition(opMode, deliverRotation, 71 , 30, 40, .6);
+        moveToPosition(opMode, middleStageRotation, 71 , 30, 40, .6);
        // moveToPosition(opMode, deliverRotation, home_distance , home_height, 50, .3);
     }
 

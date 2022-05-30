@@ -31,6 +31,7 @@ public class Encoder_Check extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            telemetry.addData("Distance Sensor", snappy.sensorRange.getDistance(DistanceUnit.MM));
             telemetry.addData("LeftGreen",cam.greenleft-cam.redleft-cam.blueleft);
             telemetry.addData("MiddleGreen",cam.greenmiddle-cam.redmiddle-cam.bluemiddle);
             telemetry.addData("RightGreen",cam.greenright-cam.redright-cam.blueright);
