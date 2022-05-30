@@ -245,24 +245,24 @@ public class SnappyTeleOp extends LinearOpMode {
             if ( (toggleSwitchModeOn == 1 || toggleSwitchModeOn == 3) ) {
                 if (IntakePower > 0.1) {
                     snappy.ClawServo.setPosition(IntakePosition);
-                    snappy.IntakeServo.setPosition(1);
+                    snappy.SetIntakePosition(1);
                  } else if (OuttakePower < -0.1 ) {
-                    snappy.IntakeServo.setPosition(0);
+                    snappy.SetIntakePosition(0);
                     snappy.ClawServo.setPosition(OpenPosition);
                 } else {
                     snappy.ClawServo.setPosition(ClosePosition);
-                    snappy.IntakeServo.setPosition(0.5);
+                    snappy.SetIntakePosition(0.5);
                 }
             } else {      //THIS IS THE DUCK MODE
                 if (IntakePower > 0.1) {
                     snappy.ClawServo.setPosition(DuckPosition);
-                    snappy.IntakeServo.setPosition(1);
+                    snappy.SetIntakePosition(1);
                 } else if (OuttakePower < -0.1 ) {
-                    snappy.IntakeServo.setPosition(0);
+                    snappy.SetIntakePosition(0);
                     snappy.ClawServo.setPosition(OpenPosition);
                 } else {
                     snappy.ClawServo.setPosition(ClosePosition);
-                    snappy.IntakeServo.setPosition(0.5);
+                    snappy.SetIntakePosition(0.5);
                 }
             }
 

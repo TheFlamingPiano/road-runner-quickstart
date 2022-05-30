@@ -78,9 +78,9 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
         private void pickUpBlock(SnappyHardware snappy) {
             snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
             snappy.StepBreakMovement(this, 0, 126, -75, .4,(long)1);
-            snappy.IntakeServo.setPosition(1);
+            snappy.SetIntakePosition(1);
             snappy.wait(this, 1);
-            snappy.IntakeServo.setPosition(0.5);
+            snappy.SetIntakePosition(0.5);
             snappy.StepBreakMovement(this, 0, 126, 40, 1, (long)1);
             snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE,91,-10,1,1);
         }

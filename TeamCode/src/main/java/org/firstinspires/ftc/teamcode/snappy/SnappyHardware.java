@@ -69,7 +69,8 @@ public class SnappyHardware extends MecanumDrive {
 
     //ARM HARDWARE
     public DcMotor CaraSlideMotor;
-    public Servo IntakeServo;
+    public Servo LeftIntakeServo;
+    public Servo RightIntakeServo;
     public Servo ClawServo;
     public Servo Pivot;
     public Servo FrontEncoderServo;
@@ -240,7 +241,8 @@ public class SnappyHardware extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "RightFront");  // Hub 1, port 3
 
         CaraSlideMotor = hardwareMap.get(DcMotor.class, "CaraSlideMotor");
-        IntakeServo = hardwareMap.get(Servo.class, "IntakeServo");  //Control Hub 2, Port 3
+        LeftIntakeServo = hardwareMap.get(Servo.class, "LeftIntakeServo");  //Control Hub 2, Port 3
+        RightIntakeServo = hardwareMap.get(Servo.class, "RightIntakeServo"); //somewhere
         ClawServo = hardwareMap.get(Servo.class, "ClawServo"); //port 1 control hub
         Pivot = hardwareMap.get(Servo.class, "Pivot");//port 2 pivot ADD THIS TO CONFIG OR ELSE EVEYTHING WILL EXPLODE!!!! control hub
 
@@ -259,7 +261,8 @@ public class SnappyHardware extends MecanumDrive {
         Pivot.setDirection(Servo.Direction.REVERSE);
         CarsouselServo.setDirection(Servo.Direction.FORWARD);
         CaraSlideMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        IntakeServo.setDirection(Servo.Direction.FORWARD);
+        LeftIntakeServo.setDirection(Servo.Direction.FORWARD);
+        RightIntakeServo.setDirection(Servo.Direction.REVERSE);
         ClawServo.setDirection(Servo.Direction.FORWARD);
 
       //  RotationMotor.setTargetPosition(0);
@@ -386,6 +389,11 @@ public class SnappyHardware extends MecanumDrive {
 
         CarsouselServo.setPosition(0.0);
 
+    }
+
+    public void SetIntakePosition(double position){
+        LeftIntakeServo.setPosition(position);
+        RightIntakeServo.setPosition(position);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -792,12 +800,12 @@ public class SnappyHardware extends MecanumDrive {
                 this.wait(opMode, 2);
             }
              //this.wait(opMode, 1.0);
-            IntakeServo.setPosition(0);
+            SetIntakePosition(0);
             ClawServo.setPosition(0.5);
             // snappy.followTrajectorySequence(trajectory2);
             waitForFreightNotDetected(opMode, 1); // These waits wont be needed once new intake it switched on
 //            this.wait(opMode, 1);
-            IntakeServo.setPosition(0.5);
+            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else if (position == 2) {
@@ -824,13 +832,13 @@ public class SnappyHardware extends MecanumDrive {
                 this.wait(opMode, 2);
             }
             //this.wait(opMode, 1.0);
-            IntakeServo.setPosition(0);
+            SetIntakePosition(0);
             ClawServo.setPosition(0.5);
             // snappy.followTrajectorySequence(trajectory2);
             waitForFreightNotDetected(opMode, 1);
 //            this.wait(opMode, 1);
 //            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
-            IntakeServo.setPosition(0.5);
+            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else {
@@ -852,10 +860,10 @@ public class SnappyHardware extends MecanumDrive {
             if (distOffset > 100){
                 this.wait(opMode, 2);
             }
-            IntakeServo.setPosition(0);
+            SetIntakePosition(0);
             ClawServo.setPosition(0.5);
             waitForFreightNotDetected(opMode, 1);
-            IntakeServo.setPosition(0.5);
+            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71 , 30, 60, numberOfSeconds);
         }
@@ -885,7 +893,7 @@ public class SnappyHardware extends MecanumDrive {
        // moveToPosition(opMode, 0-(i*6), 50, -56, -20, .8); // MAY NEED ADDED BACK IN IF ASYCH ARM MOVE DOESNT WORK :D
         NoneCodeBlockingArmMovement(opMode, 0-(i*6.6), 50, -20, -45, 1); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
-        IntakeServo.setPosition(1);
+        SetIntakePosition(1);
         ClawServo.setPosition(0.3);
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(getPoseEstimate())
@@ -912,7 +920,7 @@ public class SnappyHardware extends MecanumDrive {
 
 
         // stop intake and close the claw
-        IntakeServo.setPosition(0.5);
+        SetIntakePosition(0.5);
         ClawServo.setPosition(0.1);
 
         if(i==4){
@@ -952,11 +960,11 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 
         if (blockIsPresent) {
             ClawServo.setPosition(0.49);
-            IntakeServo.setPosition(0);
+            SetIntakePosition(0);
             wait(opMode, .5);
         } else{
             ClawServo.setPosition(0.46);
-            IntakeServo.setPosition(0);
+            SetIntakePosition(0);
             wait(opMode, 0.5);             //ORIGNALLY WAS 1.5 BOTH ARE BEING CHANGED TO DECREASE TIME
         }
 
@@ -1172,7 +1180,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
     public void PrepickUpBlock(LinearOpMode opmode) {
         //StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
         StepBreakMovement(opmode, 0, 60, -57, -10, 1);
-        IntakeServo.setPosition(1);
+        SetIntakePosition(1);
         ClawServo.setPosition(0.3);
 //        Pivot.setPosition(-10);
 
@@ -1187,7 +1195,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         StepBreakMovement(opmode, 119, 22, -22, 70, .4);
     }
 //        ClawServo.setPosition(0);
-//        IntakeServo.setPosition(0.5);
+//        SetIntakePosition(0.5);
         //StepBreakMovement(opmode, INITIAL_ROTATION_ANGLE,91,-10,1,1);
 
 

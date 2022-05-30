@@ -70,10 +70,10 @@ public class ASnappyDelivery extends LinearOpMode {
         snappy.wait(this,1.0);
         snappy.moveArmToPosition(this, -23.77, 670, 390, 0.4);
         snappy.ClawServo.setPosition(snappy.DumpPosition);
-        snappy.IntakeServo.setPosition(0);
+       // snappy.IntakeServo.setPosition(0);
        // snappy.followTrajectorySequence(trajectory2);
         snappy.wait(2);
-        snappy.IntakeServo.setPosition(0.5);
+        //snappy.IntakeServo.setPosition(0.5);
         snappy.ClawServo.setPosition(snappy.ClosePosition);
         snappy.moveArmToPosition(this,-35, snappy.INITIAL_DISTANCE, snappy.INITIAL_HEIGHT, 0.8);
 

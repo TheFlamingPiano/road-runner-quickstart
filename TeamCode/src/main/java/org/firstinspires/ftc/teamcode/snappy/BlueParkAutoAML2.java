@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
             }
             // should be a method in SnappyHardware
             snappy.ClawServo.setPosition(0.55);
-            snappy.IntakeServo.setPosition(outtakePower);
+            //snappy.IntakeServo.setPosition(outtakePower);
 
 
             startTime = System.nanoTime();
@@ -101,7 +101,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
             }
 
             snappy.ClawServo.setPosition(0.3);
-            snappy.IntakeServo.setPosition(0);
+            //snappy.IntakeServo.setPosition(0);
             snappy.moveArmToPosition(this, -35, snappy.SAFE_POSITION_DISTANCE, snappy.SAFE_POSITION_HEIGHT, 0.85);
 
             startTime = System.nanoTime();
