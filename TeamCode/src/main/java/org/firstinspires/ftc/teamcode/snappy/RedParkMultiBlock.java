@@ -63,14 +63,14 @@ cam.runOpMode(this,true, SnappyHardware.TeamColor.RED);
 
 
             snappy.deliverXblocks(this,119,position, 10);
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i <= 4; i++) {
                 snappy.deliverExtraBlock(SnappyHardware.TeamColor.RED, -i, this, startPos, warehousePos, startMod);
             }
             TrajectorySequence trajectory1 = snappy.trajectorySequenceBuilder(startPos)
                     .back(31)
                     .build();
 
-            snappy.followTrajectorySequence(trajectory1);
+           // snappy.followTrajectorySequence(trajectory1);
 
 
         }

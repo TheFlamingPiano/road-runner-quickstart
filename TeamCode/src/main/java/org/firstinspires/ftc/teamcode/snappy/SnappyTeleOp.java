@@ -60,10 +60,10 @@ public class SnappyTeleOp extends LinearOpMode {
 
 
 //INTAKE POSITIONS, SUPER COOL SYSTEM BY THE WAY
-        double OpenPosition = 0.5;
-        double IntakePosition = 0.3;
-        double ClosePosition = 0.1;
-        double DuckPosition = 0.1;
+        double OpenPosition = 0.42;
+        double IntakePosition = 0.2;
+        double ClosePosition = 0.0;
+        double DuckPosition = 0.0;
 
         //PIVOT FOR INTAKE THAT JOOEY MADE
          PivotPosition = 1;
@@ -200,13 +200,13 @@ public class SnappyTeleOp extends LinearOpMode {
 //                        bufferedMoves = new MoveStep(0, 60, -57, 0.74, 1);
                         CallArmMove(this, rotation, 300, 360, -10, 0.3);
                         bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
-                        bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 60, -57, -25, 0.2);
+                        bufferedMoves.next = new MoveStep(0, 50, 0, -10, 0.5);
+                        bufferedMoves.next.next = new MoveStep(0, 50, -21.6, -45, 0.2);
                     } else { // blue
                         CallArmMove(this, rotation, 300, 360, -10, 0.3);
                         bufferedMoves = new MoveStep(rotation, 60, 100, -10, 0.2);
                         bufferedMoves.next = new MoveStep(0, 60, 0, -10, 0.5);
-                        bufferedMoves.next.next = new MoveStep(0, 50, -58, -25, 0.2);
+                        bufferedMoves.next.next = new MoveStep(0, 50, -21.6, -45, 0.2);
                     }
                 } else if (gamepad2.dpad_right) { // Move to the alliance hub
                     double rotation = snappy.getCurrentRotationAngle();
@@ -247,7 +247,7 @@ public class SnappyTeleOp extends LinearOpMode {
                     snappy.ClawServo.setPosition(IntakePosition);
                     snappy.SetIntakePosition(1);
                  } else if (OuttakePower < -0.1 ) {
-                    snappy.SetIntakePosition(0);
+                    //snappy.SetIntakePosition(0);
                     snappy.ClawServo.setPosition(OpenPosition);
                 } else {
                     snappy.ClawServo.setPosition(ClosePosition);

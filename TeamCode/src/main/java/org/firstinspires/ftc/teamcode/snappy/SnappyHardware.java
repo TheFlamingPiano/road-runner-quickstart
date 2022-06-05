@@ -61,7 +61,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 @Config
 public class SnappyHardware extends MecanumDrive {
-
+//change intake position//stop intake servo on delivery
 
 
     //Carousel thingy
@@ -137,11 +137,17 @@ public class SnappyHardware extends MecanumDrive {
     double ARM1_POWER = 1;
     double ARM2_POWER = 1;
 
-    double ClosePosition = 0.2;
-    double IntakePosition = 0.45;
+//    double ClosePosition = 0.2;       USED ON OLT INTAKE FOR POSITIONS
+//    double IntakePosition = 0.45;
     double DumpPosition = 0.55;
 
     double wristAngleTarget;
+
+    double OpenPosition = 0.42;
+    double IntakePosition = 0.25;
+    double ClosePosition = 0.0;
+    double DuckPosition = 0.0;
+
 
     //VELOCITIES
     //public final double ROTATION_VELOCITY = 50; //degrees per second
@@ -790,7 +796,7 @@ public class SnappyHardware extends MecanumDrive {
                 hubHeight = 13;
                 heightOffset = 0;
             }
-            ClawServo.setPosition(0);
+            ClawServo.setPosition(ClosePosition);
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 26+heightOffset, wristSpot, .6);
@@ -800,12 +806,12 @@ public class SnappyHardware extends MecanumDrive {
                 this.wait(opMode, 2);
             }
              //this.wait(opMode, 1.0);
-            SetIntakePosition(0);
-            ClawServo.setPosition(0.5);
+//            SetIntakePosition(0);
+            ClawServo.setPosition(OpenPosition);
             // snappy.followTrajectorySequence(trajectory2);
             waitForFreightNotDetected(opMode, 1); // These waits wont be needed once new intake it switched on
 //            this.wait(opMode, 1);
-            SetIntakePosition(0.5);
+//            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else if (position == 2) {
@@ -822,7 +828,7 @@ public class SnappyHardware extends MecanumDrive {
                 hubHeight = 180;
 
             }
-            ClawServo.setPosition(0);
+            ClawServo.setPosition(ClosePosition);
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
             //  this.wait(opMode, 0.5);
@@ -832,13 +838,13 @@ public class SnappyHardware extends MecanumDrive {
                 this.wait(opMode, 2);
             }
             //this.wait(opMode, 1.0);
-            SetIntakePosition(0);
-            ClawServo.setPosition(0.5);
+//            SetIntakePosition(0);
+            ClawServo.setPosition(OpenPosition);
             // snappy.followTrajectorySequence(trajectory2);
             waitForFreightNotDetected(opMode, 1);
 //            this.wait(opMode, 1);
 //            StepBreakMovement(opMode, rot, 200, 110, 0.8, numberOfSeconds);
-            SetIntakePosition(0.5);
+//            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
         } else {
@@ -848,7 +854,7 @@ public class SnappyHardware extends MecanumDrive {
             } else {
                 hubHeight = 346;
             }
-            ClawServo.setPosition(0);
+            ClawServo.setPosition(ClosePosition);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
@@ -860,10 +866,10 @@ public class SnappyHardware extends MecanumDrive {
             if (distOffset > 100){
                 this.wait(opMode, 2);
             }
-            SetIntakePosition(0);
-            ClawServo.setPosition(0.5);
+//            SetIntakePosition(0);
+            ClawServo.setPosition(OpenPosition);
             waitForFreightNotDetected(opMode, 1);
-            SetIntakePosition(0.5);
+//            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71 , 30, 60, numberOfSeconds);
         }
@@ -894,7 +900,7 @@ public class SnappyHardware extends MecanumDrive {
         NoneCodeBlockingArmMovement(opMode, 0-(i*6.6), 50, -20, -45, 1); // 0, 50, -60, -10
 //        moveToPosition(opMode, 0, 60, -57, 1, 1);
         SetIntakePosition(1);
-        ClawServo.setPosition(0.3);
+        ClawServo.setPosition(IntakePosition);
         // drive into warehouse
         TrajectorySequence trajectory1 = trajectorySequenceBuilder(getPoseEstimate())
                 //.setVelConstraint(getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH))
@@ -921,7 +927,7 @@ public class SnappyHardware extends MecanumDrive {
 
         // stop intake and close the claw
         SetIntakePosition(0.5);
-        ClawServo.setPosition(0.1);
+        ClawServo.setPosition(ClosePosition);
 
         if(i==4){
             return;
@@ -959,12 +965,12 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         moveToPosition(opMode, deliverRotation, 581, 356.9, -9, 0.5); //0.6
 
         if (blockIsPresent) {
-            ClawServo.setPosition(0.49);
-            SetIntakePosition(0);
+            ClawServo.setPosition(OpenPosition);
+//            SetIntakePosition(0);
             wait(opMode, .5);
         } else{
-            ClawServo.setPosition(0.46);
-            SetIntakePosition(0);
+            ClawServo.setPosition(OpenPosition);
+//            SetIntakePosition(0);
             wait(opMode, 0.5);             //ORIGNALLY WAS 1.5 BOTH ARE BEING CHANGED TO DECREASE TIME
         }
 
@@ -1004,7 +1010,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
                 && startTime + timeout > System.nanoTime() * 1e-9
                 && sensorRange.getDistance(DistanceUnit.MM) < 87.0) {
             if (startTime + 1 > System.nanoTime() * 1e-9) {
-                ClawServo.setPosition(0.475);
+                ClawServo.setPosition(OpenPosition);
             }
         }
     }
@@ -1181,7 +1187,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         //StepBreakMovement(opmode, -10, 30, 10, 1, 0.3);
         StepBreakMovement(opmode, 0, 60, -57, -10, 1);
         SetIntakePosition(1);
-        ClawServo.setPosition(0.3);
+        ClawServo.setPosition(IntakePosition);
 //        Pivot.setPosition(-10);
 
     }
