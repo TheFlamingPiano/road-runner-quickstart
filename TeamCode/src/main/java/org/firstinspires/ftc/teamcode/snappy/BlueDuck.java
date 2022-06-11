@@ -89,7 +89,7 @@ public class BlueDuck extends LinearOpMode {
         snappy.StopCarousel();
         snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 140,(long)1);
         snappy.followTrajectorySequence(trajectory4);
-        snappy.ClawServo.setPosition(1);
+        //snappy.ClawServo.setPosition(1);
 
     }
 }

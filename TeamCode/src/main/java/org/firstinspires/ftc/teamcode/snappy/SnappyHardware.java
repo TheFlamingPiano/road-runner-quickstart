@@ -32,12 +32,14 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -78,6 +80,8 @@ public class SnappyHardware extends MecanumDrive {
     public DcMotorEx BaseArm;
     public DcMotorEx IntakeArm;
     public DistanceSensor sensorRange;
+
+   // Gyroscope gyro    = null;
 
     public final double MINIMUM_ROTATION_ANGLE = -160.0; //degrees //-135
     public final double MAXIMUM_ROTATION_ANGLE = 160.0; //degrees
@@ -813,7 +817,7 @@ public class SnappyHardware extends MecanumDrive {
 //            this.wait(opMode, 1);
 //            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
-            StepBreakMovement(opMode, rot, 71, 30, 60, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 71, 30, 90, numberOfSeconds + 3/10); //wrist changed to 90, added time
         } else if (position == 2) {
             double wristSpot;
             double hubHeight;
@@ -925,15 +929,25 @@ public class SnappyHardware extends MecanumDrive {
         }
 
 
-        // stop intake and close the claw
-        SetIntakePosition(0.5);
+        // stop intake and close the claw stopping intake moved down
         ClawServo.setPosition(ClosePosition);
 
+
+
         if(i==4){
+            SetIntakePosition(0.5);
             return;
         }
 
+        if(i==-4){
+            SetIntakePosition(0.5);
+            return;
+        }
+
+
         wait(opMode, 0.1);    //taking out the wait after picking up block, may need added back in  //CHANGES ARE BEING MADE TO THE WAITS RMOEVE THIS WITH NEW INTAKE
+
+        SetIntakePosition(0.5);//stop intake
 
         moveToPosition(opMode, finalRotation, home_distance , home_height, 40, .5);
 
@@ -944,7 +958,7 @@ public class SnappyHardware extends MecanumDrive {
         // drive out of warehouse
         if (teamColor == teamColor.RED) {
              trajectory2 = trajectorySequenceBuilder(getPoseEstimate())
-                     .lineToLinearHeading(startPos)
+                     .lineToLinearHeading(startMod) //ORIGINALLY STARTPOS
                     .build();
         } else{
              trajectory2 = trajectorySequenceBuilder(getPoseEstimate())
@@ -975,7 +989,7 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
         }
 
 
-//        if (i == 3) {
+//        i f (i == 3) {
 //
 //            followTrajectorySequenceAsync(trajectory1);
 //
