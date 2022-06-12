@@ -73,9 +73,15 @@ public class RedDuck extends LinearOpMode {
                 .waitSeconds(2)
                 .turn(Math.toRadians(45))
                 .back(17)
-                .strafeRight(7)
+                .strafeRight(12)
                 .build();
-
+//        TrajectorySequence trajectory4 = snappy.trajectorySequenceBuilder(trajectory3.end())
+//                .waitSeconds(2)
+//                .turn(Math.toRadians(45))
+//                .back(17)
+//                .turn(Math.toRadians(-90))
+//                .forward(12)
+//                .build();
 
 
 
@@ -88,6 +94,9 @@ public class RedDuck extends LinearOpMode {
         snappy.followTrajectorySequence(trajectory3);
         snappy.StopCarousel();
         snappy.StepBreakMovement(this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 140,(long)1);
+
+        //0, 50, -21.6, -45, 1
+        //this, snappy.INITIAL_ROTATION_ANGLE, snappy.INITIAL_DISTANCE, 80, 140,(long)1
         snappy.followTrajectorySequence(trajectory4);
         //snappy.ClawServo.setPosition(1);
 

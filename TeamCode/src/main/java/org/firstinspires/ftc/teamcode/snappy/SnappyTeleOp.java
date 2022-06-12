@@ -258,7 +258,7 @@ public class SnappyTeleOp extends LinearOpMode {
                     snappy.ClawServo.setPosition(DuckPosition);
                     snappy.SetIntakePosition(1);
                 } else if (OuttakePower < -0.1 ) {
-                    snappy.SetIntakePosition(0);
+                    snappy.SetIntakePosition(.3);
                     snappy.ClawServo.setPosition(OpenPosition);
                 } else {
                     snappy.ClawServo.setPosition(ClosePosition);

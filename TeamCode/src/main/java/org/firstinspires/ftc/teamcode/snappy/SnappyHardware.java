@@ -806,9 +806,9 @@ public class SnappyHardware extends MecanumDrive {
             StepBreakMovement(opMode, rot, 200, 26+heightOffset, wristSpot, .6);
             //   this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 529 + distOffset, hubHeight, -9, numberOfSeconds);
-            if (distOffset > 100){
-                this.wait(opMode, 2);
-            }
+//            if (distOffset > 100){
+//                this.wait(opMode, 1);
+//            }
              //this.wait(opMode, 1.0);
 //            SetIntakePosition(0);
             ClawServo.setPosition(OpenPosition);
@@ -838,9 +838,9 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 300, 160, wristSpot, .6);
             StepBreakMovement(opMode, rot, 566 + distOffset, hubHeight, -9, numberOfSeconds);
-            if (distOffset > 100){
-                this.wait(opMode, 2);
-            }
+//            if (distOffset > 100){
+//                this.wait(opMode, 1);
+//            }
             //this.wait(opMode, 1.0);
 //            SetIntakePosition(0);
             ClawServo.setPosition(OpenPosition);
@@ -861,19 +861,23 @@ public class SnappyHardware extends MecanumDrive {
             ClawServo.setPosition(ClosePosition);
             //StepBreakMovement(opMode, rot, 91, -10, 1, numberOfSeconds);
             //  this.wait(opMode, 0.5);
+            if (distOffset > 100) {
+                StepBreakMovement(opMode, rot, INITIAL_DISTANCE , INITIAL_HEIGHT, 50, numberOfSeconds + 0.4);
+
+            }
 //            moveToPosition(opMode, rot, 360 , 430, 1, numberOfSeconds + 0.50);
             StepBreakMovement(opMode, rot, 430 , 345, 50, numberOfSeconds + 0.4);
             //   this.wait(opMode, 0.5);
             //  this.wait(opMode, 1.0);
             StepBreakMovement(opMode, rot, 575.16 + distOffset/2, hubHeight, -8.6, numberOfSeconds + 0.4);
              // this.wait(opMode, 0.5);
-            if (distOffset > 100){
-                this.wait(opMode, 2);
-            }
-//            SetIntakePosition(0);
+//            if (distOffset > 100){
+//                this.wait(opMode, 2);
+//            }
+            SetIntakePosition(0);
             ClawServo.setPosition(OpenPosition);
             waitForFreightNotDetected(opMode, 1);
-//            SetIntakePosition(0.5);
+            SetIntakePosition(0.5);
             ClawServo.setPosition(ClosePosition);
             StepBreakMovement(opMode, rot, 71 , 30, 60, numberOfSeconds);
         }
@@ -980,13 +984,15 @@ boolean blockIsPresent = sensorRange.getDistance(DistanceUnit.MM) < 30;
 
         if (blockIsPresent) {
             ClawServo.setPosition(OpenPosition);
-//            SetIntakePosition(0);
+            SetIntakePosition(0.25);
             wait(opMode, .5);
         } else{
             ClawServo.setPosition(OpenPosition);
-//            SetIntakePosition(0);
+            SetIntakePosition(0.25);
             wait(opMode, 0.5);             //ORIGNALLY WAS 1.5 BOTH ARE BEING CHANGED TO DECREASE TIME
         }
+
+        SetIntakePosition(0.5);
 
 
 //        i f (i == 3) {
