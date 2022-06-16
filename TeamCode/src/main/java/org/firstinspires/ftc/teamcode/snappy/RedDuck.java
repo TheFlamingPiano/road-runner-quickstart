@@ -86,7 +86,7 @@ public class RedDuck extends LinearOpMode {
 
 
 
-        snappy.deliverXblocks(this,60,position, 143);
+        snappy.deliverXblocks(this,55,position, 155);
         snappy.StepBreakMovement(this, 0, 33,-4,70,(long)1);
         snappy.followTrajectorySequence(trajectory1);
         snappy.followTrajectorySequence(trajectory2);

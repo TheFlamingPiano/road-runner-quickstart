@@ -651,8 +651,13 @@ public class SnappyHardware extends MecanumDrive {
 
         RequestedWristAngle = wristAngle;
 
+ if (wristPosition < 0.001 ) wristPosition = 0.001;
+ if (wristPosition > .999) wristPosition = .999;
+
+
         Pivot.setPosition(wristPosition);
         return wristPosition;   //
+
     }
 
     public void StepBreakMovement(LinearOpMode opmode, double rotation, double distance, double height, double wristAng, double targetTime) {
@@ -809,7 +814,7 @@ public class SnappyHardware extends MecanumDrive {
             //  this.wait(opMode, 0.5);
             StepBreakMovement(opMode, rot, 200, 26+heightOffset, wristSpot, .6);
             //   this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 529 + distOffset, hubHeight, -9, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 529 + distOffset/2, hubHeight, -9, numberOfSeconds);
 //            if (distOffset > 100){
 //                this.wait(opMode, 1);
 //            }
@@ -826,7 +831,6 @@ public class SnappyHardware extends MecanumDrive {
             double wristSpot;
             double hubHeight;
 
-            wristSpot = 0;
 
             if (distOffset > 100) {
 //                wristSpot = 0.21;
@@ -845,8 +849,8 @@ public class SnappyHardware extends MecanumDrive {
             //StepBreakMovement(opMode, -23.77, 91, -10, 0.4, numberOfSeconds);
             //  this.wait(opMode, 0.5);
             //  this.wait(opMode, 0.5);
-            StepBreakMovement(opMode, rot, 300, 160, wristSpot, .6);
-            StepBreakMovement(opMode, rot, 566 + distOffset, hubHeight, -9, numberOfSeconds);
+            StepBreakMovement(opMode, rot, 300, 160, 0, .6);
+            StepBreakMovement(opMode, rot, 566 + distOffset/2, hubHeight, -9, numberOfSeconds);
 //            if (distOffset > 100){
 //                this.wait(opMode, 1);
 //            }
@@ -863,7 +867,7 @@ public class SnappyHardware extends MecanumDrive {
         } else {
             double hubHeight;
             if (distOffset > 100) {
-                hubHeight = 345;
+                hubHeight = 355;
             } else {
                 hubHeight = 346;
             }
