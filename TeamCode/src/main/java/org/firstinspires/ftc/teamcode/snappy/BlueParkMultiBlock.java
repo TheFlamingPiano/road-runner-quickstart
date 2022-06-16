@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
             Pose2d startPos = new Pose2d(10, 60, Math.toRadians(180));
-            Pose2d startMod = new Pose2d(10,61.6,Math.toRadians(180));
+            Pose2d startMod = new Pose2d(10,61.6,Math.toRadians(185));
             Pose2d warehousePos = new Pose2d(41, 62.0, Math.toRadians(180));
             snappy.setPoseEstimate(startPos);
             telemetry.update();
